@@ -18,7 +18,7 @@ docker build -f Dockerfile -t parsertongue/re-aline:latest .
 docker run --rm -it \
   -p 7777:9999 \
   -v "${PWD}/notebooks:/app/examples" \
-  clu-ling/realine:latest sh scripts/launch-notebook.sh
+  parsertongue/re-aline:latest 
 ```
 
 Open [localhost:7777](http://localhost:7777) and navigate to `examples` to view the notebooks.
