@@ -1,0 +1,16 @@
+include realine/*.py
+
+include realine/assets/*.js
+include realine/assets/*.css
+include realine/assets/*.html
+
+include realine/tests/*.json
+include realine/tests/*.yml
+include realine/tests/*.txt
+
+include requirements.txt
+
+recursive-include docs *.rst *.md conf.py *.css Makefile
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
