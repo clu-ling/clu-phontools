@@ -109,9 +109,8 @@ feature_matrix = {
 'tʃ':{'place': 'palato-alveolar', 'manner': 'affricate', 'syllabic': 'minus', 'voice': 'minus', 
 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
-'dʒ'':{'place': 'palato-alveolar', 'manner': 'affricate', 'syllabic': 'minus', 'voice': 'plus', 
+'dʒ':{'place': 'palato-alveolar', 'manner': 'affricate', 'syllabic': 'minus', 'voice': 'plus', 
 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
-
 
 'p': {'place': 'bilabial', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus',
 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
@@ -292,14 +291,12 @@ feature_matrix = {
 
 # Vowels
 'ɑ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
-nasal': minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
-back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
 
 'ɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
-nasal': minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
 
 'i': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
