@@ -9,11 +9,13 @@ C_sub = 35  # Substitutions
 C_exp = 45  # Expansions/compressions
 C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
 
-consonants = ['B', 'N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
-              'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ',
-              'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ',
-              'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʐ ', 'ʒ',
-              'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', '4', '5', 'ɜ', 'L', 'B']
+consonants = [
+      'N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
+      'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ',
+      'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ',
+      'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʐ ', 'ʒ',
+      'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', '4', '5', 'ɜ', 'LB'
+]
 
 # Relevant features for comparing consonants and vowels
 R_c = ['aspirated', 'lateral', 'manner', 'nasal', 'place', 'retroflex',
@@ -46,6 +48,7 @@ similarity_matrix = {
 }
 
 # Relative weights of phonetic features (Kondrak 2002: 55)
+# TODO: convert to defaultdict with 0 as default value?
 salience = {
     'syllabic': 5,
     'place': 40,
@@ -135,9 +138,6 @@ feature_matrix = {
           'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
     'ʙ': {'place': 'bilabial', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
-          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
-
-    'B': {'place': 'bilabial', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
     'r': {'place': 'alveolar', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
@@ -349,12 +349,12 @@ feature_matrix = {
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
 
-    'L': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+    # FIXME: are these all needed?
+    'LB': {
+          'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
-    'B': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
-          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus',
+          'boundary': 'lexical',
+          }
 
 }
