@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # === Constants ===
 
 inf = float('inf')
@@ -12,7 +13,7 @@ consonants = ['B', 'N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
               'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ',
               'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ',
               'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʐ ', 'ʒ',
-              'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', '4', '5', ]
+              'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', '4', '5', 'ɜ', 'L', 'B']
 
 # Relevant features for comparing consonants and vowels
 R_c = ['aspirated', 'lateral', 'manner', 'nasal', 'place', 'retroflex',
@@ -37,7 +38,11 @@ similarity_matrix = {
     #back
     'front': 1.0, 'central': 0.5, 'back': 0.0,
     #binary features
-    'plus': 1.0, 'minus': 0.0
+    'plus': 1.0, 'minus': 0.0,
+    # lexical boundary
+    'lexical': 1.0,
+
+
 }
 
 # Relative weights of phonetic features (Kondrak 2002: 55)
@@ -53,7 +58,8 @@ salience = {
     'long': 0,  # decreased from 1
     'high': 3,  # decreased from 5
     'back': 2,  # decreased from 5
-    'round': 2  # decreased from 5
+    'round': 2,  # decreased from 5
+    'boundary': 1,
 }
 
 # (Kondrak 2002: 59-60)
@@ -336,6 +342,18 @@ feature_matrix = {
           'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
 
     'ʊ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+
+    'ɜ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+
+    'L': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+
+    'B': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
 
