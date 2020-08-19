@@ -30,10 +30,13 @@ class ReAline(object):
         self.consonants        = consonants
         self.salience          = salience
         self.C_skip            = C_skip
+        # weight assigned to vowel, consonant pairs
         self.C_vwl             = C_vwl
         self.C_sub             = C_sub
         self.C_exp             = C_exp
+        # List of relevant features for consonants
         self.R_c               = R_c
+        # List of relevant features for vowels
         self.R_v               = R_v
         # sanity check
         self.sanity_check()
@@ -48,7 +51,7 @@ class ReAline(object):
         salience          = self.salience
         consonants        = self.consonants
 
-        # ensure all salience values all found in feature matrix
+        # ensure all salience values are found in feature matrix
 
         feats = set()
         feat_values = set()
@@ -61,16 +64,11 @@ class ReAline(object):
         assert len(salience.keys() - feats) == 0, f"salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}"
 
         # FIXME: re-enable this check
-        # assert len(similarity_matrix.keys() - feat_values) == 0, f"similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}"
+        assert len(similarity_matrix.keys() - feat_values) == 0, f"similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}"
 
         # FIXME: re-enable this check
-        # missing = [c for c in consonants if c not in feature_matrix.keys()]
-        # assert len(missing) == 0, f"Some consonants missing from feature_matrix: {missing}"
-
-        # FIXME: re-enable this check
-        # ensure consonants all found in feature matrix
-        # missing = [c for c in consonants if c not in feature_matrix.keys()]
-        # assert len(missing) ==0, f"Some consonants missing from feature_matrix: {missing}"
+        missing = [c for c in consonants if c not in feature_matrix.keys()]
+        assert len(missing) == 0, f"Some consonants missing from feature_matrix: {missing}"
 
     def sigma_skip(self, p):
         """
@@ -102,6 +100,7 @@ class ReAline(object):
         """
         p_features, q_features = self.feature_matrix[p], self.feature_matrix[q]
         return abs(self.similarity_matrix[p_features[f]] - self.similarity_matrix[q_features[f]])
+
     def delta(self, p, q):
         """
         Return weighted sum of difference between P and Q.
