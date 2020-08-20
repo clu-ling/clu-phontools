@@ -1,4 +1,26 @@
 from __future__ import unicode_literals
+
+class LanguageFeatures(object):
+
+      def __init__(self, consonant_matrix, vowel_matrix, salience, C_skip, C_sub, C_exp, C_vwl):
+            self.consonant_matrix = consonant_matrix
+            self.vowel_matrix = vowel_matrix
+            self.salience = salience
+            self.C_skip = C_skip
+            self.C_sub = C_sub
+            self.C_exp = C_exp
+            # Combine both feature matrices
+            self.feature_matrix = consonant_matrix + vowel_matrix
+            # Ensure features are valide
+            self.sanity_check()
+
+      def sanity_check(self):
+            # ensure C_* take values in an acceptable range
+            # ensure all feature values are accounted for in salience dict
+            pass
+
+# class EnglishFeatures(LanguageFeatures):
+
 # === Constants ===
 
 inf = float('inf')
@@ -9,11 +31,13 @@ C_sub = 35  # Substitutions
 C_exp = 45  # Expansions/compressions
 C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
 
-consonants = ['B', 'N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
-              'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ',
-              'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ',
-              'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʐ ', 'ʒ',
-              'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', '4', '5', 'ɜ', 'L', 'B']
+consonants = [
+      'N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
+      'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ',
+      'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ',
+      'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʒ',
+      'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', 'ɜ', 'LB'
+]
 
 # Relevant features for comparing consonants and vowels
 R_c = ['aspirated', 'lateral', 'manner', 'nasal', 'place', 'retroflex',
@@ -31,10 +55,10 @@ similarity_matrix = {
     'glottal': 0.1, 'labiovelar': 1.0, 'vowel': -1.0,  # added 'vowel'
     #manner
     'stop': 1.0, 'affricate': 0.9, 'fricative': 0.85,  # increased fricative from 0.8
-    'trill': 0.7, 'tap': 0.65, 'approximant': 0.6, 'high vowel': 0.4,
-    'mid vowel': 0.2, 'low vowel': 0.0, 'vowel2': 0.5,  # added vowel
+    'trill': 0.7, 'tap': 0.65, 'approximant': 0.6,
     #high
-    'high': 1.0, 'mid': 0.5, 'low': 0.0,
+#     'high': 0.4, 'mid': 0.2,
+    'high': 1.0, 'mid': 0.5, 'low': 0.0, 'vowel2': 0.5,  # added vowel
     #back
     'front': 1.0, 'central': 0.5, 'back': 0.0,
     #binary features
@@ -46,6 +70,7 @@ similarity_matrix = {
 }
 
 # Relative weights of phonetic features (Kondrak 2002: 55)
+# TODO: convert to defaultdict with 0 as default value?
 salience = {
     'syllabic': 5,
     'place': 40,
@@ -135,9 +160,6 @@ feature_matrix = {
           'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
     'ʙ': {'place': 'bilabial', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
-          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
-
-    'B': {'place': 'bilabial', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
     'r': {'place': 'alveolar', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus',
@@ -248,12 +270,32 @@ feature_matrix = {
     'w': {'place': 'labiovelar', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
-    # Vowels
+    # Vowels w/ stress
     'ɑ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
+    'ɑ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'ɑ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'ɑ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
 
     'ɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
+    'ɪ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɪ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɪ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
 
@@ -349,12 +391,12 @@ feature_matrix = {
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
 
-    'L': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+    # FIXME: are these all needed?
+    'LB': {
+          'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
-    'B': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
-          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus',
+          'boundary': 'lexical',
+          }
 
 }
