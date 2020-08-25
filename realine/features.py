@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
-
 class LanguageFeatures(object):
-
       def __init__(self, consonant_matrix, vowel_matrix, salience, C_skip, C_sub, C_exp, C_vwl):
             self.consonant_matrix = consonant_matrix
             self.vowel_matrix = vowel_matrix
@@ -9,18 +7,27 @@ class LanguageFeatures(object):
             self.C_skip = C_skip
             self.C_sub = C_sub
             self.C_exp = C_exp
-            # Combine both feature matrices
+            self.C_vwl = C_vwl
+            #Combine both feature matrices
             self.feature_matrix = consonant_matrix + vowel_matrix
-            # Ensure features are valide
+            #Ensure features are valid
             self.sanity_check()
 
       def sanity_check(self):
-            # ensure C_* take values in an acceptable range
-            # ensure all feature values are accounted for in salience dict
+            #ensure C_* take values in an acceptable range
+            #ensure all feature values are accounted for in salience dict
             pass
 
+      
 # class EnglishFeatures(LanguageFeatures):
-
+#       def __init__(self, C_skip, C_sub, C_exp, C_vwl):
+#             # Default values for maximum similarity scores (Kondrak 2002: 54)
+#             self.C_skip = 10  # Indels
+#             self.C_sub = 35  # Substitutions
+#             self.C_exp = 45  # Expansions/compressions
+#             self.C_vwl = 5  # Vowel/consonant relative weight (decreased from 10)
+           
+      
 # === Constants ===
 
 inf = float('inf')
@@ -38,6 +45,16 @@ consonants = [
       'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʒ',
       'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', 'ɜ', 'LB'
 ]
+
+# consonants in the original aline (NLTK)
+# consonants = [
+#     "B", "N", "R", "b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n",
+#     "p", "q", "r", "s", "t", "v", "x", "z", "ç", "ð", "ħ", "ŋ", "ɖ", "ɟ",
+#     "ɢ", "ɣ", "ɦ", "ɬ", "ɮ", "ɰ", "ɱ", "ɲ", "ɳ", "ɴ", "ɸ", "ɹ", "ɻ", "ɽ",
+#     "ɾ", "ʀ", "ʁ", "ʂ", "ʃ", "ʈ", "ʋ","ʐ", "ʒ", "ʔ", "ʕ", "ʙ", "ʝ", "β",
+#     "θ", "χ", "ʐ", "w",
+# ]
+
 
 # Relevant features for comparing consonants and vowels
 R_c = ['aspirated', 'lateral', 'manner', 'nasal', 'place', 'retroflex',
@@ -64,9 +81,7 @@ similarity_matrix = {
     #binary features
     'plus': 1.0, 'minus': 0.0,
     # lexical boundary
-    'lexical': 1.0,
-
-
+    'lexical': 0.0,
 }
 
 # Relative weights of phonetic features (Kondrak 2002: 55)
@@ -84,7 +99,7 @@ salience = {
     'high': 3,  # decreased from 5
     'back': 2,  # decreased from 5
     'round': 2,  # decreased from 5
-    'boundary': 1,
+    'boundary': 0,
 }
 
 # (Kondrak 2002: 59-60)
@@ -271,10 +286,10 @@ feature_matrix = {
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'},
 
     # Vowels w/ stress
+    # FIXME: correct features and values for stress
     'ɑ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-    # FIXME: correct features and values for stress
     'ɑ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
@@ -284,11 +299,10 @@ feature_matrix = {
     'ɑ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+      # FIXME: correct features and values for stress
     'ɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-    # FIXME: correct features and values for stress
     'ɪ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
@@ -299,104 +313,222 @@ feature_matrix = {
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
 
+      # FIXME: correct features and values for stress
     'i': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    'i1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'i2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'i3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'y': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'y1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'y2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'y3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'e': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    'e1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'e2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'e3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'E': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    'E1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'E2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'E3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'ø': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'ø1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'ø2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'ø3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'ɛ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'ɛ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɛ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɛ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},  
+    # FIXME: correct features and values for stress
     'œ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'œ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'œ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'œ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
+          'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'æ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    'æ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'æ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'æ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'a': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'a1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'a2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'a3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'A': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    'A1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'A2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    'A3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
+          'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'ɨ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    'ɨ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɨ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɨ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+          'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
+    # FIXME: correct features and values for stress
     'ʉ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'central', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ə': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'u': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'U': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'o': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'O': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ɔ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ɒ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low',
           'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'I': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ʌ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid',
           'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ʊ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
-
+    # FIXME: correct features and values for stress
     'ɜ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
 
+    # Diphthongs
+    'ɑɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+        'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+        'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɑi': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+        'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+        'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɔɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+        'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+        'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+    'ɑʊ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+        'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+        'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'},
+            
+
     # FIXME: are these all needed?
-    'LB': {
-          'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
-          'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
-          'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus',
-          'boundary': 'lexical',
-          }
+     'LB': {
+           'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus',
+           'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high',
+           'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus',
+           'boundary': 'lexical',
+           }
+#      'LB': {
+#          'boundary': 'lexical',
+#    }
 
 }

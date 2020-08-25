@@ -52,7 +52,6 @@ class ReAline(object):
         consonants        = self.consonants
 
         # ensure all salience values are found in feature matrix
-
         feats = set()
         feat_values = set()
         for phone_fm in feature_matrix.values():
@@ -70,21 +69,21 @@ class ReAline(object):
         missing = [c for c in consonants if c not in feature_matrix.keys()]
         assert len(missing) == 0, f"Some consonants missing from feature_matrix: {missing}"
 
-    def sigma_skip(self, p):
+    def sigma_skip(self, p: str) -> int:
         """
         Returns score of an indel of P.
         (Kondrak 2002: 54)
         """
         return self.C_skip
 
-    def V(self, p):
+    def V(self, p: str) -> int:
         """
         Return vowel weight if P is vowel.
         (Kondrak 2002: 54)
         """
         return 0 if p in self.consonants else self.C_vwl
     
-    def R(self, p, q):
+    def R(self, p: str, q: str) -> List[str]:
         """
         Return relevant features for segment comparsion.
         (Kondrak 2002: 54)
@@ -93,7 +92,7 @@ class ReAline(object):
 
         return self.R_c if p in consonants or q else self.R_v
 
-    def diff(self,p, q, f):
+    def diff(self, p: str, q: str, f: str) -> int:
         """
         Returns difference between phonetic segments P and Q for feature F.
         (Kondrak 2002: 52, 54)
@@ -101,7 +100,7 @@ class ReAline(object):
         p_features, q_features = self.feature_matrix[p], self.feature_matrix[q]
         return abs(self.similarity_matrix[p_features[f]] - self.similarity_matrix[q_features[f]])
 
-    def delta(self, p, q):
+    def delta(self, p: str, q: str) -> int:
         """
         Return weighted sum of difference between P and Q.
         (Kondrak 2002: 54)
@@ -112,14 +111,14 @@ class ReAline(object):
             total += self.diff(p, q, f) * self.salience[f]
         return total
 
-    def sigma_sub(self, p, q):
+    def sigma_sub(self, p: str , q :str) -> int:
         """
         Returns score of a substitution of P with Q.
         (Kondrak 2002: 54)
         """
         return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
 
-    def sigma_exp(self, p, q):
+    def sigma_exp(self, p: str, q: str) -> int:
         """
         Returns score of an expansion/compression.
         (Kondrak 2002: 54)
@@ -205,4 +204,3 @@ class ReAline(object):
                 if S[i, j] >= T:
                     alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
         return alignments
-
