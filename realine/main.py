@@ -18,9 +18,9 @@ def read_file(path):
 
 
 # save to file
-alignments = read_file('./data/alignments.xlsx')  # list of lists of tuples
+alignments = read_file('./data/NonseAlignments.xlsx')  
 
 df = pd.DataFrame()
 # Creating a column
 df['alignments'] = alignments
-df.to_excel('./results/results.xlsx', index=False)
+df.to_excel('./results/results_with_stress.xlsx', index=False)
