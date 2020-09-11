@@ -16,7 +16,7 @@ class ReAlineTests(unittest.TestCase):
 
         seq = ["θ", "i", "n"]
 
-        self.assertEqual(reliner.align(seq), [[('θ', 'θ'), ('i', 'i'), ('n', 'n')]], "Re-Aline failed to align a sequence with itself.")
+        self.assertEqual(realiner.align(seq, seq), [[('θ', 'θ'), ('i', 'i'), ('n', 'n')]], "Re-Aline failed to align a sequence with itself.")
 
 
     def test_align(self):
