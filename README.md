@@ -1,28 +1,50 @@
 # REALINE
 
+## Develop
 
+We recommend developing using Docker and bind mounts.  Note that the instructions below assume you're developing using a Linux-based environment (they've also been tested on MacOS Catalina).
 ## Building the docker image
 
 ```
-docker build -f Dockerfile -t parsertongue/re-aline:latest .
+docker build -f Dockerfile -t "parsertongue/re-aline:latest" .
 ```
 
-## Running the example notebook
+## Running the example notebooks
 
 ### Option 2
-```
-# NOTE: this incantation assumes you're running the command
-# from the project root. Changes to files under notebooks
-# will be written from client to host.
 
+```
 docker run --rm -it \
   -p 7777:9999 \
-  -v "${PWD}/notebooks:/app/examples" \
   parsertongue/re-aline:latest 
 ```
 
-Open [localhost:7777](http://localhost:7777) and navigate to `examples` to view the notebooks.
+Open [localhost:7777](http://localhost:7777) and navigate to `notebooks` to view the notebooks.
 
+
+## Test
+
+Tests are written by [extending the `TestCase` class](https://docs.python.org/3.7/library/unittest.html#unittest.TestCase) from the `unittest` module in the Python standard library.  All tests can be found in the [`tests`](./tests) directory.
+
+
+All tests can be run using the following command:
+
+```bash
+docker run -it -v $PWD:/app "parsertongue/re-aline:latest" test-all
+```
+
+To run just the unit tests, run the following command:
+
+```bash
+docker run -it -v $PWD:/app "parsertongue/re-aline:latest" green -vvv --run-coverage
+```
+
+
+The code makes use of Python type hints.  To perform type checking, run the following command:
+
+```bash
+docker run -it -v $PWD:/app "parsertongue/re-aline:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional .
+```
 
 ## Removing old docker containers, images, etc.
 

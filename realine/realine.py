@@ -1,6 +1,5 @@
 from typing import List, Tuple
-import features
-
+from . import features
 import numpy as np
 
 class ReAline(object):

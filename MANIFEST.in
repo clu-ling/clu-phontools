@@ -1,9 +1,5 @@
 include realine/*.py
 
-include realine/assets/*.js
-include realine/assets/*.css
-include realine/assets/*.html
-
 include realine/tests/*.json
 include realine/tests/*.yml
 include realine/tests/*.txt
