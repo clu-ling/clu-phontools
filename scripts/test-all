@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# run core tests
+green -vvv --run-coverage /app
+
+# type checks
+mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app

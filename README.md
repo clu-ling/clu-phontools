@@ -1,11 +1,37 @@
-# REALINE
+# RE-ALINE
+
+
+## Installation
+
+```
+pip install -e ".[all]"
+```
+
+## Run (via Docker)
+
+```bash
+docker pull "parsertongue/re-aline:latest"
+```
+
+### Run RE-ALINE against Excel data
+
+```bash
+mkdir {input,output}
+```
+
+Move your Excel input data into input/ as `input.xlsx` and run the following command:
+
+```bash
+docker run -it --rm "parsertongue/re-aline:latest" re-aline-excel-data --input /app/input.xlsx --output /app/output.xlsx
+```
 
 ## Develop
 
 We recommend developing using Docker and bind mounts.  Note that the instructions below assume you're developing using a Linux-based environment (they've also been tested on MacOS Catalina).
+
 ## Building the docker image
 
-```
+```bash
 docker build -f Dockerfile -t "parsertongue/re-aline:latest" .
 ```
 
@@ -13,7 +39,7 @@ docker build -f Dockerfile -t "parsertongue/re-aline:latest" .
 
 ### Option 2
 
-```
+```bash
 docker run --rm -it \
   -p 7777:9999 \
   parsertongue/re-aline:latest 
