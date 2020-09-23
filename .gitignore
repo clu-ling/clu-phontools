@@ -102,3 +102,6 @@ ENV/
 
 
 .DS_Store
+results/
+data/
+notebooks/

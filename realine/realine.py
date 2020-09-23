@@ -117,7 +117,7 @@ class ReAline(object):
         """
         return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
 
-    def sigma_exp(self, p: str, q: str) -> int:
+    def sigma_exp(self, p: str, q: List[str]) -> int:
         """
         Returns score of an expansion/compression.
         (Kondrak 2002: 54)
@@ -183,8 +183,8 @@ class ReAline(object):
         # by setting them to -inf.
         for i in range(1, m+1):
             for j in range(1, n+1):
-                edit1 = S[i-1, j] + self.sigma_skip(seq1[i-1])
-                edit2 = S[i, j-1] + self.sigma_skip(seq2[j-1])
+                edit1 = S[i-1, j]   + self.sigma_skip(seq1[i-1])
+                edit2 = S[i, j-1]   + self.sigma_skip(seq2[j-1])
                 edit3 = S[i-1, j-1] + self.sigma_sub(seq1[i-1], seq2[j-1])
                 if i > 1:
                     edit4 = S[i-2, j-1] + self.sigma_exp(seq2[j-1], seq1[i-2:i])
