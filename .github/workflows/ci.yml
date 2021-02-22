@@ -53,5 +53,5 @@ jobs:
     # publish
     - name: "Publish docker image (re-aline image)"
       if: github.ref == 'refs/heads/master'
-      run: docker push "parsertongue/re-aline"
+      run: docker push --all-tags "parsertongue/re-aline"
 
