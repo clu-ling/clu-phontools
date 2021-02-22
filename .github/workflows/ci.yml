@@ -38,7 +38,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     # Library (docker)
-    - name: "Build docker image (experiments)"
+    - name: "Build docker image (re-aline)"
       #working-directory: ./
       run: docker build -f Dockerfile -t "parsertongue/re-aline:latest" -t "parsertongue/re-aline:${{ needs.setup.outputs.sha_short }}" .
     # Tests
@@ -46,12 +46,12 @@ jobs:
       run: |
         docker run -i "parsertongue/re-aline:latest" green -vvv /app
     # Type checks
-    - name: "Type checks (experiments)"
+    - name: "Type checks (re-aline)"
       continue-on-error: true
       run : |
         docker run -i "parsertongue/re-aline:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
     # publish
-    - name: "Publish docker image (experiments image)"
+    - name: "Publish docker image (re-aline image)"
       if: github.ref == 'refs/heads/master'
       run: docker push "parsertongue/re-aline"
 
