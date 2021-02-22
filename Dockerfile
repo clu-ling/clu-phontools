@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 
 LABEL author="Gus Hahn-Powell"
 LABEL description="Image defintion for Python-based re-aline project."
@@ -9,8 +9,8 @@ WORKDIR /app
 # Bundle app source
 COPY . .
 
+RUN chmod u+x scripts/*
 RUN mv scripts/* /usr/local/bin/
-RUN chmod u+x /usr/local/bin/test-all
 RUN rmdir scripts
 
 # Update
@@ -31,6 +31,7 @@ RUN jupyter contrib nbextension install --user
 # Commonly used test utils
 RUN pip install -U pytest==5.3.4
 # Assignment-specific deps
-RUN pip install -e ".[all]" .
+RUN pip install -e ".[all]"
+
 # Launch jupyter
-CMD ["/bin/bash", "/usr/local/bin/launch-notebook.sh"]
+CMD ["/bin/bash", "launch-notebook"]
