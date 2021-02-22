@@ -40,18 +40,18 @@ jobs:
     # Library (docker)
     - name: "Build docker image (experiments)"
       #working-directory: ./
-      run: docker build -f Dockerfile -t "parsertongue/realine:latest" -t "parsertongue/realine:${{ needs.setup.outputs.sha_short }}" .
+      run: docker build -f Dockerfile -t "parsertongue/re-aline:latest" -t "parsertongue/re-aline:${{ needs.setup.outputs.sha_short }}" .
     # Tests
     - name: "Tests and coverage (experiments)"
       run: |
-        docker run -i "parsertongue/realine:latest" green -vvv /app
+        docker run -i "parsertongue/re-aline:latest" green -vvv /app
     # Type checks
     - name: "Type checks (experiments)"
       continue-on-error: true
       run : |
-        docker run -i "parsertongue/realine:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
+        docker run -i "parsertongue/re-aline:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
     # publish
     - name: "Publish docker image (experiments image)"
       if: github.ref == 'refs/heads/master'
-      run: docker push "parsertongue/realine"
+      run: docker push "parsertongue/re-aline"
 
