@@ -105,3 +105,4 @@ ENV/
 results/
 data/
 notebooks/
+.idea/
