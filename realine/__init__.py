@@ -1,5 +1,6 @@
 try:
   from .realine import ReAline
+  from .pronouncing import PronouncingDict
 except Exception as e:
   print("Failed to import ReAline")
   print(e)
