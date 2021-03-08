@@ -138,22 +138,7 @@ class PronouncingDict(dict):
           key = tuple(converter.get(phon, phon) for phon in res[-1].split(" "))
           pairs.append((key, value))
     return PronouncingDict(pairs)
-  def from_cmu_dict(filepath: Optional[str] = None, converter: Dict[str, str] = arpabet_to_realine) -> "PronouncingDict":
-    cmudict_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict")
-    filepath = filepath or cmudict_file
-    pairs = []
-    with open(filepath, "r", encoding = "ISO-8859-1") as infile:
-      for row in infile:
-        # ignore comments
-        if not row.startswith(";;"):
-          res = row.strip().split("  ")
-          value = res[0]
-          # ARPAbet pronunciation.
-          # optionally convert to provided format
-          key = tuple(converter.get(phon, phon) for phon in res[-1].split(" "))
-          pairs.append((key, value))
-    return PronouncingDict(pairs)
 
-p = PronouncingDict()
-pp= p.from_cmu_dict() 
-print(pp.items())
+#p = PronouncingDict()
+#pp= p.from_cmu_dict() 
+#print(pp.items())
