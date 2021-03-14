@@ -1,95 +1,63 @@
 #!/usr/bin/env python
-
-import argparse
-
-import pandas as pd
 import numpy as np
-from realine.realine import ReAline
+from typing import List, Tuple
+from realine import ReAline
 
-al = ReAline()
+realine = ReAline()
 
-
-def read_file(path):
+class Metrics(object):
     '''
-    Read the excel file and create another excel file with the alignemnts (output of realine)
+    Metrics take the output of ReAline and calculates edit distance, phoneme errors and phone similarity.
+
+    Attributes:
+    -----------
+    alignments: [List[Tuple[str, str]]]
+
+    Methods:
+    -------
     '''
-    file = pd.read_excel(path, header=None, engine='openpyxl')
-    df = file.stack().groupby(level=0).apply(' '.join)
-    #df = [i.replace('LB', '') for i in df]
-    myList = [i.split(' ') for i in df]
-    v = iter(myList)
-    list_of_tuples = [(i, next(v)) for i in v]
-    return [al.align(i[0], i[1])[0] for i in list_of_tuples]
+    def __init__(self, alignments) -> [List[Tuple[str, str]]]:
+        self.alignments = alignments
 
+    def similarity(self, t):
+        a = t[0]
+        b = t[1]
+        return realine.delta(a, b)
 
-def decompose_distance(tup):
+    def phoneSimilarity(self):
+        try:
+            return [self.similarity(i) for i in self.alignments]
+        except TypeError:
+            pass
+           
+    def calcPhonemeErrors(self):
+        main = 0
+        insertions_count = 0
+        insertions = []
+        deletions_count = 0
+        deletions = []
+        substitutions_count = 0
+        substitutions = []
+        for item in self.alignments:
+            self.phone_1 = item[0]
+            self.phone_2 = item[1]
+            if self.phone_1 == '-':
+                i = self.phone_1, self.phone_2
+                insertions.append(i)
+                insertions_count += 1
+                main += 1
+            elif self.phone_2 == '-':
+                d = self.phone_1, self.phone_2
+                deletions.append(d)
+                deletions_count += 1
+                main += 1
+            elif self.phone_1 != self.phone_2 and self.phone_1 != '-' and self.phone_2 != '-':
+                s = self.phone_1, self.phone_2
+                substitutions.append(s)
+                substitutions_count += 1
+                main += 1
+        return "edit distance score:", main, "deletions:", deletions_count, deletions, "insertions:", insertions_count, insertions, "substitutions:", substitutions_count, substitutions
 
-    ##### calculate insertion #### ('-','p')
-    insertion_count = 0
-    insertions = []
-    for item in tup:
-        phone_1 = item[0]
-        #print (phone_1)
-        phone_2 = item[1]
-        #print (phone_2)
-        if phone_1 == '-':
-            i = list((phone_1, phone_2))
-            insertions.append(i)
-            insertion_count += 1
-    #print(f"Insertions' count: {insertion_count} ==> {insertions}")
-    #print()
-
-    ##### calculate deletion #### ('p','-')
-    deletion_count = 0
-    deletions = []
-    for item in tup:
-        phone_1 = item[0]
-        phone_2 = item[1]
-        if phone_2 == '-':
-            s = list((phone_1, phone_2))
-            deletions.append(s)
-            deletion_count += 1
-    #print(f"Deletions' count: {deletion_count} ==> {deletions}")
-    #print()
-
-    ##### calculate substitution #### ('æ', 'ə')
-    substitution_count = 0
-    substitutions = []
-    for item in tup:
-        phone_1 = item[0]
-        phone_2 = item[1]
-        if phone_1 != phone_2 and phone_1 != '-' and phone_2 != '-':
-            x = list((phone_1, phone_2))
-            substitutions.append(x)
-            substitution_count += 1
-    #print(f"Substitutions' count: {substitution_count} ==> {substitutions}")
-    #print()
-    return ("deletions:", list((deletion_count, deletions))), "inserions:", list((insertion_count, insertions)), "substitutions:", list((substitution_count, substitutions))
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description='Realign Excel data using re-aline.')
-    parser.add_argument("--input", "-i", help="Input file.",
-                        type=str, required=True)
-    parser.add_argument("--output", "-o", help="output file.",
-                        type=str, required=True)
-
-    args = parser.parse_args()
-
-    infile = args.input
-    outfile = args.output
-
-    # read the excel file and generate alignments
-    alignments = read_file(infile)
-    # decompose
-    decomposition = [decompose_distance(item) for item in alignments]
-
-    # create a dataframe
-    df = pd.DataFrame()
-    # Column 1: creating a column for alignments
-    df['alignments'] = alignments
-    # Column 2: decompose processes (deletion, substitution, insertion)
-    df['decomposition'] = decomposition
-
-    df.to_excel(outfile, index=False)
+    # def calcLexicalBoundary(self):
+    #     pass
+    
