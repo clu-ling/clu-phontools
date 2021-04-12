@@ -2,6 +2,8 @@
 import numpy as np
 from typing import List, Tuple
 from realine import ReAline
+import re
+#import pronouncing
 
 realine = ReAline()
 
@@ -58,6 +60,51 @@ class Metrics(object):
                 main += 1
         return "edit distance score:", main, "deletions:", deletions_count, deletions, "insertions:", insertions_count, insertions, "substitutions:", substitutions_count, substitutions
 
-    # def calcLexicalBoundary(self):
-    #     pass
+    # @staticmethod
+    # def calcLexicalBoundary():
+    #     targets = ['address her meeting time', 'advance but sat appeal']
+    #     transcripts = ['venture mean time', 'advanced salt peel']
+        
+    #     phrase_phone = []
+    #     phrase_stress = []
+    #     phrase_phone_modified = []
+    #     alt_words = ['address', 'his', 'justice',
+    #                  'is', 'its', 'them', 'it', 'can'] # weak strong
+
+
+    #     for item in targets:
+    #         item = str(item)
+    #         words = re.split(r'\s+', item)
+            
+    #         phone = []
+    #         phone_modify = []
+    #         stress = []
+    #         for word in words:
+    #             word = word.lower()
+    #             pronounciation = pronouncing.phones_for_word((word))
+    #             #print (pronounciation[0][0])
+    #             if len(pronounciation) == 1: # if the list of pronunciation has one lexical item
+    #                  current_phone = pronounciation[0]
+    #             elif word in alt_words:
+    #                  current_phone = pronounciation[1]
+    #             elif word == "with":
+    #                 current_phone = pronounciation[2]
+    #             else:
+    #                 current_phone = pronounciation[0]
+
+    #             phone.append(current_phone)
+    #         print (phone)
     
+
+if __name__ == "__main__":
+    alignments = [('æ', 'æ'), ('d', 'd'), ('v', 'v'), ('æ', 'æ'), ('n', 'n'), ('s', 's'), ('b', 'b'), ('ʌ', 'ʌ'), ('t', 't'), ('-', 's'), ('æ', 'ɛ'), ('t', 't'), ('ə', 'ə'), ('p', '-'), ('i', 'i'), ('l', 'l')]
+    s = Metrics(alignments)
+    print(s.phoneSimilarity())
+    print(s.calcPhonemeErrors())
+
+#     #s.calcLexicalBoundary()
+#print(realine.align('ædvænsbʌtætəpil', 'ædvænsbʌtsɛtəil'))
+
+#b = 'ædvænsbʌtsɛtəpil'
+
+#a = 'ædvænsbʌtsætəpil'
