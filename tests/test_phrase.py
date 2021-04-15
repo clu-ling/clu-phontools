@@ -52,9 +52,18 @@ class TestPhrase(unittest.TestCase):
         self.assertEqual(Phrase.string_to_arpabet(phrase), (['AH0 D R EH1 S', 'HH ER1', 'M IY1 T IH0 NG', 'T AY1 M'],
                                                             ['01', '1', '10', '1']))
 
-    def test_calc_lbe(self):
-        target = ['01', '0', '10', '1']
-        transcript = ['1', '0', '0', '10', '1']
+    def test_calc_lbe_IW(self):
+        '''
+        This function tests the lexical boundary between the target's and trascript's stress pattern
+        for the following rule:
+            IW : an inserted word boundary before a weak syllable. 
+
+        The following exmaples are implemtations of the rule:
+            target : 'bolder ground from justice'
+            transcipt: 'both are grown from justice'
+        '''
+        target = ['10', '1', '1', '10']
+        transcript =  ['1', '1', '1', '1', '10']
         res = calc_lbe(target, transcript)
         error_report = LexicalBoundaryErrorReport(
             target_stress = target,
@@ -63,6 +72,84 @@ class TestPhrase(unittest.TestCase):
                 LexicalBoundaryError(
                     target_index=0,
                     transcript_indices=[0, 1],
+                    error_type=LexicalBoundaryErrorType.IW
+                )
+            ]
+        )
+        self.assertEqual(res, error_report)
+
+    def test_calc_lbe_IS(self):
+        '''
+        This function tests the lexical boundary between the target's and trascript's stress pattern
+        for the following rule:
+            IS : an inserted word boundary before a strong syllable.
+
+        The following exmaples are implemtations of the rule:
+            target: advance but sat appeal
+            transcript: advance but sat a pail
+        '''
+        target =  ['01', '1', '1', '01']
+        transcript =  ['01', '1', '1', '0', '1']
+        res = calc_lbe(target, transcript)
+        error_report = LexicalBoundaryErrorReport(
+            target_stress = target,
+            transcript_stress = transcript,
+            lbes=[
+                LexicalBoundaryError(
+                    target_index=3,
+                    transcript_indices=[3, 4],
+                    error_type=LexicalBoundaryErrorType.IW
+                )
+            ]
+        )
+        self.assertEqual(res, error_report)
+    
+    def test_calc_lbe_DS(self):
+        '''
+        This function tests the lexical boundary between the target's and trascript's stress pattern
+        for the following rule:
+            DS : a deleted word boundary before a strong syllable.
+
+        The following exmaples are implemtations of the rule:
+            target : frame her seed to answer
+            trasncript: fame proceed to answer
+        '''
+        target =  ['1', '1', '1', '1', '10']
+        transcript =   ['1', '01', '1', '10']
+        res = calc_lbe(target, transcript)
+        error_report = LexicalBoundaryErrorReport(
+            target_stress = target,
+            transcript_stress = transcript,
+            lbes=[
+                LexicalBoundaryError(
+                    target_index=[1,2],
+                    transcript_indices=1,
+                    error_type=LexicalBoundaryErrorType.IW
+                )
+            ]
+        )
+        self.assertEqual(res, error_report)
+
+    def test_calc_lbe_DW(self):
+        '''
+        This function tests the lexical boundary between the target's and trascript's stress pattern
+        for the following rule:
+            DW : a deleted word boundary before a weak syllable.
+        
+        The following exmaples are implemtations of the rule:
+            target : stable wrist and load it
+            transcript: stable rest in loaded
+        '''
+        target =  ['10', '1', '0', '1', '0']
+        transcript =    ['10', '1', '0', '10']
+        res = calc_lbe(target, transcript)
+        error_report = LexicalBoundaryErrorReport(
+            target_stress = target,
+            transcript_stress = transcript,
+            lbes=[
+                LexicalBoundaryError(
+                    target_index=[3,4],
+                    transcript_indices=3,
                     error_type=LexicalBoundaryErrorType.IW
                 )
             ]
