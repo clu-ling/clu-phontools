@@ -48,6 +48,7 @@ arpabet_to_ipa: Dict[str, str] =  {'AA': 'ɒ',
  'ZH': 'ʒ'}
 
 ipa_to_arpabet = {v:k for k,v in arpabet_to_ipa.items()}
+
  # ɖ, ɱ, ʔ, ɟ, ɲ, ɳ, ŋ, ʙ, ʀ, ɾ, ɽ, ɸ, β, ʂ , ʐ, ç, ʝ, ɰ, ɻ, ʋ, ɮ, is not present
 arpabet_to_realine: Dict[str, str] = {
 'AA': 'ɒ','AA1': 'ɒ1', 'AA1': 'ɒ2', 'AA1': 'ɒ3',
@@ -124,21 +125,6 @@ class PronouncingDict(dict):
   
   @staticmethod
   def from_cmu_dict(filepath: Optional[str] = None, converter: Dict[str, str] = arpabet_to_ipa) -> "PronouncingDict":
-    cmudict_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict")
-    filepath = filepath or cmudict_file
-    pairs = []
-    with open(filepath, "r", encoding = "ISO-8859-1") as infile:
-      for row in infile:
-        # ignore comments
-        if not row.startswith(";;"):
-          res = row.strip().split("  ")
-          value = res[0]
-          # ARPAbet pronunciation.
-          # optionally convert to provided format
-          key = tuple(converter.get(phon, phon) for phon in res[-1].split(" "))
-          pairs.append((key, value))
-    return PronouncingDict(pairs)
-  def from_cmu_dict(filepath: Optional[str] = None, converter: Dict[str, str] = arpabet_to_realine) -> "PronouncingDict":
     cmudict_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict")
     filepath = filepath or cmudict_file
     pairs = []
