@@ -85,7 +85,7 @@ similarity_matrix = {
     'stop': 1.0, 'affricate': 0.9, 'fricative': 0.85,  # increased fricative from 0.8
     'trill': 0.7, 'tap': 0.65, 'approximant': 0.6,
     #high
-#     'high': 0.4, 'mid': 0.2,
+    #'high': 0.4, 'mid': 0.2,
     'high': 1.0, 'mid': 0.5, 'low': 0.0, 'vowel2': 0.5,  # added vowel
     #back
     'front': 1.0, 'central': 0.5, 'back': 0.0,

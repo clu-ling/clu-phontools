@@ -1,3 +1,4 @@
 jupyter==1.0.0
 pandas==1.2.2
 numpy==1.20.1
+pronouncing==0.2.0
