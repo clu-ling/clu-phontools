@@ -1,6 +1,17 @@
 from __future__ import unicode_literals
+
+
 class LanguageFeatures(object):
-      def __init__(self, consonant_matrix, vowel_matrix, salience, C_skip, C_sub, C_exp, C_vwl):
+      def __init__(
+         self, 
+         consonant_matrix, 
+         vowel_matrix, 
+         salience, 
+         C_skip, 
+         C_sub, 
+         C_exp, 
+         C_vwl
+      ):
             self.consonant_matrix = consonant_matrix
             self.vowel_matrix = vowel_matrix
             self.salience = salience
@@ -8,14 +19,14 @@ class LanguageFeatures(object):
             self.C_sub = C_sub
             self.C_exp = C_exp
             self.C_vwl = C_vwl
-            #Combine both feature matrices
+            # combine both feature matrices
             self.feature_matrix = consonant_matrix + vowel_matrix
-            #Ensure features are valid
+            # ensure features are valid
             self.sanity_check()
 
       def sanity_check(self):
-            #ensure C_* take values in an acceptable range
-            #ensure all feature values are accounted for in salience dict
+            # ensure C_* take values in an acceptable range
+            # ensure all feature values are accounted for in salience dict
             pass
 
       

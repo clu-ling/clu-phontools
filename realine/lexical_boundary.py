@@ -1,13 +1,112 @@
-import re
 from scipy.io import loadmat, savemat
 from autocorrect import Speller
+from typing import List, Dict, Tuple
 import pronouncing
 import numpy as np
-from typing import List, Dict, Tuple
 import itertools
+import re
 
 spell = Speller(lang='en')
 
+
+class Phrase(object):
+
+    def cmu_pronunciations(self, phrase: List[str]) -> List[List[str]]:
+        data = [i.lower().split() for i in phrase]
+        return data
+        
+
+def possible_pronunciations3(phrase: List[str]) -> List[List[str]]:
+    # step 1: for each token in phrase, look up token in CMU dict and store
+    data = np.array(phrase)
+    phrase_phone = []
+    for i in data:
+        words = re.split(r'\s+', i)
+        phrase_phone.append(words)
+
+    cmu = []
+    for ii in phrase_phone:
+        each = []
+        for i in ii:
+            each.append(pronouncing.phones_for_word(i))
+        cmu.append(each)
+        
+    each_flattened = []
+    for x in cmu:
+        data = [i for element in x for i in element]
+        each_flattened.append(data)
+
+    list_of_combinations = []
+    for xx in each_flattened:
+        for L in range(0, len(xx) + 1):
+            
+            for subset in itertools.combinations(data, L):
+                a.append(list(subset))
+            list_of_combinations.append(a)
+    len(list_of_combinations)
+    list_of_combinations = [i for i in list_of_combinations if i != [[]]]
+    # data = [i for element in data for i in element]
+    # list_of_combinations= []
+    # for L in range(0, len(data)+1):
+    #     for subset in itertools.combinations(data, L):
+    #         list_of_combinations.append(list(subset))
+    # list_of_combinations = [i for i in list_of_combinations if i != []]
+    # stresses = []
+    # for i in list_of_combinations:
+    #     ss = [pronouncing.stresses(ii) for ii in i]
+    #     stresses.append(ss)
+    # stress_pattern = ['010101', '101010']
+    # f = [i for i in stresses if len(i) > 1]
+    # f = [''.join(i) for i in f]
+    # f = [i for i in f if i in stress_pattern]
+    
+    return list_of_combinations
+
+def possible_pronunciations2(phrase: List[str]) -> List[List[str]]:
+    # step 1: for each token in phrase, look up token in CMU dict and store
+    data = np.array(phrase)
+    phrase_phone = []
+    for i in data:
+        words = re.split(r'\s+', i)
+        phrase_phone.append(words)
+
+    cmu = []
+    for ii in phrase_phone:
+        each = []
+        for i in ii:
+            each.append(pronouncing.phones_for_word(i))
+        cmu.append(each)
+        
+    each_flattened = []
+    for x in cmu:
+        data = [i for element in x for i in element]
+        each_flattened.append(data)
+
+    list_of_combinations = []
+    for xx in each_flattened:
+        for L in range(0, len(xx) + 1):
+            
+            for subset in itertools.combinations(data, L):
+                a.append(list(subset))
+            list_of_combinations.append(a)
+    len(list_of_combinations)
+    list_of_combinations = [i for i in list_of_combinations if i != [[]]]
+    # data = [i for element in data for i in element]
+    # list_of_combinations= []
+    # for L in range(0, len(data)+1):
+    #     for subset in itertools.combinations(data, L):
+    #         list_of_combinations.append(list(subset))
+    # list_of_combinations = [i for i in list_of_combinations if i != []]
+    # stresses = []
+    # for i in list_of_combinations:
+    #     ss = [pronouncing.stresses(ii) for ii in i]
+    #     stresses.append(ss)
+    # stress_pattern = ['010101', '101010']
+    # f = [i for i in stresses if len(i) > 1]
+    # f = [''.join(i) for i in f]
+    # f = [i for i in f if i in stress_pattern]
+    
+    return list_of_combinations
 
 def possible_pronunciations(phrase: List[str]) -> List[List[str]]:
     '''
@@ -38,7 +137,7 @@ def possible_pronunciations(phrase: List[str]) -> List[List[str]]:
 
 def generate_stress_assignment(pronounciation: List[str]) -> List[List[str]]:
     '''
-    This function takes a list of list of cmu pronunciations and returns a list of lists.
+    This function takes a list of lists of cmu pronunciations and returns a list of lists.
     OUTPUT EXAMPLE:
     [['01', '0', '10', '1'], ['01', '0', '1', '01']]
     '''
@@ -61,7 +160,8 @@ def arpabet_to_ipa() -> Dict[str, str]:
         'D': 'd', 'DH': 'ð', 'EH': 'ɛ', 'ER': 'ə', 'EY': 'ei', 'F': 'f', 'G': 'g', 'HH': 'h', 'IH':
         'i', 'IY': 'I', 'JH': 'dʒ', 'K': 'k', 'L': 'l', 'M': 'm', 'N': 'n', 'NG': 'ŋ', 'OW': 'oʊ',
         'OY': 'ɔi', 'P': 'p', 'R': 'ɹ', 'S': 's', 'SH': 'ʃ', 'T': 't', 'TH': 'θ', 'UH': 'ʊ', 'UW': 'U',
-        'V': 'v', 'W': 'w', 'Y': 'j', 'Z': 'z', 'ZH': 'ʒ'}
+        'V': 'v', 'W': 'w', 'Y': 'j', 'Z': 'z', 'ZH': 'ʒ'
+    }
     return arpabet_to_ipa
 
 def string_to_arpabet(phrase: str) -> Tuple[List[str]]:
@@ -167,6 +267,7 @@ def computeLBE():
 
 if __name__ == '__main__':
     #phrases = ['address her meeting time', 'admit the gear beyond']
+    #s = possible_pronunciations(phrases)
     #p = possible_pronunciations(phrases)
     #s = generate_stress_assignment(p)
     #a = arpabet_to_ipa()
@@ -175,7 +276,7 @@ if __name__ == '__main__':
     # print(b)
     #a = processTarget(ph)
     #print(a[1])
-    target = ['01', '0', '10', '1'] 
+    target     = ['01', '0', '10', '1'] 
     transcript = ['1', '0', '0', '10', '1']
     #transcript = ['01', '01', '0', '1']
     # insertion before strong syllable 

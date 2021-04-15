@@ -7,51 +7,42 @@ Word = str
 
 # FIXME: add APRAbetToIPA mappings
 
-arpabet_to_ipa: Dict[str, str] =  {'AA': 'ɒ',
- 'AE': 'æ',
- 'AH': 'ʌ',
- 'AO': 'ɔ',
- 'AW': 'aʊ',
- 'AY': 'ai',
- 'B': 'b',
- 'CH': 'tʃ',
- 'D': 'd',
- 'DH': 'ð',
- 'EH': 'ɛ',
- 'ER': 'ə',
- 'EY': 'ei',
- 'F': 'f',
- 'G': 'g',
- 'HH': 'h',
- 'IH': 'i',
- 'IY': 'I',
- 'JH': 'dʒ', 
- 'K': 'k',
- 'L': 'l',
- 'M': 'm',
- 'N': 'n',
- 'NG': 'ŋ',
- 'OW': 'oʊ',
- 'OY': 'ɔi',
- 'P': 'p',
- 'R': 'ɹ',
- 'S': 's',
- 'SH': 'ʃ',
- 'T': 't',
- 'TH': 'θ',
- 'UH': 'ʊ',
- 'UW': 'U',
- 'V': 'v',
- 'W': 'w',
- 'Y': 'j',
- 'Z': 'z',
- 'ZH': 'ʒ'}
+arpabet_to_ipa: Dict[str, str] =  {
+  'AA': 'ɒ', 'AE': 'æ', 'AH': 'ʌ', 'AO': 'ɔ', 'AW': 'aʊ', 'AY': 'ai',
+  'B': 'b',
+  'CH': 'tʃ',
+  'D': 'd',
+  'DH': 'ð',
+  'EH': 'ɛ', 'ER': 'ə', 'EY': 'ei',
+  'F': 'f',
+  'G': 'g',
+  'HH': 'h',
+  'IH': 'i', 'IY': 'I',
+  'JH': 'dʒ', 
+  'K': 'k',
+  'L': 'l',
+  'M': 'm',
+  'N': 'n',
+  'NG': 'ŋ',
+  'OW': 'oʊ', 'OY': 'ɔi',
+  'P': 'p',
+  'R': 'ɹ',
+  'S': 's',
+  'SH': 'ʃ',
+  'T': 't',
+  'TH': 'θ', 'UH': 'ʊ', 'UW': 'U',
+  'V': 'v',
+  'W': 'w',
+  'Y': 'j',
+  'Z': 'z',
+  'ZH': 'ʒ'
+}
 
-ipa_to_arpabet = {v:k for k,v in arpabet_to_ipa.items()}
+ipa_to_arpabet = { v:k for k,v in arpabet_to_ipa.items() }
 
  # ɖ, ɱ, ʔ, ɟ, ɲ, ɳ, ŋ, ʙ, ʀ, ɾ, ɽ, ɸ, β, ʂ , ʐ, ç, ʝ, ɰ, ɻ, ʋ, ɮ, is not present
 arpabet_to_realine: Dict[str, str] = {
-'AA': 'ɒ','AA1': 'ɒ1', 'AA1': 'ɒ2', 'AA1': 'ɒ3',
+ 'AA': 'ɒ','AA1': 'ɒ1', 'AA1': 'ɒ2', 'AA1': 'ɒ3',
  'AE': 'æ', 'AE1': 'æ1', 'AE2': 'æ2', 'AE3': 'æ3',
  'AH': 'ʌ', 'AH1': 'ʌ1', 'AH2': 'ʌ2','AH3': 'ʌ3',
  'AO': 'ɔ', 'AO1': 'ɔ1', 'AO2': 'ɔ2', 'AO3': 'ɔ3',
@@ -140,6 +131,6 @@ class PronouncingDict(dict):
           pairs.append((key, value))
     return PronouncingDict(pairs)
 
-p = PronouncingDict()
-pp= p.from_cmu_dict() 
+p  = PronouncingDict()
+pp = p.from_cmu_dict() 
 print(pp.items())
