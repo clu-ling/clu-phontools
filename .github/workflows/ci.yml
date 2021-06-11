@@ -71,6 +71,14 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: docker push --all-tags "${ORG}/${IMAGE_NAME}"
 
+    # code formatting and linting
+    - name: "Code formatting & linting"
+      continue-on-error: true
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: docker run -it "${ORG}/${IMAGE_NAME}" docker run -it "parsertongue/ black --check /app
+
     # docs
     - name: "Create documentation"
       env:

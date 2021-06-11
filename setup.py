@@ -43,10 +43,7 @@ setup(
     author_email=info.contact,
     license=info.license,
     # see https://python-packaging.readthedocs.io/en/latest/command-line-scripts.html
-    scripts=[
-      "bin/rest-api",
-      "bin/re-aline-excel-data"
-    ],
+    scripts=["bin/rest-api", "bin/re-aline-excel-data"],
     install_requires=required,
     classifiers=[
         "Intended Audience :: Science/Research",
