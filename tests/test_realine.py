@@ -1,37 +1,43 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from realine import *
+from clu.phontools import ReAline
 
 
-'''
+"""
 Test alignment of pairs
-'''
+"""
+
 
 class ReAlineTests(unittest.TestCase):
-    
     def test_same_input(self):
 
         realiner = ReAline()
 
         seq = ["θ", "i", "n"]
 
-        self.assertEqual(realiner.align(seq, seq), [[('θ', 'θ'), ('i', 'i'), ('n', 'n')]], "Re-Aline failed to align a sequence with itself.")
-
+        self.assertEqual(
+            realiner.align(seq, seq),
+            [[("θ", "θ"), ("i", "i"), ("n", "n")]],
+            "Re-Aline failed to align a sequence with itself.",
+        )
 
     def test_align(self):
         realiner = ReAline()
 
         assert realiner.align(["θ", "i", "n"], ["θ", "i", "n"])
-        assert realiner.align(["θ", "i", "n"], ["t", "e", "n", "w", "i", "s"]) == [[('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]]
+        assert realiner.align(["θ", "i", "n"], ["t", "e", "n", "w", "i", "s"]) == [
+            [("θ", "t"), ("i", "e"), ("n", "n"), ("-", "w"), ("-", "i"), ("-", "s")]
+        ]
 
     def test_lexical_boundary(self):
 
         realiner = ReAline()
-    
-        # FIXME: decide how LB should be aligned
-        assert realiner.align(["θ", "i", "n", "LB"], ["t", "e", "n", "w", "i", "s"]) == [[('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('LB', 'i'), ('-', 's')]]
 
+        # FIXME: decide how LB should be aligned
+        assert realiner.align(
+            ["θ", "i", "n", "LB"], ["t", "e", "n", "w", "i", "s"]
+        ) == [[("θ", "t"), ("i", "e"), ("n", "n"), ("-", "w"), ("LB", "i"), ("-", "s")]]
 
     def test_default_class_features(self):
 

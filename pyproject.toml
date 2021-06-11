@@ -1,0 +1,91 @@
+# Example configuration for Black.
+
+# NOTE: you have to use single-quoted strings in TOML for regular expressions.
+# It's the equivalent of r-strings in Python.  Multiline strings are treated as
+# verbose regular expressions by Black.  Use [ ] to denote a significant space
+# character.
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+  | profiling
+)/
+'''
+
+# see https://github.com/SamGuay/Dcm2Bids/blob/master/pyproject.toml
+[tool.portray]
+modules = ["clu.phontools"]
+docs_dir = "docs"
+include_reference_documentation = true
+
+[[tool.portray.extra_markdown_extensions]]
+[tool.portray.extra_markdown_extensions.toc]
+permalink = true
+
+[[tool.portray.extra_markdown_extensions]]
+[tool.portray.extra_markdown_extensions."pymdownx.highlight"]
+linenums = true
+
+[tool.portray.mkdocs]
+# Repository
+site_name = "clu-phontools"
+repo_name = "clu-ling/clu-phontools" # Name in top right corner
+# Set repo_url so anyone running from their own repo can see from true repo.
+repo_url = "https://github.com/clu-ling/clu-phontools"
+edit_uri = "blob/master/" # Bring to the page on GH, but it won't open the _edit_ mode.
+
+# Left navigation menu
+nav = [
+  {  Home = "intro.md"},
+  { Installation = "install.md"}
+]
+
+extra_css = ["docs/stylesheets/extra.css"] # To fix some colors in light vs slate mode.
+
+# Add a bunch of markdown extensions to improve the documentation (and the look ;)).
+# See https://squidfunk.github.io/mkdocs-material/reference/abbreviations/
+# for full list of extensions.
+markdown_extensions = ["admonition",
+                       "footnotes",
+                       "pymdownx.emoji",
+                       "pymdownx.caret",
+                       "pymdownx.mark",
+                       "pymdownx.tilde",
+                       "pymdownx.details",
+                       "pymdownx.superfences",
+                       "pymdownx.tabbed"]
+
+# TODO: Implement plugin so git info is displayed on each page,
+# issue has been open on portray to fix the bug.
+# plugins = ["git-revision-date", "git-revision-date-localized", "bibtext"]
+
+[tool.portray.mkdocs.theme]
+name = "material"
+# Blurb that is output when the doc site is shared on social media or elsewhere.
+site_description = """
+  This is the documentation for clu-phontools, a suite of utilities related to phonological analysis.
+  """
+
+# Design related stuff
+
+icon = {repo = "fontawesome/brands/github"} # icon in top-right corner.
+# TODO: Design a logo and/or favicon.
+# favicon = "art/logo_small.png"
+# logo = "art/logo_small.png"
+
+palette = {scheme = "preference"}
+# Alternative way of setting multiple option for the palette
+# [[tool.portray.mkdocs.theme.palette]]
+# scheme = "preference"
+
+## Footer icon in bottom-right corner
+[[tool.portray.mkdocs.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/clu-ling/clu-phontools"
+name = "clu-phontools on GitHub"
