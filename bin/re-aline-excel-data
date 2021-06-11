@@ -3,7 +3,7 @@
 import argparse
 
 import pandas as pd
-from realine import ReAline
+from clu.phontools import ReAline
 
 al = ReAline()
 

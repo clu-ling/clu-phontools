@@ -2,9 +2,9 @@ name: Project CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   setup:
@@ -38,20 +38,41 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     # Library (docker)
-    - name: "Build docker image (re-aline)"
+    - name: "Build docker image (clu-phontools)"
       #working-directory: ./
-      run: docker build -f Dockerfile -t "parsertongue/re-aline:latest" -t "parsertongue/re-aline:${{ needs.setup.outputs.sha_short }}" .
+      env:
+        DOCKERFILE: "Dockerfile"
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: |
+        docker build -f Dockerfile -t "parsertongue/clu-phontools:latest" -t "parsertongue/clu-phontools:${{ needs.setup.outputs.sha_short }}" .
+#        docker buildx build --output=type=docker --platform linux/amd64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:latest" -t "${ORG}/${IMAGE_NAME}:${TAG}" -t "${ORG}/${IMAGE_NAME}:${{ needs.setup.outputs.sha_short }}" -t "${ORG}/${IMAGE_NAME}:amd64" .
+#        docker buildx build --output=type=docker --platform linux/arm64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:arm64" .
     # Tests
     - name: "Tests and coverage (experiments)"
       run: |
-        docker run -i "parsertongue/re-aline:latest" green -vvv /app
+        docker run -i "parsertongue/clu-phontools:latest" green -vvv /app
     # Type checks
-    - name: "Type checks (re-aline)"
+    - name: "Type checks (clu-phontools)"
       continue-on-error: true
       run : |
-        docker run -i "parsertongue/re-aline:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
+        docker run -i "parsertongue/clu-phontools:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
     # publish
-    - name: "Publish docker image (re-aline image)"
-      if: github.ref == 'refs/heads/master'
-      run: docker push --all-tags "parsertongue/re-aline"
+    - name: "Publish docker image (clu-phontools image)"
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      if: github.ref == 'refs/heads/main'
+      run: docker push --all-tags "${ORG}/${IMAGE_NAME}"
 
+
+    - name: Deploy
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        # see https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: ${{ github.event.head_commit.message }}
