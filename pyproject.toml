@@ -42,11 +42,11 @@ edit_uri = "blob/master/" # Bring to the page on GH, but it won't open the _edit
 
 # Left navigation menu
 nav = [
-  {  Home = "intro.md" },
-  { Installation = "install.md" },
-    { Usage  = "tutorial.md" },
-  { Develop = "develop.md" },
-  { Contributing = "contributing.md" }
+  {  Home = "docs/intro.md" },
+  { Installation = "docs/install.md" },
+    { Usage  = "docs/tutorial.md" },
+  { Develop = "docs/develop.md" },
+  { Contributing = "docs/contributing.md" }
 ]
 
 extra_css = ["docs/stylesheets/extra.css"] # To fix some colors in light vs slate mode.
