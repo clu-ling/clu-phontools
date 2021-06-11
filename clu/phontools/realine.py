@@ -208,7 +208,7 @@ class ReAline(object):
         return out
 
     def align(
-        self, seq1: List[Text], seq2: List[Text], epsilon=0
+        self, seq1: List[Text], seq2: List[Text], epsilon: float = 0
     ) -> List[List[Tuple[Text, Text]]]:
         """
         Computes the alignment of two symbol sequences.
