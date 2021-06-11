@@ -85,8 +85,9 @@ docker run -it -v $PWD:/app "parsertongue/clu-phontools:latest" mypy --ignore-mi
 ```
 
 ### Formatting and style
-Code can be auto-formatted using `black`:
+Code can be auto-formatted using [`black`](https://black.readthedocs.io/en/stable/):
 
 ```bash
 docker run -it -v $PWD:/app "parsertongue/clu-phontools:latest" black
 ```
+
