@@ -77,7 +77,7 @@ jobs:
       env:
         ORG: "parsertongue"
         IMAGE_NAME: "clu-phontools"
-      run: docker run -it "${ORG}/${IMAGE_NAME}" docker run -it "parsertongue/ black --check /app
+      run: docker run -i "${ORG}/${IMAGE_NAME}" black --check /app
 
     # docs
     - name: "Create documentation"

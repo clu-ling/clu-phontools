@@ -19,10 +19,10 @@ spell = Speller(lang="en")
 
 @dataclass
 class Stress(Enum):
-    NON_VOWEL = -1
-    NO_STRESS = 0
-    PRIMARY = 1
-    SECONDARY = 2
+    NON_VOWEL = '-'
+    NO_STRESS = "0"
+    PRIMARY = "1"
+    SECONDARY = "2"
 
 
 class Phrase(object):
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     a = processTarget(ph)
     print(a[1])
     # FIXME: write test cases
-    # DW: deletion before week (her) - this is the lexical boundary before (her)
+    # DW: deletion before weak (her) - this is the lexical boundary before (her)
     target = ["01", "0", "10", "1"]  # address her meeting time
     transcript = ["010", "10", "1"]  # adjusted reading time
     transcript = ["1", "0", "0", "10", "1"]

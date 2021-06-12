@@ -7,15 +7,16 @@ import json
 
 class LexicalBoundaryErrorType(Enum):
     """
-    An enumeration of all of the LB error types.
+    An enumeration of all of the lexical boundary (LB) error types.
     """
-
-    IW = "IW"
-    IS = "IS"
-    DW = "DW"
-    DS = "DS"
-    # TODO: add more
-
+    # insertion before weak syllable
+    INSERTION_WEAK = "IW"
+    # insertion before strong syllable
+    INSERTION_STRONG = "IS"
+    # deletion before weak syllable
+    DELETION_WEAK = "DW"
+    # deletion before strong syllable
+    DELETION_STRONG = "DS"
 
 @dataclass
 class LexicalBoundaryError:
@@ -34,7 +35,7 @@ class LexicalBoundaryError:
         return {
             "target_index": self.target_index,
             "transcript_indices": self.transcript_indices,
-            "error_type": self.error_type.value,
+            "error_type": self.error_type.name,
         }
 
 
@@ -55,11 +56,86 @@ class LexicalBoundaryErrorReport:
             "lbes": [lbe.to_dict() for lbe in self.lbes],  # list of dics
         }
 
+# Example:
+# take the first pron. for example word "permit"
+# pron = en_cmu_dict.stress_for("permit")[0]
+# @dataclass
+# class StressSequence:
+#  sequence: List[Stress]
+#  def to_syllable_structure(self) -> List[Text]:
+#     summary = []
+#     for stress in self.sequence:
+#       if stress == Stress.NO_STRESS:
+#           summary.append("W")
+#       elif if stress in { Stress.PRIMARY, Stress.SECONDARY }:
+#           summary.append("S")
+#     return "".join(summary)
 
+# class CoarseStress(Enum):
+#   """A coarse representation of stress is categorized as being either strong of weak."""
+#   STRONG = "S"
+#   WEAK   = "W"
+
+# @dataclass 
+# class PhonologicalWord:
+#   """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables"""
+#   phones: List[Phone]  
+#   """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
+#   stress_pattern: List[Stress]
+#
+#   @property
+#   def num_syllables(self):
+#   """A syllable contains at most one stressed element (weak or strong)"""
+#    return len(self.coarse_stress)
+#  @property
+#  def coarse_stress_pattern(self) -> List[CoarseStress]:
+#     """Maps a detailed stress sequence to a sequence of strong and weak stressed syllabled"""
+#     summary = []
+#     for stress in self.sequence:
+#       if stress == Stress.NO_STRESS:
+#           summary.append(CoarseStress.WEAK)
+#       elif if stress in { Stress.PRIMARY, Stress.SECONDARY }:
+#           summary.append(CoarseStress.STRONG)
+#     return summary
+
+# class SyllableUtils:
+#   @staticmethod
+#   def to_coarse_syllable_word(pword: PhonologicalWord) -> Text:
+#     """Converts a phonological word to a sequence of S (strong) or W (weak) symbols"""
+#     return " ".join(cs.value for cs in pword.coarse_stress_pattern) 
+#
+#   @staticmethod
+#   def to_syllable_masked_word(pword: PhonologicalWord, mask: Text = "X") -> Text:
+#     """Converts a phonological word where each syllable is represented using the mask
+#
+#     conceptual examples:
+#     "poo" -> "X" where mask is "X"
+#     "July" -> "XX" where mask is "X"
+#     """
+#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)  
+#
+# @dataclass
+# class SimpleStressSequence:
+#    sequence: 
+# stress = [str(p.value) for p in pron]
+# ['-', '0', '-', '1', '-']
+# syllable_structure = 
+# pron -> stress -> syllable counts
+# ['-', '0', '-', '1', '-'] -> "WS"
+# First token has two syllables: Strong Weak
+# ["SW", "S", "W", "SW"]
+# Each X represents a syllable
+# ["X" ,"X" ,"X", "X", "XX"]
+# mask_syllable_stress(["SW", "S", "W", "SW"]) -> ["XX", "X", "X", "XX"]
+# Output:
+# second token of transcript (1) inserts before weak syllable
+# [(1, "IW")]
+
+# FIXME: convert stress to 
 def calculate_lbes(
     target: List[Text], transcript: List[Text]
 ) -> List[LexicalBoundaryError]:
-    """ """
+    """Calculates lexical boundary errors using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
     target_remaining = [(tok, i) for (i, tok) in enumerate(target)]
     transcript_remaining = [(tok, i) for (i, tok) in enumerate(transcript)]
 
