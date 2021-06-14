@@ -9,6 +9,7 @@ class LexicalBoundaryErrorType(Enum):
     """
     An enumeration of all of the lexical boundary (LB) error types.
     """
+
     # insertion before weak syllable
     INSERTION_WEAK = "IW"
     # insertion before strong syllable
@@ -17,6 +18,7 @@ class LexicalBoundaryErrorType(Enum):
     DELETION_WEAK = "DW"
     # deletion before strong syllable
     DELETION_STRONG = "DS"
+
 
 @dataclass
 class LexicalBoundaryError:
@@ -56,6 +58,7 @@ class LexicalBoundaryErrorReport:
             "lbes": [lbe.to_dict() for lbe in self.lbes],  # list of dics
         }
 
+
 # Example:
 # take the first pron. for example word "permit"
 # pron = en_cmu_dict.stress_for("permit")[0]
@@ -76,10 +79,10 @@ class LexicalBoundaryErrorReport:
 #   STRONG = "S"
 #   WEAK   = "W"
 
-# @dataclass 
+# @dataclass
 # class PhonologicalWord:
 #   """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables"""
-#   phones: List[Phone]  
+#   phones: List[Phone]
 #   """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
 #   stress_pattern: List[Stress]
 #
@@ -102,7 +105,7 @@ class LexicalBoundaryErrorReport:
 #   @staticmethod
 #   def to_coarse_syllable_word(pword: PhonologicalWord) -> Text:
 #     """Converts a phonological word to a sequence of S (strong) or W (weak) symbols"""
-#     return " ".join(cs.value for cs in pword.coarse_stress_pattern) 
+#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)
 #
 #   @staticmethod
 #   def to_syllable_masked_word(pword: PhonologicalWord, mask: Text = "X") -> Text:
@@ -112,14 +115,14 @@ class LexicalBoundaryErrorReport:
 #     "poo" -> "X" where mask is "X"
 #     "July" -> "XX" where mask is "X"
 #     """
-#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)  
+#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)
 #
 # @dataclass
 # class SimpleStressSequence:
-#    sequence: 
+#    sequence:
 # stress = [str(p.value) for p in pron]
 # ['-', '0', '-', '1', '-']
-# syllable_structure = 
+# syllable_structure =
 # pron -> stress -> syllable counts
 # ['-', '0', '-', '1', '-'] -> "WS"
 # First token has two syllables: Strong Weak
@@ -131,7 +134,7 @@ class LexicalBoundaryErrorReport:
 # second token of transcript (1) inserts before weak syllable
 # [(1, "IW")]
 
-# FIXME: convert stress to 
+# FIXME: convert stress to
 def calculate_lbes(
     target: List[Text], transcript: List[Text]
 ) -> List[LexicalBoundaryError]:

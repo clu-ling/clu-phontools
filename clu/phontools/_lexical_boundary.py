@@ -212,7 +212,6 @@ if __name__ == "__main__":
         print("How are you, ASU?")
 
 
-
 class Phrase(object):
     def possible_pronunciations(self, phrase: List[Text]) -> List[List[Text]]:
         """
@@ -255,7 +254,6 @@ class Phrase(object):
                 stress.append(pronouncing.stresses(pronounciations))
             stresses.append(stress)
         return stresses
-
 
     def string_to_arpabet(self, phrase: str) -> Tuple[List[Text]]:
         """
