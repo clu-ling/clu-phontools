@@ -1,43 +1,16 @@
-[[["I"], ["i"]], [["a"]]]
-list(itertools.product(*test))
+from clu.phontools.lang.en import EnglishUtils
 
-import itertools
+res = EnglishUtils.all_possible_phrases_for(["permit", "for", "transport"])
 
-from clu.phontools.lang.en import en_cmu_dict
+phrase = res[0]
 
-phrase = ["permit", "for", "transport"]
+# syllable structure in terms of stress (weak or strong)
+phrase.coarse_stress
+# should return ['WS', 'S', 'S', 'S']
 
-pronunciations = [en_cmu_dict.get(w) for w in phrase]
-
-possible_pronunciation_sequences = list(itertools.product(*pronunciations))
-
-# pronounciation for first word of first sequence
-pw1 = possible_pronunciation_sequences[0][0]
-print(pw1)
-
-# what's the stress pattern?
-[p.name for p in en_cmu_dict.stress_for(pw1)]
-
-[str(p.value) for p in en_cmu_dict.stress_for(pw1)]
-
-# Two syllables (no specification of boundary):
-# ['-', '0', '-', '1', '-'] -> "WS"
-
-
-from clu.phontools.lang.en import Utils
-import itertools
-
-phrase = ["permit", "for", "transport"]
-
-# all pronunciations of each word
-res = [Utils.all_possible_forms(term) for term in phrase]
-
-# cartesian prod.
-possible_pronunciation_sequences = list(itertools.product(*res))
-
-# syllables for first phrase
-[word.to_coarse_syllable_form() for word in possible_pronunciation_sequences[0]]
-
+# num. syllables for each word represented using a mask.
+phrase.mask_syllables(mask="X")
+# should return ['XX', 'X', 'X', 'X']
 
 # (['WS', 'S', 'WS'], ['WS', 'S', 'SW']) -> insertion strong?
 # (['WS', 'S', 'WS'], ['WS', 'S']) -> deletion weak?

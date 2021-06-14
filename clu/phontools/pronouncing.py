@@ -136,7 +136,7 @@ class CMUPronouncingDict(PronouncingDict):
 
     @staticmethod
     def from_cmu_dict(
-        filepath: Optional[str] = None, converter: Dict[str, str] = arpabet_to_ipa
+        filepath: Optional[str] = None, converter: Dict[str, str] = dict()
     ) -> "CMUPronouncingDict":
         cmudict_file = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict"

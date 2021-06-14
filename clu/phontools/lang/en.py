@@ -1,40 +1,36 @@
-from clu.phontools.traits import *
+from clu.phontools.struct import *
 from clu.phontools.pronouncing import CMUPronouncingDict
-from clu.phontools.traits import Pronunciation
-from clu.phontools.struct import Word, PhonologicalWord
+from clu.phontools.struct import Word, PhonologicalWord, Phrase
 
-en_cmu_dict = CMUPronouncingDict.from_cmu_dict()
+class EnglishUtils(LangUtils):
+    """English-specific implementation of `org.phontools.struct.LangTools`.
+    """
 
+    pronouncing_dict: CMUPronouncingDict = CMUPronouncingDict.from_cmu_dict()
 
-class RuleBasedSyllabification(Syllabification):
     @staticmethod
-    def syllabify(pronunciation: Pronunciation) -> List[Tuple[Phone]]:
-        """Rule-based syllabification for English
-
-        Example:
-        ```python
-        RuleBasedSyllabification.syllabify(('P', 'ER0', 'M', 'IH1', 'T'))
-        # should return [('P', 'ER0'), ('M', 'IH1', 'T')]
-        ```
-        """
-        # FIXME: implement me!
-        return []
-
-
-class Utils(object):
-    @staticmethod
-    def to_phonological_word(phones: Pronunciation) -> PhonologicalWord:
-        """ """
+    def phonological_word_for(phones: Pronunciation) -> PhonologicalWord:
         return PhonologicalWord(
-            phones=phones, stress_pattern=en_cmu_dict.stress_for(phones)
+            phones=phones, stress_pattern=EnglishUtils.pronouncing_dict.stress_for(phones)
         )
 
+    # FIXME: consider having this return a generator
     @staticmethod
-    def all_possible_forms(word: Text) -> List[Word]:
-        """Generates a list of `clu.phontools.struct.Word` from an orthographic form."""
+    def all_possible_forms_for(word: Text) -> Sequence[Word]:
         possible = []
-        for pron in en_cmu_dict.get(word):
+        for pron in EnglishUtils.pronouncing_dict.get(word):
             possible.append(
-                Word(word=word, phonological_form=Utils.to_phonological_word(pron))
+                Word(word=word, phonological_form=EnglishUtils.phonological_word_for(pron))
             )
         return possible
+
+    # FIXME: consider having this return a generator
+    @staticmethod
+    def all_possible_phrases_for(words: Sequence[Text]) -> Sequence[Phrase]:
+        pronunciations = [EnglishUtils.all_possible_forms_for(w) for w in words]
+        return [Phrase(words) for words in itertools.product(*pronunciations)]
+
+    @staticmethod
+    def syllabify(pronunciation: Pronunciation) -> Sequence[Pronunciation]:
+        # FIXME: implement me
+        return []
