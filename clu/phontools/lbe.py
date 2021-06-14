@@ -55,90 +55,27 @@ class LexicalBoundaryErrorReport:
         return {
             "target_stress": self.target_stress,
             "transcript_stress": self.transcript_stress,
-            "lbes": [lbe.to_dict() for lbe in self.lbes],  # list of dics
+            "lbes": [lbe.to_dict() for lbe in self.lbes],  # list of dicts
         }
 
 
-# Example:
-# take the first pron. for example word "permit"
-# pron = en_cmu_dict.stress_for("permit")[0]
-# @dataclass
-# class StressSequence:
-#  sequence: List[Stress]
-#  def to_syllable_structure(self) -> List[Text]:
-#     summary = []
-#     for stress in self.sequence:
-#       if stress == Stress.NO_STRESS:
-#           summary.append("W")
-#       elif if stress in { Stress.PRIMARY, Stress.SECONDARY }:
-#           summary.append("S")
-#     return "".join(summary)
+# FIXME: WIP
+def calculate_lbes_from_phrases(
+    target: Phrase, transcript: List[Text]
+) -> List[LexicalBoundaryError]:
+    """Calculates lexical boundary errors from stress-based syllable structures via a pair of `clu.phontools.struct.Phrase` using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
+    target: List[Text] = target_phrase.coarse_stress
+    # FIXME: should these be masked?
+    transcript: List[Text] = target_phrase.mask_syllables(mask="X")
+    errors: List[LexicalBoundaryError] = calculate_lbes_from_stress(target, transcript)
+    # TODO: return an error report
+    return errors
 
-# class CoarseStress(Enum):
-#   """A coarse representation of stress is categorized as being either strong of weak."""
-#   STRONG = "S"
-#   WEAK   = "W"
 
-# @dataclass
-# class PhonologicalWord:
-#   """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables"""
-#   phones: List[Phone]
-#   """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
-#   stress_pattern: List[Stress]
-#
-#   @property
-#   def num_syllables(self):
-#   """A syllable contains at most one stressed element (weak or strong)"""
-#    return len(self.coarse_stress)
-#  @property
-#  def coarse_stress_pattern(self) -> List[CoarseStress]:
-#     """Maps a detailed stress sequence to a sequence of strong and weak stressed syllabled"""
-#     summary = []
-#     for stress in self.sequence:
-#       if stress == Stress.NO_STRESS:
-#           summary.append(CoarseStress.WEAK)
-#       elif if stress in { Stress.PRIMARY, Stress.SECONDARY }:
-#           summary.append(CoarseStress.STRONG)
-#     return summary
-
-# class SyllableUtils:
-#   @staticmethod
-#   def to_coarse_syllable_word(pword: PhonologicalWord) -> Text:
-#     """Converts a phonological word to a sequence of S (strong) or W (weak) symbols"""
-#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)
-#
-#   @staticmethod
-#   def to_syllable_masked_word(pword: PhonologicalWord, mask: Text = "X") -> Text:
-#     """Converts a phonological word where each syllable is represented using the mask
-#
-#     conceptual examples:
-#     "poo" -> "X" where mask is "X"
-#     "July" -> "XX" where mask is "X"
-#     """
-#     return " ".join(cs.value for cs in pword.coarse_stress_pattern)
-#
-# @dataclass
-# class SimpleStressSequence:
-#    sequence:
-# stress = [str(p.value) for p in pron]
-# ['-', '0', '-', '1', '-']
-# syllable_structure =
-# pron -> stress -> syllable counts
-# ['-', '0', '-', '1', '-'] -> "WS"
-# First token has two syllables: Strong Weak
-# ["SW", "S", "W", "SW"]
-# Each X represents a syllable
-# ["X" ,"X" ,"X", "X", "XX"]
-# mask_syllable_stress(["SW", "S", "W", "SW"]) -> ["XX", "X", "X", "XX"]
-# Output:
-# second token of transcript (1) inserts before weak syllable
-# [(1, "IW")]
-
-# FIXME: convert stress to
-def calculate_lbes(
+def calculate_lbes_from_stress(
     target: List[Text], transcript: List[Text]
 ) -> List[LexicalBoundaryError]:
-    """Calculates lexical boundary errors using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
+    """Calculates lexical boundary errors from stress-based syllable structures using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
     target_remaining = [(tok, i) for (i, tok) in enumerate(target)]
     transcript_remaining = [(tok, i) for (i, tok) in enumerate(transcript)]
 
@@ -148,6 +85,7 @@ def calculate_lbes(
         transcript_term, transcript_idx = transcript_remaining[0]
 
         # base case. no error
+        # FIXME: if masked, only length matters, if not equivalence works.
         if target_term == transcript_term:
             target_remaining = target_remaining[1:]
             transcript_remaining = transcript_remaining[1:]
@@ -189,3 +127,45 @@ def calculate_lbes(
 #     error_report = json.dumps([error.to_dict() for error in errors], indent=4)
 #     print(f"errors: {error_report}")
 #     print()
+
+#         target = 'address'
+#         transcript = 'add is'
+#         ReAline.align(target, transcript)
+
+
+# for this small job of deletion before weak:
+#     WS (01) + W (0) > WSW (010)
+# firs loop for stress pattern in target for WS 01 followed by W 0
+# print True if found in target
+# loop in transcribed to find the 010
+
+
+# for key in a_dict:
+# ...     print(key, '->', a_dict[key])
+
+# indtance of deletion before strong
+# divide across retreat = ['01', '01', '01']
+# 'the body cross returned' = ['0', '10', '1', '01']
+# IS 01 > 0 and 1 added to next syllable divide > the body
+#  DW 01 > 0 accross > cross
+
+# index[0]01 index[1]01 index[2] 01
+# idex[0]0 index[1]0 index[2]1 index[3] 01
+
+
+# if there is a space after 0 and before 1, this I
+# if there is a
+
+# Q1 Is there one index in target mapped to multiple indecies in transcribed?
+#     YES, Example 01 > 0 1  or 10 > 1 0
+#     example: address  her ['01', '0'] in  'address her meeting time' address ['01']
+#         is mapped to 0
+# Q2 Is there one index in transcribed mapped to multiple indecies in trarget?
+#     example: address  her ['01', '0'] in  'address her meeting time' address ['01']
+#         is mapped to index[0]  in 'adjusted reading time' adjusted = WSW 010
+
+
+# [49]: for i in transcript:
+#     ...: for k, v in d.items():
+#     ...: if i == k:
+#     ...: print(i, v)

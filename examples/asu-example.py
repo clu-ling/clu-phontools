@@ -1,8 +1,9 @@
 from clu.phontools.lang.en import EnglishUtils
+from clu.phontools.struct import Phrase
 
 res = EnglishUtils.all_possible_phrases_for(["permit", "for", "transport"])
 
-phrase = res[0]
+phrase: Phrase = res[0]
 
 # syllable structure in terms of stress (weak or strong)
 phrase.coarse_stress
@@ -19,4 +20,4 @@ phrase.mask_syllables(mask="X")
 # [(['p', 'ER0', 'm', 'IH1', 't'], 'WS'), (['f', 'AO1', 'ɹ'], 'S'), (['t', 'ɹ', 'AE0', 'n', 's', 'p', 'AO1', 'ɹ', 't'], 'WS')]
 
 
-# ["WS"] -> ["W", "S"] = (IS, seq1=0, seq2=1) # the second element of seq2 was placed as an "IS" at posiiton 0 for seq1
+# ["WS"] -> ["W", "S"] = (IS, seq1=0, seq2=1) # the second element of seq2 was placed as an "IS" at position 0 for seq1
