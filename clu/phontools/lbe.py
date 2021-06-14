@@ -1,6 +1,6 @@
 # coding: utf-8
 from enum import Enum
-from clu.phontools.struct import *
+from clu.phontools.struct import Phrase
 from typing import Any, Dict, List, Text
 from pydantic.dataclasses import dataclass
 import json
@@ -62,7 +62,7 @@ class LexicalBoundaryErrorReport:
 
 # FIXME: WIP
 def calculate_lbes_from_phrases(
-    target: Phrase, transcript: Sequence[Text]
+    target_phrase: Phrase, transcript_phrase: Phrase
 ) -> List[LexicalBoundaryError]:
     """Calculates lexical boundary errors from stress-based syllable structures via a pair of `clu.phontools.struct.Phrase` using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
     target: Sequence[Text] = target_phrase.coarse_stress
