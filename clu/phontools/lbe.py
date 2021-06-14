@@ -68,7 +68,9 @@ def calculate_lbes_from_phrases(
     target: Sequence[Text] = target_phrase.coarse_stress
     # FIXME: should these be masked?
     transcript: Sequence[Text] = target_phrase.mask_syllables(mask="X")
-    errors: Sequence[LexicalBoundaryError] = calculate_lbes_from_stress(target, transcript)
+    errors: Sequence[LexicalBoundaryError] = calculate_lbes_from_stress(
+        target, transcript
+    )
     # TODO: return an error report
     return errors
 

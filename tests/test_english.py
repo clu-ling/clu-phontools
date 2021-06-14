@@ -17,4 +17,14 @@ class EnglishTests(unittest.TestCase):
         res: Sequence[Phrase] = EnglishUtils.all_possible_phrases_for(
             ["permit", "for", "transport"]
         )
-        assert len(res) == 6
+        assert len(res) == 12
+        # the set of distinct phone sequences should be 12
+        assert (
+            len(
+                set(
+                    " ".join(" ".join(w.pf.phones) for w in phrase.words)
+                    for phrase in res
+                )
+            )
+            == 12
+        )

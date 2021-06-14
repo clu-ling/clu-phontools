@@ -18,6 +18,14 @@ SimpleWord = Text
 spell = Speller(lang="en")
 
 
+class Hashable(ABC):
+    """Ensures subclasses are hashable"""
+
+    @abstractmethod
+    def __hash__(self) -> int:
+        pass
+
+
 class Stress(Enum):
     """Enumeration of all possible stress values"""
 
@@ -80,17 +88,18 @@ class SyllableProperties(ABC):
 
 
 # FIXME: consider adding PhonologicalSystem(Enum) -> ARPABET, IPA, XAMPA, etc.
-#@dataclass
-class PhonologicalWord(BaseModel, SyllableProperties):
+class PhonologicalWord(BaseModel, SyllableProperties, Hashable):
     """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables"""
 
     phones: Sequence[Phone]
     """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
     stress_pattern: Sequence[Stress]
 
+    def __hash__(self) -> int:
+        return hash(tuple(list(self.phones) + list(self.stress_pattern)))
 
-#@dataclass
-class Word(BaseModel):
+
+class Word(BaseModel, Hashable):
     """The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning."""
 
     word: Text
@@ -101,12 +110,15 @@ class Word(BaseModel):
         """Alias for phonological_form"""
         return self.phonological_form
 
-    def graphemes(self) -> List[Text]:
+    def graphemes(self) -> Sequence[Text]:
+        """Individual characters/symbols that comprise the orthographic representation of the Word"""
         return "".split(self.word)
 
+    def __hash__(self) -> int:
+        return hash((("word", self.word), ("pf", hash(self.phonological_form))))
 
-#@dataclass
-class Phrase(BaseModel):
+
+class Phrase(BaseModel, Hashable):
     """A sequence of `org.phontools.struct.Word` constitutes a Phrase"""
 
     words: Sequence[Word]
@@ -129,6 +141,9 @@ class Phrase(BaseModel):
     def stress_pattern(self) -> Sequence[Stress]:
         """Returns stress pattern for each word in the Phrase"""
         return [word.pf.stress_pattern for word in self.words]
+
+    def __hash__(self) -> int:
+        return hash(tuple(hash(w) for w in self.words))
 
 
 class LangUtils(ABC):
