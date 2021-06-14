@@ -53,7 +53,7 @@ class PhraseTests(unittest.TestCase):
     def test_phrase(self):
         """A `clu.phontools.struct.Phrase` should have a coarse_stress property and mask_stress method."""
 
-        phrase: Phrase = Phrase.Tests.phrase1
+        phrase: Phrase = PhraseTests.phrase1
         # syllable structure in terms of stress (weak or strong)
         # should return ['WS', 'S', 'S', 'S']
         assert phrase.coarse_stress == ["WS", "S", "S", "S"]
