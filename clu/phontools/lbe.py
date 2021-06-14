@@ -1,5 +1,6 @@
 # coding: utf-8
 from enum import Enum
+from clu.phontools.struct import *
 from typing import Any, Dict, List, Text
 from pydantic.dataclasses import dataclass
 import json
@@ -61,20 +62,20 @@ class LexicalBoundaryErrorReport:
 
 # FIXME: WIP
 def calculate_lbes_from_phrases(
-    target: Phrase, transcript: List[Text]
+    target: Phrase, transcript: Sequence[Text]
 ) -> List[LexicalBoundaryError]:
     """Calculates lexical boundary errors from stress-based syllable structures via a pair of `clu.phontools.struct.Phrase` using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
-    target: List[Text] = target_phrase.coarse_stress
+    target: Sequence[Text] = target_phrase.coarse_stress
     # FIXME: should these be masked?
-    transcript: List[Text] = target_phrase.mask_syllables(mask="X")
-    errors: List[LexicalBoundaryError] = calculate_lbes_from_stress(target, transcript)
+    transcript: Sequence[Text] = target_phrase.mask_syllables(mask="X")
+    errors: Sequence[LexicalBoundaryError] = calculate_lbes_from_stress(target, transcript)
     # TODO: return an error report
     return errors
 
 
 def calculate_lbes_from_stress(
-    target: List[Text], transcript: List[Text]
-) -> List[LexicalBoundaryError]:
+    target: Sequence[Text], transcript: Sequence[Text]
+) -> Sequence[LexicalBoundaryError]:
     """Calculates lexical boundary errors from stress-based syllable structures using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
     target_remaining = [(tok, i) for (i, tok) in enumerate(target)]
     transcript_remaining = [(tok, i) for (i, tok) in enumerate(transcript)]

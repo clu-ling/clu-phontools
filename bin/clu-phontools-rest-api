@@ -7,6 +7,8 @@ import uvicorn
 
 from clu.phontools.info import info
 
+from clu.phontools.struct import *
+from clu.phontools.lang.en import EnglishUtils
 from clu.phontools.realine import ReAline
 
 from pydantic import BaseModel
@@ -59,10 +61,34 @@ if __name__ == "__main__":
     
     @server.post("/api/re-aline/align")
     def align_via_realine(target: List[Text], transcript: List[Text], epsilon: float=0):
-        """Test
+        """Aligns a gold (target) and transcript using re-aline.
         """
         aligner = ReAline()
         return aligner.align(seq1=target, seq2=transcript, epsilon=epsilon)
+
+    @server.post("/api/lang/en/word/pronounce/arpabet", response_model=Sequence[Word])
+    def lookup_pronunciations_for_word(word: Text) -> Sequence[Word]:
+        """Find all possible pronunciations for the provided word
+        """
+        return EnglishUtils.all_possible_forms_for(word)
+
+    @server.post("/api/lang/en/word/stress-patterns", response_model=Sequence[Sequence[Stress]])
+    def lookup_stress_patterns_for_word(word: Text) -> Sequence[Sequence[Stress]]:
+        """Find all possible stress patterns for the provided word
+        """
+        return [word.pf.stress_pattern for word in EnglishUtils.all_possible_forms_for(word)]
+
+    @server.post("/api/lang/en/word/coarse-stress-patterns", response_model=Sequence[Sequence[CoarseStress]])
+    def lookup_coarse_stress_patterns_for_word(word: Text) -> Sequence[Sequence[CoarseStress]]:
+        """Find all possible stress patterns for the provided word
+        """
+        return [word.pf.coarse_stress_pattern for word in EnglishUtils.all_possible_forms_for(word)]
+
+    @server.post("/api/lang/en/phrase/pronounce/arpabet", response_model=Sequence[Phrase])
+    def lookup_pronunciations_for_phrase(words: Sequence[Text]) -> Sequence[Phrase]:
+        """Find all possible pronunciations for the provided words
+        """
+        return EnglishUtils.all_possible_phrases_for(words)
 
     # FIXME
     # @server.post("/api/to-clu-doc")
@@ -76,7 +102,7 @@ if __name__ == "__main__":
     #     spacyDoc = coverter.to_spacy_doc(cluDoc)
     #     return spacyDoc
 
-    @server.get("/api/version")
+    @server.get("/api/version", response_model=Text)
     async def version():
         """
         App version

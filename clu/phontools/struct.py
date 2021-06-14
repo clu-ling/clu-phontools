@@ -4,7 +4,7 @@ from typing import List, Dict, Tuple, Any, Text, Sequence
 import re
 import itertools
 from autocorrect import Speller
-from clu.phontools.lbe import LexicalBoundaryErrorReport
+from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
 import numpy as np
 
@@ -31,7 +31,7 @@ class Stress(Enum):
 
 
 class CoarseStress(Enum):
-    """A coarse representation of stress is categorized as being either strong of weak."""
+    """A coarse representation of stress is categorized as being either strong (S) of weak (W)."""
 
     STRONG = "S"
     WEAK = "W"
@@ -80,8 +80,8 @@ class SyllableProperties(ABC):
 
 
 # FIXME: consider adding PhonologicalSystem(Enum) -> ARPABET, IPA, XAMPA, etc.
-@dataclass
-class PhonologicalWord(SyllableProperties):
+#@dataclass
+class PhonologicalWord(BaseModel, SyllableProperties):
     """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables"""
 
     phones: Sequence[Phone]
@@ -89,8 +89,8 @@ class PhonologicalWord(SyllableProperties):
     stress_pattern: Sequence[Stress]
 
 
-@dataclass
-class Word:
+#@dataclass
+class Word(BaseModel):
     """The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning."""
 
     word: Text
@@ -105,8 +105,8 @@ class Word:
         return "".split(self.word)
 
 
-@dataclass
-class Phrase:
+#@dataclass
+class Phrase(BaseModel):
     """A sequence of `org.phontools.struct.Word` constitutes a Phrase"""
 
     words: Sequence[Word]

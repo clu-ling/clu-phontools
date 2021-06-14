@@ -32,7 +32,7 @@ class EnglishUtils(LangUtils):
     @staticmethod
     def all_possible_phrases_for(words: Sequence[Text]) -> Sequence[Phrase]:
         pronunciations = [EnglishUtils.all_possible_forms_for(w) for w in words]
-        return [Phrase(words) for words in itertools.product(*pronunciations)]
+        return [Phrase(words=words) for words in itertools.product(*pronunciations)]
 
     @staticmethod
     def syllabify(pronunciation: Pronunciation) -> Sequence[Pronunciation]:
