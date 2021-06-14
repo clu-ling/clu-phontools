@@ -3,8 +3,49 @@ from clu.phontools.struct import Pronunciation, Word, Stress
 import os
 
 
-# FIXME: add APRAbetToIPA mappings
-arpabet_to_ipa: Dict[str, str] = {}
+# FIXME: add more symbols
+# TODO: test cases
+arpabet_to_ipa: Dict[Text, Text] = {
+    "AA": "ɒ",
+    "AE": "æ",
+    "AH": "ʌ",
+    "AO": "ɔ",
+    "AW": "aʊ",
+    "AY": "ai",
+    "B": "b",
+    "CH": "tʃ",
+    "D": "d",
+    "DH": "ð",
+    "EH": "ɛ",
+    "ER": "ə",
+    "EY": "ei",
+    "F": "f",
+    "G": "g",
+    "HH": "h",
+    "IH": "i",
+    "IY": "I",
+    "JH": "dʒ",
+    "K": "k",
+    "L": "l",
+    "M": "m",
+    "N": "n",
+    "NG": "ŋ",
+    "OW": "oʊ",
+    "OY": "ɔi",
+    "P": "p",
+    "R": "ɹ",
+    "S": "s",
+    "SH": "ʃ",
+    "T": "t",
+    "TH": "θ",
+    "UH": "ʊ",
+    "UW": "U",
+    "V": "v",
+    "W": "w",
+    "Y": "j",
+    "Z": "z",
+    "ZH": "ʒ",
+}
 
 ipa_to_arpabet = {v: k for k, v in arpabet_to_ipa.items()}
 
@@ -17,7 +58,8 @@ class PronouncingDict(dict):
     def __init__(self, pairs: List[Tuple[Word, Pronunciation]] = []):
         self._dict: Dict[Word, List[Pronunciation]] = self._generate_dict(pairs)
 
-    def stress_for(self, pronunciation: Pronunciation) -> List[int]:
+    # FIXME: make this abstract
+    def stress_for(self, pronunciation: Pronunciation) -> List[Stress]:
         """
         Subclasses of PronunciationDict should implement stress_for
         """
