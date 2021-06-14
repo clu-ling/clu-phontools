@@ -17,6 +17,7 @@ SimpleWord = Text
 
 spell = Speller(lang="en")
 
+
 class Stress(Enum):
     """Enumeration of all possible stress values"""
 
@@ -76,7 +77,8 @@ class SyllableProperties(ABC):
     def num_syllables(self):
         """A syllable contains at most one stressed element (weak or strong)"""
         return len(self.coarse_stress_pattern)
-  
+
+
 # FIXME: consider adding PhonologicalSystem(Enum) -> ARPABET, IPA, XAMPA, etc.
 @dataclass
 class PhonologicalWord(SyllableProperties):
@@ -86,13 +88,14 @@ class PhonologicalWord(SyllableProperties):
     """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
     stress_pattern: Sequence[Stress]
 
+
 @dataclass
 class Word:
     """The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning."""
 
     word: Text
     phonological_form: PhonologicalWord
-    
+
     @property
     def pf(self) -> PhonologicalWord:
         """Alias for phonological_form"""
@@ -104,64 +107,65 @@ class Word:
 
 @dataclass
 class Phrase:
-  """A sequence of `org.phontools.struct.Word` constitutes a Phrase"""
-  words: Sequence[Word]
+    """A sequence of `org.phontools.struct.Word` constitutes a Phrase"""
 
-  @property
-  def coarse_stress(self) -> Sequence[Text]:
-    """Returns coarse stress form for each word in the Phrase"""
-    return [word.pf.coarse_stress for word in self.words]
+    words: Sequence[Word]
 
-  def mask_syllables(self, mask: Text = "X") -> Sequence[Text]:
-    """Returns coarse stress form for each word in the Phrase"""
-    return [word.pf.mask_syllables(mask)for word in self.words]
+    @property
+    def coarse_stress(self) -> Sequence[Text]:
+        """Returns coarse stress form for each word in the Phrase"""
+        return [word.pf.coarse_stress for word in self.words]
 
-  @property
-  def coarse_stress_pattern(self) -> Sequence[CoarseStress]:
-    """Returns coarse stress pattern for each word in the Phrase"""
-    return [word.pf.coarse_stress_pattern for word in self.words]
+    def mask_syllables(self, mask: Text = "X") -> Sequence[Text]:
+        """Returns coarse stress form for each word in the Phrase"""
+        return [word.pf.mask_syllables(mask) for word in self.words]
 
-  @property
-  def stress_pattern(self) -> Sequence[Stress]:
-    """Returns stress pattern for each word in the Phrase"""
-    return [word.pf.stress_pattern for word in self.words]
+    @property
+    def coarse_stress_pattern(self) -> Sequence[CoarseStress]:
+        """Returns coarse stress pattern for each word in the Phrase"""
+        return [word.pf.coarse_stress_pattern for word in self.words]
+
+    @property
+    def stress_pattern(self) -> Sequence[Stress]:
+        """Returns stress pattern for each word in the Phrase"""
+        return [word.pf.stress_pattern for word in self.words]
+
 
 class LangUtils(ABC):
-  """Utilities to be implemented for each language.
-  """
+    """Utilities to be implemented for each language."""
 
-  @staticmethod
-  @abstractmethod
-  def phonological_word_for(phones: Pronunciation) -> PhonologicalWord:
-      """Produces a `clu.phontools.struct.PhonologicalWord` for a sequence of phones"""
-      pass
+    @staticmethod
+    @abstractmethod
+    def phonological_word_for(phones: Pronunciation) -> PhonologicalWord:
+        """Produces a `clu.phontools.struct.PhonologicalWord` for a sequence of phones"""
+        pass
 
-  @staticmethod
-  @abstractmethod
-  def all_possible_forms_for(word: Text) -> Sequence[Word]:
-      """Generates a list of `clu.phontools.struct.Word` from an orthographic form."""
-      pass
+    @staticmethod
+    @abstractmethod
+    def all_possible_forms_for(word: Text) -> Sequence[Word]:
+        """Generates a list of `clu.phontools.struct.Word` from an orthographic form."""
+        pass
 
-  @staticmethod
-  @abstractmethod
-  def all_possible_phrases_for(words: Sequence[Text]) -> Sequence[Phrase]:
-      """Generates a possible pronunciations from a sequence of words (as text). 
-      """
-      pass
+    @staticmethod
+    @abstractmethod
+    def all_possible_phrases_for(words: Sequence[Text]) -> Sequence[Phrase]:
+        """Generates a possible pronunciations from a sequence of words (as text)."""
+        pass
 
-  @staticmethod
-  @abstractmethod
-  def syllabify(pronunciation: Pronunciation) -> Sequence[Pronunciation]:
-      """Abstract static method to syllabify a sequence of phones that constitute the pronunciation of a single lexical item.
+    @staticmethod
+    @abstractmethod
+    def syllabify(pronunciation: Pronunciation) -> Sequence[Pronunciation]:
+        """Abstract static method to syllabify a sequence of phones that constitute the pronunciation of a single lexical item.
 
-      Example:
-      A subclass that implements this method would ...
-      ```python
-      MyEnglishSyllabifier.syllabify(('P', 'ER0', 'M', 'IH1', 'T'))
-      # should return [('P', 'ER0'), ('M', 'IH1', 'T')]
-      ```
-      """
-      pass
+        Example:
+        A subclass that implements this method would ...
+        ```python
+        MyEnglishSyllabifier.syllabify(('P', 'ER0', 'M', 'IH1', 'T'))
+        # should return [('P', 'ER0'), ('M', 'IH1', 'T')]
+        ```
+        """
+        pass
+
 
 # class StressSequence:
 #     """A sequence of stress assignments.
