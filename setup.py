@@ -31,6 +31,7 @@ dev_deps = test_deps + [
     # "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
     # "portray @ git+git://github.com/myedibleenso/portray.git@avoid-regressions",
     # "mkapi==1.0.14",
+    "pdoc3==0.9.2",
     "mkdocs-git-snippet==0.1.1",
     "mkdocs-git-revision-date-localized-plugin==0.9.2",
     "mkdocs-git-authors-plugin==0.3.3",

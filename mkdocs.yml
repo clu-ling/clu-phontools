@@ -1,0 +1,83 @@
+site_name: clu-phontools
+site_url: https://clu-ling.github.io/clu-phontools
+site_description: Project documentation with Markdown.
+site_author: Gus Hahn-Powell
+
+repo_url: https://github.com/clu-ling/clu-phontools/
+edit_uri: "tree/main/docs/"
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_style: github
+  # list additional languages here
+  hljs_languages:
+    - yaml
+  analytics:
+    gtag: null
+  shortcuts:
+    help: 191    # ?
+    next: 78     # n
+    previous: 80 # p
+    search: 83   # s
+  nav_style: dark
+  locale: en
+
+nav:
+    # NOTE: all relative to docs/
+    - Home: index.md
+    #- Getting Started: getting-started.md
+    - User Guide:
+        - Usage: tutorial.md
+        - Installation: install.md
+    - Developing:
+        - Overview: develop.md
+    - Examples:
+        - Misc: examples/misc.md
+    - API:
+        - "clu.phontools": api/clu/phontools/index.html
+    - About:
+        #- Release Notes: about/release-notes.md
+        - Contributing: contributing.md
+        #- License: about/license.md
+
+extra_css:
+    - css/extra.css
+
+# footnotes
+# pymdownx.emoji
+# pymdownx.caret
+# pymdownx.mark
+# pymdownx.tilde
+# pymdownx.details
+# pymdownx.superfences
+# pymdownx.tabbed
+markdown_extensions:
+    - toc:
+        permalink: 
+    - admonition
+    - attr_list
+    - def_list
+    # - mdx_gh_links:
+    #     user: clu-ling
+    #     repo: clu-phontools
+
+copyright: Copyright &copy; 2021 <a href="https://parsertongue.org/about">Gus Hahn-Powell</a>.
+#copyright: Copyright &copy; 2021 <a href="https://parsertongue.org/about">Gus Hahn-Powell</a>, Maintained by the <a href="/about/release-notes/#maintenance-team">CLU-LING Team</a>.
+
+plugins:
+    - search
+    # - redirects:
+    #     redirect_maps:
+    #         user-guide/plugins.md: dev-guide/plugins.md
+    #         user-guide/custom-themes.md: dev-guide/themes.md
+    #         user-guide/styling-your-docs.md: user-guide/choosing-your-theme.md
+
+    # # see https://github.com/daizutabi/mkapi/
+    - mkapi
+    # # see https://github.com/mercari/mkdocs-git-snippet
+    - git-snippet
+    # see https://github.com/timvink/mkdocs-git-revision-date-localized-plugin
+    - git-revision-date-localized
+    # see https://github.com/timvink/mkdocs-git-authors-plugin
+    - git-authors
