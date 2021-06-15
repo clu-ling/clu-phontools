@@ -1,24 +1,25 @@
 # coding: utf-8
 from enum import Enum
 from clu.phontools.struct import Phrase
-from typing import Any, Dict, List, Text
+from typing import Any, Dict, List, Text, Sequence
 from pydantic.dataclasses import dataclass
 import json
 
 
 class LexicalBoundaryErrorType(Enum):
-    """
-    An enumeration of all of the lexical boundary (LB) error types.
-    """
+    """An enumeration of all of the lexical boundary (LB) error types."""
 
-    # insertion before weak syllable
     INSERTION_WEAK = "IW"
-    # insertion before strong syllable
+    """insertion before weak syllable"""
+
     INSERTION_STRONG = "IS"
-    # deletion before weak syllable
+    """insertion before strong syllable"""
+
     DELETION_WEAK = "DW"
-    # deletion before strong syllable
+    """deletion before weak syllable"""
+
     DELETION_STRONG = "DS"
+    """deletion before strong syllable"""
 
 
 @dataclass

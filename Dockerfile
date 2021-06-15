@@ -36,4 +36,4 @@ RUN pip install -e ".[dev]"
 EXPOSE 9999
 #CMD ["/bin/bash", "launch-notebook"]
 EXPOSE 8000
-CMD ["rest-api"]
+CMD ["clu-phontools-rest-api"]

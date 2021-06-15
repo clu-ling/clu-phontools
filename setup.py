@@ -27,7 +27,9 @@ test_deps = required + ["green>=2.5.0", "coverage", "mypy"]
 # NOTE: <packagename> @ allows installation of git-based URLs
 dev_deps = test_deps + [
     "black @ git+git://github.com/psf/black.git",
-    "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
+    # "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
+    "portray @ git+git://github.com/myedibleenso/portray.git@avoid-regressions",
+    # "mkapi==1.0.14",
     "pre-commit==2.13.0",
 ]
 
