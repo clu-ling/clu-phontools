@@ -1,5 +1,6 @@
-from typing import Dict, Text, Tuple, List, Optional
-from clu.phontools.struct import Pronunciation, Word, Stress
+from abc import ABC, abstractmethod
+from typing import Dict, Text, Tuple, List, Optional, Sequence
+from clu.phontools.struct import Pronunciation, SimpleWord, Stress
 import os
 
 
@@ -50,22 +51,23 @@ arpabet_to_ipa: Dict[Text, Text] = {
 ipa_to_arpabet = {v: k for k, v in arpabet_to_ipa.items()}
 
 
-class PronouncingDict(dict):
+class PronouncingDict(dict, ABC):
     """
     Maps tuples of pronunciations -> lexical entries
     """
 
-    def __init__(self, pairs: List[Tuple[Word, Pronunciation]] = []):
+    def __init__(self, pairs: List[Tuple[SimpleWord, Pronunciation]] = []):
         self._dict: Dict[Word, List[Pronunciation]] = self._generate_dict(pairs)
 
-    # FIXME: make this abstract
-    def stress_for(self, pronunciation: Pronunciation) -> List[Stress]:
-        """
-        Subclasses of PronunciationDict should implement stress_for
-        """
-        return []
+    @abstractmethod
+    def stress_for(self, pronunciation: Pronunciation) -> Sequence[Stress]:
+        """Returns the stress assignment for each phone in the pronunciation
 
-    def _preprocess_key(self, key: Word) -> Word:
+        Subclasses of `clu.phontools.pronouncing.PronouncingDict` should implement `clu.phontools.pronouncing.PronouncingDict.stress_for`
+        """
+        pass
+
+    def _preprocess_key(self, key: SimpleWord) -> SimpleWord:
         return key.lower()
 
     def keys(self):
@@ -83,21 +85,21 @@ class PronouncingDict(dict):
     def __len__(self):
         return len(self._dict)
 
-    def get(self, key: Text) -> Word:
+    def get(self, key: Text) -> SimpleWord:
         return self._dict.get(self._preprocess_key(key), [])
 
-    def add(self, key: Pronunciation, value: Word) -> None:
+    def add(self, key: Pronunciation, value: SimpleWord) -> None:
         self._dict[self._preprocess_key(key)] = value
 
-    def __getitem__(self, key: Word) -> List[Pronunciation]:
+    def __getitem__(self, key: SimpleWord) -> List[Pronunciation]:
         return self._dict.__getitem__(key)
 
-    def __setitem__(self, key: Word, value: List[Pronunciation]) -> None:
+    def __setitem__(self, key: SimpleWord, value: List[Pronunciation]) -> None:
         self._dict.__setitem__(self, self._preprocess_key(key), value)
 
     def _generate_dict(
-        self, pairs: List[Tuple[Word, Pronunciation]]
-    ) -> Dict[Word, List[Pronunciation]]:
+        self, pairs: List[Tuple[SimpleWord, Pronunciation]]
+    ) -> Dict[SimpleWord, List[Pronunciation]]:
         pronounciation_dict = dict()
         for (k, v) in pairs:
             key = self._preprocess_key(k)
@@ -108,13 +110,11 @@ class PronouncingDict(dict):
 
 
 class CMUPronouncingDict(PronouncingDict):
-    def __init__(self, pairs: List[Tuple[Word, Pronunciation]] = []):
+    def __init__(self, pairs: List[Tuple[SimpleWord, Pronunciation]] = []):
         super().__init__(pairs)
 
-    def stress_for(self, pronunciation: Pronunciation) -> List[Stress]:
-        """
-        Subclasses of PronunciationDict should implement stress_for
-        """
+    def stress_for(self, pronunciation: Pronunciation) -> Sequence[Stress]:
+        """Returns the stress assignment for each phone in the pronunciation"""
         stress_pattern = []
         for phone in pronunciation:
             assignment = Stress.NON_VOWEL

@@ -4,9 +4,10 @@ from clu.phontools.struct import Word, PhonologicalWord, Phrase
 
 
 class EnglishUtils(LangUtils):
-    """English-specific implementation of `org.phontools.struct.LangTools`."""
+    """English-specific implementation of `clu.phontools.struct.LangUtils`."""
 
     pronouncing_dict: CMUPronouncingDict = CMUPronouncingDict.from_cmu_dict()
+    """`clu.phontools.pronouncing.CMUPronouncingDict` loaded from the English CMU pronouncing dict (see [`clu.phontools.resources.cmudict`](https://github.com/clu-ling/clu-phontools/blob/main/clu/phontools/resources/cmudict))."""
 
     @staticmethod
     def phonological_word_for(phones: Pronunciation) -> PhonologicalWord:

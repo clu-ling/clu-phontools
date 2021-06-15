@@ -80,12 +80,19 @@ jobs:
       run: docker run -i "${ORG}/${IMAGE_NAME}" black --check /app
 
     # docs
-    - name: "Create documentation"
+    - name: "Create documentation (API docs)"
       env:
         ORG: "parsertongue"
         IMAGE_NAME: "clu-phontools"
-      run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" portray as_html
-    - name: Deploy
+      run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" pdoc --html -c latex_math=True --force --output-dir docs/api clu
+    # docs
+    - name: "Create documentation (other)"
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" mkdocs build -c
+      #run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" portray as_html
+    - name: Deploy docs
       if: github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v3
       with:

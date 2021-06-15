@@ -30,9 +30,13 @@ class Stress(Enum):
     """Enumeration of all possible stress values"""
 
     NON_VOWEL = "-"
+    """The phone is not a vowel (i.e., it cannot have a stress assignment)"""
     NO_STRESS = "0"
+    """The phone (vowel) is unstressed.  In such a case, the phonological word must be multisyllabic."""
     PRIMARY = "1"
+    """The phone (vowel) receives primary stress"""
     SECONDARY = "2"
+    """The phone (vowel) receives secondary stress.  In such a case, the phonological word must be multisyllabic."""
 
     def __repr__(self) -> Text:
         return f"Stress.{self.name}"
@@ -91,12 +95,12 @@ class SyllableProperties(ABC):
 class PhonologicalWord(BaseModel, SyllableProperties, Hashable):
     """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables
 
-    :param Sequence[Phone] phones: a sequences of phonological symbols (character, kana, etc.)
-    :param Sequence[Stress] stress_pattern: a sequence of `clu.phontools.struct.Stress` assignments (one for each of the `phones`)
+    :param phones: a sequences of phonological symbols (character, kana, etc.)
+    :param stress_pattern: a sequence of `clu.phontools.struct.Stress` assignments (one for each of the `phones`)
     """
 
     phones: Sequence[Phone]
-    """NOTE: For an EnglishSyllable, use en_cmu_dict as part of @staticmethod factory constructor"""
+    """NOTE: For an EnglishSyllable, use `clu.phontools.lang.en.EnglishUtils.pronouncing_dict` as part of @staticmethod factory constructor"""
     stress_pattern: Sequence[Stress]
 
     def __hash__(self) -> int:
@@ -104,10 +108,10 @@ class PhonologicalWord(BaseModel, SyllableProperties, Hashable):
 
 
 class Word(BaseModel, Hashable):
-    """The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning.
+    r"""The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning.
 
-    :param Text word: orthographic representation of this Word
-    :param PhonologicalWord phonological_form: the phonological form of this Word
+    :param word: orthographic representation of this Word
+    :param phonological_form: the phonological form of this Word
     """
 
     word: Text
@@ -119,7 +123,7 @@ class Word(BaseModel, Hashable):
         return self.phonological_form
 
     def graphemes(self) -> Sequence[Text]:
-        """Individual characters/symbols that comprise the orthographic representation of the Word"""
+        """Individual characters/symbols that comprise the orthographic representation of the `clu.phontools.struct.Word`"""
         return "".split(self.word)
 
     def __hash__(self) -> int:
@@ -127,14 +131,9 @@ class Word(BaseModel, Hashable):
 
 
 class Phrase(BaseModel, Hashable):
-    """A sequence of `org.phontools.struct.Word` constitutes a Phrase.
+    """A sequence of `clu.phontools.struct.Word` constitutes a Phrase.
 
-    !!! note
-    You can use the [Admonition extension of
-    MkDocs](https://squidfunk.github.io/mkdocs-material/extensions/admonition/).
-
-
-    :param Sequence[org.phontools.struct.Word] words: The sequence of `clu.phontools.struct.Word` that constitutes this Phrase.
+    :param words: The sequence of `clu.phontools.struct.Word` that constitutes this Phrase.
     """
 
     words: Sequence[Word]
