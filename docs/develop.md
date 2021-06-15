@@ -103,8 +103,8 @@ pdoc --html -c latex_math=True --force --output-dir docs/api --http 0.0.0.0:8001
 Open your browser to [localhost:8001/clu/phontools](localhost:8001/clu/phontools) to see live updates.
 
 
-!!! note
-To use LaTeX-styl equations, consider we recommend using [raw strings](https://docs.python.org/3.8/reference/lexical_analysis.html) for docstrings:
+!!! note "LaTeX math in docstrings"
+    To use LaTeX-style equations, we recommend using [raw strings](https://docs.python.org/3.8/reference/lexical_analysis.html) for docstrings:
 
 ```python
 r"""My docstring
