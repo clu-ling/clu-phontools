@@ -34,7 +34,7 @@ if __name__ == "__main__":
     infile  = args.input
     outfile = args.output
 
-    alignments = read_file('./data/NonseAlignments.xlsx')  
+    alignments = read_file('./data/NonseAlignments.xlsx')
 
     df = pd.DataFrame()
     # Creating a column

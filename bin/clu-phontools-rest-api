@@ -38,10 +38,7 @@ class APIConfig(BaseModel):
         """
         config_dict = yaml.load(config, Loader=yaml.FullLoader).get("phontools")
 
-        conf = APIConfig(
-            host = config_dict["host"],
-            port = config_dict["port"]
-        )
+        conf = APIConfig(host=config_dict["host"], port=config_dict["port"])
 
         return conf
 
@@ -50,44 +47,57 @@ class APIConfig(BaseModel):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)  
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
     parser.add_argument("-c", "--config", help="yaml config file")
     args = parser.parse_args()
-  
+
     # read `spacy:` block from YAML
-    conf = APIConfig() if not args.config else APIConfig.from_file(args.config)    
-    
+    conf = APIConfig() if not args.config else APIConfig.from_file(args.config)
+
     server = FastAPI()
-    
+
     @server.post("/api/re-aline/align")
-    def align_via_realine(target: List[Text], transcript: List[Text], epsilon: float=0):
-        """Aligns a gold (target) and transcript using re-aline.
-        """
+    def align_via_realine(
+        target: List[Text], transcript: List[Text], epsilon: float = 0
+    ):
+        """Aligns a gold (target) and transcript using re-aline."""
         aligner = ReAline()
         return aligner.align(seq1=target, seq2=transcript, epsilon=epsilon)
 
     @server.post("/api/lang/en/word/pronounce/arpabet", response_model=Sequence[Word])
     def lookup_pronunciations_for_word(word: Text) -> Sequence[Word]:
-        """Find all possible pronunciations for the provided word
-        """
+        """Find all possible pronunciations for the provided word"""
         return EnglishUtils.all_possible_forms_for(word)
 
-    @server.post("/api/lang/en/word/stress-patterns", response_model=Sequence[Sequence[Stress]])
+    @server.post(
+        "/api/lang/en/word/stress-patterns", response_model=Sequence[Sequence[Stress]]
+    )
     def lookup_stress_patterns_for_word(word: Text) -> Sequence[Sequence[Stress]]:
-        """Find all possible stress patterns for the provided word
-        """
-        return [word.pf.stress_pattern for word in EnglishUtils.all_possible_forms_for(word)]
+        """Find all possible stress patterns for the provided word"""
+        return [
+            word.pf.stress_pattern for word in EnglishUtils.all_possible_forms_for(word)
+        ]
 
-    @server.post("/api/lang/en/word/coarse-stress-patterns", response_model=Sequence[Sequence[CoarseStress]])
-    def lookup_coarse_stress_patterns_for_word(word: Text) -> Sequence[Sequence[CoarseStress]]:
-        """Find all possible stress patterns for the provided word
-        """
-        return [word.pf.coarse_stress_pattern for word in EnglishUtils.all_possible_forms_for(word)]
+    @server.post(
+        "/api/lang/en/word/coarse-stress-patterns",
+        response_model=Sequence[Sequence[CoarseStress]],
+    )
+    def lookup_coarse_stress_patterns_for_word(
+        word: Text,
+    ) -> Sequence[Sequence[CoarseStress]]:
+        """Find all possible stress patterns for the provided word"""
+        return [
+            word.pf.coarse_stress_pattern
+            for word in EnglishUtils.all_possible_forms_for(word)
+        ]
 
-    @server.post("/api/lang/en/phrase/pronounce/arpabet", response_model=Sequence[Phrase])
+    @server.post(
+        "/api/lang/en/phrase/pronounce/arpabet", response_model=Sequence[Phrase]
+    )
     def lookup_pronunciations_for_phrase(words: Sequence[Text]) -> Sequence[Phrase]:
-        """Find all possible pronunciations for the provided words
-        """
+        """Find all possible pronunciations for the provided words"""
         return EnglishUtils.all_possible_phrases_for(words)
 
     # FIXME
@@ -116,5 +126,5 @@ if __name__ == "__main__":
         """
         return info
 
-    #Run server
+    # Run server
     uvicorn.run(server, port=conf.port, host=conf.host)

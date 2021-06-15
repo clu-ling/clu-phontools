@@ -17,15 +17,13 @@ words1: Sequence[Word] = (
     Word(
         word="me",
         phonological_form=PhonologicalWord(
-            phones=("M", "IY1"),
-            stress_pattern=[Stress.NON_VOWEL, Stress.PRIMARY],
+            phones=("M", "IY1"), stress_pattern=[Stress.NON_VOWEL, Stress.PRIMARY]
         ),
     ),
     Word(
         word="to",
         phonological_form=PhonologicalWord(
-            phones=("T", "UW1"),
-            stress_pattern=[Stress.NON_VOWEL, Stress.PRIMARY],
+            phones=("T", "UW1"), stress_pattern=[Stress.NON_VOWEL, Stress.PRIMARY]
         ),
     ),
     Word(

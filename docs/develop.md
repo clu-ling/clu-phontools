@@ -25,7 +25,7 @@ First, you'll need to build the docker image:
 docker build -f Dockerfile -t "parsertongue/clu-phontools:latest" .
 ```
 
-Launch a container using this image and connect to it: 
+Launch a container using this image and connect to it:
 
 ```bash
 docker run -it -v $PWD:/app "parsertongue/clu-phontools:latest /bin/bash"
@@ -50,7 +50,7 @@ Jupyter is configured to run on port 9999, so you'll need a port mapping to acce
 ```bash
 docker run --rm -it \
   -p 7777:9999 \
-  parsertongue/clu-phontools:latest 
+  parsertongue/clu-phontools:latest
 ```
 
 Open [localhost:7777](http://localhost:7777) and navigate to `notebooks` to view the notebooks.
@@ -90,4 +90,3 @@ Code can be auto-formatted using [`black`](https://black.readthedocs.io/en/stabl
 ```bash
 docker run -it -v $PWD:/app "parsertongue/clu-phontools:latest" black
 ```
-

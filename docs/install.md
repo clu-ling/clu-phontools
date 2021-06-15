@@ -6,7 +6,7 @@
 
 ### Requirements
 - [Python (>= v3.8)](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
- 
+
 
 ### Install
 To install directly from the main branch of the repository:

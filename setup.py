@@ -28,6 +28,7 @@ test_deps = required + ["green>=2.5.0", "coverage", "mypy"]
 dev_deps = test_deps + [
     "black @ git+git://github.com/psf/black.git",
     "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
+    "pre-commit==2.13.0",
 ]
 
 setup(
