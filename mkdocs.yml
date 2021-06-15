@@ -42,7 +42,7 @@ nav:
     - About:
         #- Release Notes: about/release-notes.md
         - Contributing: contributing.md
-        #- License: about/license.md
+        - License: "https://opensource.org/licenses/Apache-2.0"
 
 extra_css:
     - css/extra.css
@@ -84,3 +84,5 @@ plugins:
     - git-revision-date-localized
     # see https://github.com/timvink/mkdocs-git-authors-plugin
     - git-authors
+    # TODO: add https://github.com/timvink/mkdocs-table-reader-plugin
+    # TODO: add https://github.com/fralau/mkdocs-mermaid2-plugin
