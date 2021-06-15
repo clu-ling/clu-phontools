@@ -73,8 +73,8 @@ plugins:
     #         user-guide/custom-themes.md: dev-guide/themes.md
     #         user-guide/styling-your-docs.md: user-guide/choosing-your-theme.md
 
-    # # see https://github.com/daizutabi/mkapi/
-    - mkapi
+    # # # see https://github.com/daizutabi/mkapi/
+    # - mkapi
     # # see https://github.com/mercari/mkdocs-git-snippet
     - git-snippet
     # see https://github.com/timvink/mkdocs-git-revision-date-localized-plugin
