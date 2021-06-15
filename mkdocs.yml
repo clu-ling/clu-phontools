@@ -31,7 +31,10 @@ nav:
         - Usage: tutorial.md
         - Installation: install.md
     - Developing:
-        - Overview: develop.md
+        - Install: dev/install.md
+        - Testing: dev/test.md
+        - Documentation: dev/documentation.md
+        - Formatting: dev/formatting.md
     - Examples:
         - Misc: examples/misc.md
     - API:
