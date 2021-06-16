@@ -36,7 +36,9 @@ nav:
         - Documentation: dev/documentation.md
         - Formatting: dev/formatting.md
     - Examples:
-        - Misc: examples/misc.md
+        - Overview: examples/misc.md
+        - REST API: examples/rest-api.md
+        - Aligning and error analysis: examples/asu-use-case.md
     - API:
         - "clu.phontools": api/clu/phontools/index.html
     - About:

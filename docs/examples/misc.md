@@ -1,8 +1,3 @@
-
-<!-- ```python
-{{ gitsnippet('clu-ling/clu-phontools', 'examples/asu-example.py', 'release') }}
-``` -->
-
 # Alignment with `ReAline` (simple)
 
 _coming soon_
@@ -15,4 +10,4 @@ See [this page for an end-to-end example of features.](asu-use-case.md)
 
 # REST API
 
-Prefer to interact with the library from another language? See [this page for an example of how to use our REST API.](rest-api.md).
+Prefer to interact with the library from another language? [See this page](rest-api.md) for an example of how to use our REST API.
