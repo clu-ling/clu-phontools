@@ -105,6 +105,22 @@ class PhonologicalWord(BaseModel, SyllableProperties, Hashable):
     """NOTE: For an EnglishSyllable, use `clu.phontools.lang.en.EnglishUtils.pronouncing_dict` as part of @staticmethod factory constructor"""
     stress_pattern: Sequence[Stress]
 
+    def __iter__(self) -> Phone:
+        for phone in self.phones:
+            yield phone
+
+    def __getitem__(self, i: int) -> Phone:
+        return self.phones[i]
+
+    def __reversed__(self) -> "Phrase":
+        return PhonologicalWord(phones=self.phones[::-1])
+
+    def __contains__(self, item) -> bool:
+        return True if item in self.phones else False
+
+    def __len__(self) -> int:
+        return len(self.phones)
+
     def __hash__(self) -> int:
         return hash(tuple(list(self.phones) + list(self.stress_pattern)))
 
@@ -149,6 +165,91 @@ class Phrase(BaseModel, Hashable):
         """Returns coarse stress form for each word in the Phrase"""
         return [word.pf.mask_syllables(mask) for word in self.words]
 
+    def words_as_phones(self) -> Sequence[Text]:
+        """Represent `clu.phontools.struct.Phrase` using a sequence of symbols denoting the phones of each word
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            ),
+            Word(
+              word='world',
+              phonological_form=PhonologicalWord(
+                phones=('W', 'ER1', 'L', 'D'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY,
+                  Stress.NON_VOWEL,
+                  Stress.NON_VOWEL
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.to_phones()
+        # should return ['HH EH0 L OW1', 'W ER1 L D']
+        ```
+        """
+        return [" ".join(word.pf.phones) for word in self.words]
+
+    @property
+    def phones(self) -> Sequence[Text]:
+        """Represent `clu.phontools.struct.Phrase` using a flat sequence of symbols denoting the phones of each word
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            ),
+            Word(
+              word='world',
+              phonological_form=PhonologicalWord(
+                phones=('W', 'ER1', 'L', 'D'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY,
+                  Stress.NON_VOWEL,
+                  Stress.NON_VOWEL
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.to_phones()
+        # should return ["HH", "EH0", "L", "OW1", "W", "ER1", "L", "D"]
+        ```
+        """
+        return [phone for word in self.words for phone in word.pf.phones]
+
     @property
     def coarse_stress_pattern(self) -> Sequence[CoarseStress]:
         """Returns coarse stress pattern for each word in the Phrase"""
@@ -158,6 +259,86 @@ class Phrase(BaseModel, Hashable):
     def stress_pattern(self) -> Sequence[Stress]:
         """Returns stress pattern for each word in the Phrase"""
         return [word.pf.stress_pattern for word in self.words]
+
+    def match_coarse_stress_pattern(self, pattern: Text) -> bool:
+        """Checks if `clu.phontools.struct.Phrase matches` the specified coarse stress pattern (a regular expression).
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.match_coarse_stress_pattern("WS")
+        # should return True
+        ```
+        """
+        return True if re.match(pattern, " ".join(self.coarse_stress)) else False
+
+    def match_masked_syllables(self, pattern: Text, mask: Text = "X") -> bool:
+        """Checks if `clu.phontools.struct.Phrase matches` the specified masked stress pattern (a regular expression).
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.match_masked_syllables("^XX", mask="X")
+        # should return True
+        ```
+        """
+        return (
+            True
+            if re.match(pattern, " ".join(self.mask_syllables(mask=mask)))
+            else False
+        )
+
+    def __iter__(self) -> Word:
+        for word in self.words:
+            yield word
+
+    def __getitem__(self, i: int) -> Word:
+        return self.words[i]
+
+    def __reversed__(self) -> "Phrase":
+        return Phrase(words=self.words[::-1])
+
+    def __contains__(self, item) -> bool:
+        return True if item in self.words else False
+
+    def __len__(self) -> int:
+        return len(self.words)
 
     def __hash__(self) -> int:
         return hash(tuple(hash(w) for w in self.words))

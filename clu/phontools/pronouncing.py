@@ -1,54 +1,102 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Text, Tuple, List, Optional, Sequence
+from typing import Dict, Text, Tuple, List, Optional, Sequence, Callable
 from clu.phontools.struct import Pronunciation, SimpleWord, Stress
 import os
 
 
-# FIXME: add more symbols
-# TODO: test cases
-arpabet_to_ipa: Dict[Text, Text] = {
-    "AA": "ɒ",
-    "AE": "æ",
-    "AH": "ʌ",
-    "AO": "ɔ",
-    "AW": "aʊ",
-    "AY": "ai",
-    "B": "b",
-    "CH": "tʃ",
-    "D": "d",
-    "DH": "ð",
-    "EH": "ɛ",
-    "ER": "ə",
-    "EY": "ei",
-    "F": "f",
-    "G": "g",
-    "HH": "h",
-    "IH": "i",
-    "IY": "I",
-    "JH": "dʒ",
-    "K": "k",
-    "L": "l",
-    "M": "m",
-    "N": "n",
-    "NG": "ŋ",
-    "OW": "oʊ",
-    "OY": "ɔi",
-    "P": "p",
-    "R": "ɹ",
-    "S": "s",
-    "SH": "ʃ",
-    "T": "t",
-    "TH": "θ",
-    "UH": "ʊ",
-    "UW": "U",
-    "V": "v",
-    "W": "w",
-    "Y": "j",
-    "Z": "z",
-    "ZH": "ʒ",
-}
+ConverterFunc = Callable[[Text], Text]
+identity: Callable[[Text], Text] = lambda x: x
 
-ipa_to_arpabet = {v: k for k, v in arpabet_to_ipa.items()}
+
+class ConverterUtils:
+
+    """Converter utilities to map between phonological symbol sets"""
+
+    # FIXME: add more symbols
+    # TODO: test cases
+    arpabet_to_ipa_dict: Dict[Text, Text] = {
+        "AA": "ɒ",
+        "AE": "æ",
+        # FIXME: this should translate to "ʌ" OR "ə" depending on the stress assignment
+        "AH": "ʌ",
+        "AO": "ɔ",
+        "AW": "aʊ",
+        "AY": "ai",
+        "B": "b",
+        "CH": "tʃ",
+        "D": "d",
+        "DH": "ð",
+        "EH": "ɛ",
+        "ER": "ə",
+        "EY": "ei",
+        "F": "f",
+        "G": "g",
+        "HH": "h",
+        "IH": "i",
+        "IY": "I",
+        "JH": "dʒ",
+        "K": "k",
+        "L": "l",
+        "M": "m",
+        "N": "n",
+        "NG": "ŋ",
+        "OW": "oʊ",
+        "OY": "ɔi",
+        "P": "p",
+        "R": "ɹ",
+        "S": "s",
+        "SH": "ʃ",
+        "T": "t",
+        "TH": "θ",
+        "UH": "ʊ",
+        "UW": "U",
+        "V": "v",
+        "W": "w",
+        "Y": "j",
+        "Z": "z",
+        "ZH": "ʒ",
+    }
+    """Dictionary mapping arpabet symbols to IPA"""
+
+    # reverse mapping
+    # ipa_to_arpabet_dict = {v: k for k, v in arpabet_to_ipa.items()}
+
+    def arpabet_to_ipa(symbol: Text) -> Text:
+        """Converts an Arpabet symbol to IPA
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_arpa = ('B', 'EH1', 'L')
+        bell_ipa = tuple(ConverterUtils.arpabet_to_ipa(symb) for symb in bell_arpa)
+        # should produce ('b', 'ɛ', 'l')
+        """
+        stress: Optional[Text] = (
+            None
+            if symbol[-1]
+            not in {
+                Stress.PRIMARY.value,
+                Stress.SECONDARY.value,
+                Stress.NO_STRESS.value,
+            }
+            else symbol[-1]
+        )
+        base_form: Text = symbol if not stress else symbol[:-1]
+        return ConverterUtils.arpabet_to_ipa_dict.get(base_form, base_form)
+
+    def ipa_to_arpabet(symbol: Text) -> Text:
+        """Converts an Arpabet symbol to IPA
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_ipa = ('b', 'ɛ', 'l')
+        bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)
+        # should produce ('B', 'EH', 'L')
+        """
+        for (arpa, ipa) in ConverterUtils.arpabet_to_ipa_dict.items():
+            if ipa == symbol:
+                return arpa
+        # in case of failure, parrot back symbol
+        return symbol
 
 
 class PronouncingDict(dict, ABC):
@@ -136,7 +184,7 @@ class CMUPronouncingDict(PronouncingDict):
 
     @staticmethod
     def from_cmu_dict(
-        filepath: Optional[str] = None, converter: Dict[str, str] = dict()
+        filepath: Optional[str] = None, converter: ConverterFunc = identity
     ) -> "CMUPronouncingDict":
         cmudict_file = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict"
@@ -158,6 +206,6 @@ class CMUPronouncingDict(PronouncingDict):
                     pronunciation = "".join(res[1:]).split(" ")
                     # ARPAbet pronunciation.
                     # optionally convert to provided format
-                    value = tuple(converter.get(phon, phon) for phon in pronunciation)
+                    value = tuple(converter(phon) for phon in pronunciation)
                     pairs.append((key, value))
         return CMUPronouncingDict(pairs)

@@ -4,7 +4,7 @@ site_description: Project documentation with Markdown.
 site_author: Gus Hahn-Powell
 
 repo_url: https://github.com/clu-ling/clu-phontools/
-edit_uri: "tree/main/docs/"
+edit_uri: "blob/main/docs/"
 
 theme:
   name: readthedocs

@@ -120,3 +120,66 @@ class LexicalBoundaryErrorTests(unittest.TestCase):
 
 # target:     ['WS', 'S', 'W', 'SW']
 # transcript: ['X', 'X', 'X', 'X', 'X', 'XX']
+
+# How should this be handled?
+
+# target:     ['WS', 'S', 'W', 'SW']
+# transcript: ['SW', 'S', 'W', 'SW']
+
+
+# target = ["10", "1", "1", "10"]
+#         transcript = ["1", "1", "1", "1", "10"]
+#         res = calc_lbe(target, transcript)
+#         error_report = LexicalBoundaryErrorReport(
+#             target_stress=target,
+#             transcript_stress=transcript,
+#             lbes=[
+#                 LexicalBoundaryError(
+#                     target_index=0,
+#                     transcript_indices=[0, 1],
+#                     error_type=LexicalBoundaryErrorType.IW,
+#                 )
+#             ],
+#         )
+#         target = ["01", "1", "1", "01"]
+#         transcript = ["01", "1", "1", "0", "1"]
+#         res = calc_lbe(target, transcript)
+#         error_report = LexicalBoundaryErrorReport(
+#             target_stress=target,
+#             transcript_stress=transcript,
+#             lbes=[
+#                 LexicalBoundaryError(
+#                     target_index=3,
+#                     transcript_indices=[3, 4],
+#                     error_type=LexicalBoundaryErrorType.IW,
+#                 )
+#             ],
+#         )
+#         target = ["1", "1", "1", "1", "10"]
+#         transcript = ["1", "01", "1", "10"]
+#         res = calc_lbe(target, transcript)
+#         error_report = LexicalBoundaryErrorReport(
+#             target_stress=target,
+#             transcript_stress=transcript,
+#             lbes=[
+#                 LexicalBoundaryError(
+#                     target_index=[1, 2],
+#                     transcript_indices=1,
+#                     error_type=LexicalBoundaryErrorType.IW,
+#                 )
+#             ],
+#         )
+#         target = ["10", "1", "0", "1", "0"]
+#         transcript = ["10", "1", "0", "10"]
+#         res = calc_lbe(target, transcript)
+#         error_report = LexicalBoundaryErrorReport(
+#             target_stress=target,
+#             transcript_stress=transcript,
+#             lbes=[
+#                 LexicalBoundaryError(
+#                     target_index=[3, 4],
+#                     transcript_indices=3,
+#                     error_type=LexicalBoundaryErrorType.IW,
+#                 )
+#             ],
+#         )
