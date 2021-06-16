@@ -1,6 +1,28 @@
-from typing import List, Tuple, Text
-from . import features
+from typing import Dict, List, Tuple, Text, Sequence
+from pydantic import BaseModel
+from clu.phontools import features
 import numpy as np
+
+
+class PhonemeErrors(BaseModel):
+    """
+    stores phoneme errors.
+    """
+
+    insertions: Sequence[Tuple[Text, Text]]
+    deletions: Sequence[Tuple[Text, Text]]
+    substitutions: Sequence[Tuple[Text, Text]]
+
+    @property
+    def edit_distance(self) -> int:
+        return len(self.insertions) + len(self.deletions) + len(self.substitutions)
+
+    def to_dict(self) -> Dict[str, float]:
+        return {
+            "insertions": self.insertions,
+            "deletions": self.deletions,
+            "substitutions": self.substitutions,
+        }
 
 
 class ReAline(object):
@@ -40,6 +62,26 @@ class ReAline(object):
         self.R_v = R_v
         # sanity check
         self.sanity_check()
+
+    @staticmethod
+    def phoneme_errors(alignments: List[Tuple[Text, Text]]) -> PhonemeErrors:
+        """
+        Counts insertions, deletions, and substitutions according to the output of Re-Aline
+        """
+        insertions = []
+        deletions = []
+        substitutions = []
+        for pair in alignments:
+            (phone_1, phone_2) = pair
+            if phone_1 == "-":
+                insertions.append(pair)
+            elif phone_2 == "-":
+                deletions.append(pair)
+            elif phone_1 != phone_2 and phone_1 != "-" and phone_2 != "-":
+                substitutions.append(pair)
+        return PhonemeErrors(
+            insertions=insertions, deletions=deletions, substitutions=substitutions
+        )
 
     def sanity_check(self):
         """

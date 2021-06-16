@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from __future__ import annotations
 
-from typing import Optional, Text, List
+from typing import Optional, Text, List, Sequence, Tuple
 from fastapi import FastAPI, File
 import uvicorn
 
@@ -9,7 +9,8 @@ from clu.phontools.info import info
 
 from clu.phontools.struct import *
 from clu.phontools.lang.en import EnglishUtils
-from clu.phontools.realine import ReAline
+from clu.phontools.alignment.realine import ReAline, PhonemeErrors
+from clu.phontools.alignment.lbe import calculate_lbes_from_stress, LexicalBoundaryError
 
 from pydantic import BaseModel
 import yaml
@@ -58,21 +59,70 @@ if __name__ == "__main__":
 
     server = FastAPI()
 
-    @server.post("/api/re-aline/align")
-    def align_via_realine(
-        target: List[Text], transcript: List[Text], epsilon: float = 0
-    ):
-        """Aligns a gold (target) and transcript using re-aline."""
-        aligner = ReAline()
-        return aligner.align(seq1=target, seq2=transcript, epsilon=epsilon)
+    example_target: Sequence[Text] = [
+        "æ",
+        "d",
+        "v",
+        "æ",
+        "n",
+        "s",
+        "b",
+        "ʌ",
+        "t",
+        "æ",
+        "t",
+        "ə",
+        "p",
+        "i",
+        "l",
+    ]
+    example_transcript: Sequence[Text] = [
+        "æ",
+        "d",
+        "v",
+        "æ",
+        "n",
+        "s",
+        "b",
+        "ʌ",
+        "t",
+        "s",
+        "ɛ",
+        "t",
+        "ə",
+        "i",
+        "l",
+    ]
+    example_alignment: Sequence[Tuple[Text, Text]] = [
+        ("æ", "æ"),
+        ("d", "d"),
+        ("v", "v"),
+        ("æ", "æ"),
+        ("n", "n"),
+        ("s", "s"),
+        ("b", "b"),
+        ("ʌ", "ʌ"),
+        ("t", "t"),
+        ("-", "s"),
+        ("æ", "ɛ"),
+        ("t", "t"),
+        ("ə", "ə"),
+        ("p", "-"),
+        ("i", "i"),
+        ("l", "l"),
+    ]
 
-    @server.post("/api/lang/en/word/pronounce/arpabet", response_model=Sequence[Word])
+    @server.post(
+        "/api/clu/phontools/lang/en/word/pronounce/arpabet",
+        response_model=Sequence[Word],
+    )
     def lookup_pronunciations_for_word(word: Text) -> Sequence[Word]:
         """Find all possible pronunciations for the provided word"""
         return EnglishUtils.all_possible_forms_for(word)
 
     @server.post(
-        "/api/lang/en/word/stress-patterns", response_model=Sequence[Sequence[Stress]]
+        "/api/clu/phontools/lang/en/word/stress-patterns",
+        response_model=Sequence[Sequence[Stress]],
     )
     def lookup_stress_patterns_for_word(word: Text) -> Sequence[Sequence[Stress]]:
         """Find all possible stress patterns for the provided word"""
@@ -81,7 +131,7 @@ if __name__ == "__main__":
         ]
 
     @server.post(
-        "/api/lang/en/word/coarse-stress-patterns",
+        "/api/clu/phontools/lang/en/word/coarse-stress-patterns",
         response_model=Sequence[Sequence[CoarseStress]],
     )
     def lookup_coarse_stress_patterns_for_word(
@@ -94,23 +144,47 @@ if __name__ == "__main__":
         ]
 
     @server.post(
-        "/api/lang/en/phrase/pronounce/arpabet", response_model=Sequence[Phrase]
+        "/api/clu/phontools/lang/en/phrase/pronounce/arpabet",
+        response_model=Sequence[Phrase],
     )
     def lookup_pronunciations_for_phrase(words: Sequence[Text]) -> Sequence[Phrase]:
         """Find all possible pronunciations for the provided words"""
         return EnglishUtils.all_possible_phrases_for(words)
 
-    # FIXME
-    # @server.post("/api/to-clu-doc")
-    # def to_clu_doc(spacyDoc: SpacyDoc):
-    #     cluDoc = converter.to_clu_doc(spacyDoc)
-    #     return cluDoc.to_JSON()
+    @server.post(
+        "/api/clu/phontools/alignment/re-aline/align",
+        response_model=Sequence[Tuple[Text, Text]],
+    )
+    def align_via_realine(
+        target: Sequence[Text] = example_target,
+        transcript: Sequence[Text] = example_transcript,
+        epsilon: float = 0,
+    ):
+        """Aligns a gold (target) and transcript using re-aline."""
+        aligner = ReAline()
+        return aligner.align(seq1=target, seq2=transcript, epsilon=epsilon)
 
-    # FIXME
-    # @server.post("/api/to-spacy-doc")
-    # def to_spacy_doc(cluDoc: CluDocument):
-    #     spacyDoc = coverter.to_spacy_doc(cluDoc)
-    #     return spacyDoc
+    @server.post(
+        "/api/clu/phontools/alignment/re-aline/phoneme-errors",
+        response_model=PhonemeErrors,
+    )
+    def realine_phoneme_errors(
+        alignment: Sequence[Tuple[Text, Text]] = example_alignment
+    ):
+        """Computes phoneme errors in terms of insertions, deletions, and substitutions."""
+        aligner = ReAline()
+        return aligner.phoneme_errors(alignment)
+
+    @server.post(
+        "/api/clu/phontools/alignment/lbe/from-stress",
+        response_model=Sequence[LexicalBoundaryError],
+    )
+    def lbes_from_stress(
+        target: Sequence[Text] = ["SW", "S", "W", "SW"],
+        transcript: Sequence[Text] = ["X", "X", "X", "X", "XX"],
+    ) -> Sequence[Phrase]:
+        """Find lexical boundary errors for two stress sequences"""
+        return calculate_lbes_from_stress(target, transcript)
 
     @server.get("/api/version", response_model=Text)
     async def version():

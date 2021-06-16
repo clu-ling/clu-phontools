@@ -32,11 +32,11 @@ class Stress(Enum):
     NON_VOWEL = "-"
     """The phone is not a vowel (i.e., it cannot have a stress assignment)"""
     NO_STRESS = "0"
-    """The phone (vowel) is unstressed.  In such a case, the phonological word must be multisyllabic."""
+    """The phone (vowel) is unstressed."""
     PRIMARY = "1"
     """The phone (vowel) receives primary stress"""
     SECONDARY = "2"
-    """The phone (vowel) receives secondary stress.  In such a case, the phonological word must be multisyllabic."""
+    """The phone (vowel) receives secondary stress."""
 
     def __repr__(self) -> Text:
         return f"Stress.{self.name}"
@@ -46,7 +46,9 @@ class CoarseStress(Enum):
     """A coarse representation of stress is categorized as being either strong (S) of weak (W)."""
 
     STRONG = "S"
+    """Strong stress.  Corresponds to `clu.phontools.struct.Stress.PRIMARY` and `clu.phontools.struct.Stress.SECONDARY`"""
     WEAK = "W"
+    """Weak stress.  Corresponds to `clu.phontools.struct.Stress.NO_STRESS`"""
 
     def __repr__(self) -> Text:
         return f"CoarseStress.{self.name}"
