@@ -1,9 +1,31 @@
-from typing import List, Tuple, Text
-from . import features
+from typing import Dict, Tuple, Text, Sequence
+from pydantic import BaseModel
+from clu.phontools import features
 import numpy as np
 
 
-class ReAline(object):
+class PhonemeErrors(BaseModel):
+    """
+    stores phoneme errors.
+    """
+
+    insertions: Sequence[Tuple[Text, Text]]
+    deletions: Sequence[Tuple[Text, Text]]
+    substitutions: Sequence[Tuple[Text, Text]]
+
+    @property
+    def edit_distance(self) -> int:
+        return len(self.insertions) + len(self.deletions) + len(self.substitutions)
+
+    def to_dict(self) -> Dict[str, float]:
+        return {
+            "insertions": self.insertions,
+            "deletions": self.deletions,
+            "substitutions": self.substitutions,
+        }
+
+
+class ReAline:
     """
     Feature-based algorithm for aligning two sequences of phones.
 
@@ -41,6 +63,26 @@ class ReAline(object):
         # sanity check
         self.sanity_check()
 
+    @staticmethod
+    def phoneme_errors(alignments: Sequence[Tuple[Text, Text]]) -> PhonemeErrors:
+        """
+        Counts insertions, deletions, and substitutions according to the output of Re-Aline
+        """
+        insertions = []
+        deletions = []
+        substitutions = []
+        for pair in alignments:
+            (phone_1, phone_2) = pair
+            if phone_1 == "-":
+                insertions.append(pair)
+            elif phone_2 == "-":
+                deletions.append(pair)
+            elif phone_1 != phone_2 and phone_1 != "-" and phone_2 != "-":
+                substitutions.append(pair)
+        return PhonemeErrors(
+            insertions=insertions, deletions=deletions, substitutions=substitutions
+        )
+
     def sanity_check(self):
         """
         Sanity check that ensures necessary features are present
@@ -59,17 +101,14 @@ class ReAline(object):
                 feats.add(k)
                 feat_values.add(v)
 
-        # check that all features has an assigned salience
         assert (
             len(salience.keys() - feats) == 0
         ), f"salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}"
 
-        # FIXME: re-enable this check
         assert (
             len(similarity_matrix.keys() - feat_values) == 0
         ), f"similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}"
 
-        # FIXME: re-enable this check
         missing = [c for c in consonants if c not in feature_matrix.keys()]
         assert (
             len(missing) == 0
@@ -89,7 +128,7 @@ class ReAline(object):
         """
         return 0 if p in self.consonants else self.C_vwl
 
-    def R(self, p: Text, q: Text) -> List[Text]:
+    def R(self, p: Text, q: Text) -> Sequence[Text]:
         """
         Return relevant features for segment comparsion.
         (Kondrak 2002: 54)
@@ -127,7 +166,7 @@ class ReAline(object):
         """
         return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
 
-    def sigma_exp(self, p: Text, q: List[Text]) -> int:
+    def sigma_exp(self, p: Text, q: Sequence[Text]) -> int:
         """
         Returns score of an expansion/compression.
         (Kondrak 2002: 54)
@@ -142,7 +181,7 @@ class ReAline(object):
             - max(self.V(q1), self.V(q2))
         )
 
-    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -> List[Tuple[Text, Text]]:
+    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -> Sequence[Tuple[Text, Text]]:
         """
         Retrieve the path through the similarity matrix S starting at (i, j).
 
@@ -208,8 +247,8 @@ class ReAline(object):
         return out
 
     def align(
-        self, seq1: List[Text], seq2: List[Text], epsilon=0
-    ) -> List[List[Tuple[Text, Text]]]:
+        self, seq1: Sequence[Text], seq2: Sequence[Text], epsilon: float = 0
+    ) -> Sequence[Tuple[Text, Text]]:
         """
         Computes the alignment of two symbol sequences.
 
@@ -256,4 +295,4 @@ class ReAline(object):
             for j in range(1, n + 1):
                 if S[i, j] >= T:
                     alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
-        return alignments
+        return [pair for alignment in alignments for pair in alignment]

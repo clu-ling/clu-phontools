@@ -33,4 +33,7 @@ RUN pip install -U pytest==5.3.4
 RUN pip install -e ".[dev]"
 
 # Launch jupyter
-CMD ["/bin/bash", "launch-notebook"]
+EXPOSE 9999
+#CMD ["/bin/bash", "launch-notebook"]
+EXPOSE 8000
+CMD ["clu-phontools-rest-api"]

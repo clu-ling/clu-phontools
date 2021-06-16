@@ -1,303 +1,402 @@
 from enum import Enum
-from typing import List, Dict, Tuple, Any, Text
+from abc import ABC, abstractmethod
+from typing import List, Dict, Tuple, Any, Text, Sequence
 import re
 import itertools
 from autocorrect import Speller
-from clu.phontools.lbe import LexicalBoundaryErrorReport
+from pydantic import BaseModel
 from pydantic.dataclasses import dataclass
 import numpy as np
-import pronouncing
 
 
 Pronunciation = Tuple[Text, ...]
 Phone = Text
-Word = Text
+# type alias for a string of characters representing a word
+SimpleWord = Text
 
 
 spell = Speller(lang="en")
 
 
-@dataclass
+class Hashable(ABC):
+    """Ensures subclasses are hashable"""
+
+    @abstractmethod
+    def __hash__(self) -> int:
+        pass
+
+
 class Stress(Enum):
-    NON_VOWEL = -1
-    NO_STRESS = 0
-    PRIMARY = 1
-    SECONDARY = 2
+    """Enumeration of all possible stress values"""
+
+    NON_VOWEL = "-"
+    """The phone is not a vowel (i.e., it cannot have a stress assignment)"""
+    NO_STRESS = "0"
+    """The phone (vowel) is unstressed."""
+    PRIMARY = "1"
+    """The phone (vowel) receives primary stress"""
+    SECONDARY = "2"
+    """The phone (vowel) receives secondary stress."""
+
+    def __repr__(self) -> Text:
+        return f"Stress.{self.name}"
 
 
-class Phrase(object):
-    def possible_pronunciations(self, phrase: List[Text]) -> List[List[Text]]:
+class CoarseStress(Enum):
+    """A coarse representation of stress is categorized as being either strong (S) of weak (W)."""
+
+    STRONG = "S"
+    """Strong stress.  Corresponds to `clu.phontools.struct.Stress.PRIMARY` and `clu.phontools.struct.Stress.SECONDARY`"""
+    WEAK = "W"
+    """Weak stress.  Corresponds to `clu.phontools.struct.Stress.NO_STRESS`"""
+
+    def __repr__(self) -> Text:
+        return f"CoarseStress.{self.name}"
+
+
+class SyllableProperties(ABC):
+    """Propertie and manipulations of syllables."""
+
+    """A sequence of `clu.phontools.struct.Stress` assignments"""
+
+    def __init__(self):
+        self.stress_pattern: Sequence[Stress] = []
+
+    @property
+    def coarse_stress_pattern(self) -> Sequence[CoarseStress]:
+        """Maps a detailed stress sequence to a sequence of strong and weak stressed syllabled"""
+        summary = []
+        for stress in self.stress_pattern:
+            if stress == Stress.NO_STRESS:
+                summary.append(CoarseStress.WEAK)
+            elif stress in {Stress.PRIMARY, Stress.SECONDARY}:
+                summary.append(CoarseStress.STRONG)
+        return summary
+
+    @property
+    def coarse_stress(self) -> Text:
+        """Converts a phonological word to a sequence of S (strong) or W (weak) symbols"""
+        return "".join(cs.value for cs in self.coarse_stress_pattern)
+
+    def mask_syllables(self, mask: Text = "X") -> Text:
+        """Converts a phonological word where each syllable is represented using the mask
+
+        conceptual examples:
+        "poo" -> "X" where mask is "X"
+        "July" -> "XX" where mask is "X"
         """
-        This function takes a list of phrases and returns a list of list of cmu pronunciations
-        OUTPUT EXAMPLE:
-        [['AH0 D R EH1 S', 'HH ER0', 'M IY1 T IH0 NG', 'T AY1 M'], ['AH0 D M IH1 T', 'DH IY0', 'G IH1 R', 'B IH0 AO1 N D']]
+        return "".join(mask for cs in self.coarse_stress_pattern)
+
+    @property
+    def num_syllables(self):
+        """A syllable contains at most one stressed element (weak or strong)"""
+        return len(self.coarse_stress_pattern)
+
+
+# FIXME: consider adding PhonologicalSystem(Enum) -> ARPABET, IPA, XAMPA, etc.
+class PhonologicalWord(BaseModel, SyllableProperties, Hashable):
+    """A [phonological word](https://en.wikipedia.org/wiki/Phonological_word) composed of one or more syllables
+
+    :param phones: a sequences of phonological symbols (character, kana, etc.)
+    :param stress_pattern: a sequence of `clu.phontools.struct.Stress` assignments (one for each of the `phones`)
+    """
+
+    phones: Sequence[Phone]
+    """NOTE: For an EnglishSyllable, use `clu.phontools.lang.en.EnglishUtils.pronouncing_dict` as part of @staticmethod factory constructor"""
+    stress_pattern: Sequence[Stress]
+
+    def __iter__(self) -> Phone:
+        for phone in self.phones:
+            yield phone
+
+    def __getitem__(self, i: int) -> Phone:
+        return self.phones[i]
+
+    def __reversed__(self) -> "Phrase":
+        return PhonologicalWord(phones=self.phones[::-1])
+
+    def __contains__(self, item) -> bool:
+        return True if item in self.phones else False
+
+    def __len__(self) -> int:
+        return len(self.phones)
+
+    def __hash__(self) -> int:
+        return hash(tuple(list(self.phones) + list(self.stress_pattern)))
+
+
+class Word(BaseModel, Hashable):
+    r"""The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning.
+
+    :param word: orthographic representation of this Word
+    :param phonological_form: the phonological form of this Word
+    """
+
+    word: Text
+    phonological_form: PhonologicalWord
+
+    @property
+    def pf(self) -> PhonologicalWord:
+        """Alias for phonological_form"""
+        return self.phonological_form
+
+    def graphemes(self) -> Sequence[Text]:
+        """Individual characters/symbols that comprise the orthographic representation of the `clu.phontools.struct.Word`"""
+        return "".split(self.word)
+
+    def __hash__(self) -> int:
+        return hash((("word", self.word), ("pf", hash(self.phonological_form))))
+
+
+class Phrase(BaseModel, Hashable):
+    """A sequence of `clu.phontools.struct.Word` constitutes a Phrase.
+
+    :param words: The sequence of `clu.phontools.struct.Word` that constitutes this Phrase.
+    """
+
+    words: Sequence[Word]
+
+    @property
+    def coarse_stress(self) -> Sequence[Text]:
+        """Returns coarse stress form for each word in the Phrase"""
+        return [word.pf.coarse_stress for word in self.words]
+
+    def mask_syllables(self, mask: Text = "X") -> Sequence[Text]:
+        """Returns coarse stress form for each word in the Phrase"""
+        return [word.pf.mask_syllables(mask) for word in self.words]
+
+    def words_as_phones(self) -> Sequence[Text]:
+        """Represent `clu.phontools.struct.Phrase` using a sequence of symbols denoting the phones of each word
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            ),
+            Word(
+              word='world',
+              phonological_form=PhonologicalWord(
+                phones=('W', 'ER1', 'L', 'D'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY,
+                  Stress.NON_VOWEL,
+                  Stress.NON_VOWEL
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.to_phones()
+        # should return ['HH EH0 L OW1', 'W ER1 L D']
+        ```
         """
-        data = [np.array(i.split(",")) for i in phrase]
-        pronunciations = []
-        for item in data:
-            item = str(item[0])
-            words = re.split(r"\s+", item)
-            phone = []
-            for word in words:
-                word = spell(word).lower()
-                word = word.lower()
-                pronunciation = pronouncing.phones_for_word((word))
-                if len(pronunciation) == 1:
-                    current_phone = pronunciation[0]
-                elif len(pronunciation) == 2:
-                    current_phone = pronunciation[1]
-                else:
-                    current_phone = pronunciation[2]
-                phone.append(current_phone)
-            pronunciations.append(phone)
-        return pronunciations
+        return [" ".join(word.pf.phones) for word in self.words]
 
-    def generate_stress_assignment(
-        self, pronounciation: List[Text]
-    ) -> List[List[Text]]:
+    @property
+    def phones(self) -> Sequence[Text]:
+        """Represent `clu.phontools.struct.Phrase` using a flat sequence of symbols denoting the phones of each word
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            ),
+            Word(
+              word='world',
+              phonological_form=PhonologicalWord(
+                phones=('W', 'ER1', 'L', 'D'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY,
+                  Stress.NON_VOWEL,
+                  Stress.NON_VOWEL
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.to_phones()
+        # should return ["HH", "EH0", "L", "OW1", "W", "ER1", "L", "D"]
+        ```
         """
-        This function takes a list of list of cmu pronunciations and returns a list of lists.
-        OUTPUT EXAMPLE:
-        [['01', '0', '10', '1'], ['01', '0', '1', '01']]
+        return [phone for word in self.words for phone in word.pf.phones]
+
+    @property
+    def coarse_stress_pattern(self) -> Sequence[CoarseStress]:
+        """Returns coarse stress pattern for each word in the Phrase"""
+        return [word.pf.coarse_stress_pattern for word in self.words]
+
+    @property
+    def stress_pattern(self) -> Sequence[Stress]:
+        """Returns stress pattern for each word in the Phrase"""
+        return [word.pf.stress_pattern for word in self.words]
+
+    def match_coarse_stress_pattern(self, pattern: Text) -> bool:
+        """Checks if `clu.phontools.struct.Phrase matches` the specified coarse stress pattern (a regular expression).
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.match_coarse_stress_pattern("WS")
+        # should return True
+        ```
         """
-        stresses = []
-        for i in pronounciation:
-            stress = []
-            for pronounciations in i:
-                stress.append(pronouncing.stresses(pronounciations))
-            stresses.append(stress)
-        return stresses
+        return True if re.match(pattern, " ".join(self.coarse_stress)) else False
 
-    def arpabet_to_ipa(self) -> Dict[Text, Text]:
+    def match_masked_syllables(self, pattern: Text, mask: Text = "X") -> bool:
+        """Checks if `clu.phontools.struct.Phrase matches` the specified masked stress pattern (a regular expression).
+
+        Example:
+        ```python
+        from clu.phontools.struct import *
+        # define a phrase
+        phrase = Phrase(
+          words=[
+            Word(
+              word='hello',
+              phonological_form=PhonologicalWord(
+                phones=('HH', 'EH0', 'L', 'OW1'),
+                stress_pattern=[
+                  Stress.NON_VOWEL,
+                  Stress.NO_STRESS,
+                  Stress.NON_VOWEL,
+                  Stress.PRIMARY
+                ]
+              )
+            )
+          ]
+        )
+
+        phrase.match_masked_syllables("^XX", mask="X")
+        # should return True
+        ```
         """
-        This function outputs a dictonary:
-        KEY: Arpabet symbol
-        VALUE: ipa symbol
+        return (
+            True
+            if re.match(pattern, " ".join(self.mask_syllables(mask=mask)))
+            else False
+        )
+
+    def __iter__(self) -> Word:
+        for word in self.words:
+            yield word
+
+    def __getitem__(self, i: int) -> Word:
+        return self.words[i]
+
+    def __reversed__(self) -> "Phrase":
+        return Phrase(words=self.words[::-1])
+
+    def __contains__(self, item) -> bool:
+        return True if item in self.words else False
+
+    def __len__(self) -> int:
+        return len(self.words)
+
+    def __hash__(self) -> int:
+        return hash(tuple(hash(w) for w in self.words))
+
+
+class LangUtils(ABC):
+    """Utilities to be implemented for each language."""
+
+    @staticmethod
+    @abstractmethod
+    def phonological_word_for(phones: Pronunciation) -> PhonologicalWord:
+        """Produces a `clu.phontools.struct.PhonologicalWord` for a sequence of phones"""
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def all_possible_forms_for(word: Text) -> Sequence[Word]:
+        """Generates a list of `clu.phontools.struct.Word` from an orthographic form."""
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def all_possible_phrases_for(words: Sequence[Text]) -> Sequence[Phrase]:
+        """Generates a possible pronunciations from a sequence of words (as text)."""
+        pass
+
+    @staticmethod
+    @abstractmethod
+    def syllabify(pronunciation: Pronunciation) -> Sequence[Pronunciation]:
+        """Abstract static method to syllabify a sequence of phones that constitute the pronunciation of a single lexical item.
+
+        Example:
+        A subclass that implements this method would ...
+        ```python
+        MyEnglishSyllabifier.syllabify(('P', 'ER0', 'M', 'IH1', 'T'))
+        # should return [('P', 'ER0'), ('M', 'IH1', 'T')]
+        ```
         """
-        # FIXME: add more symbols
-        # TODO: test cases
-        arpabet_to_ipa: Dict[Text, Text] = {
-            "AA": "ɒ",
-            "AE": "æ",
-            "AH": "ʌ",
-            "AO": "ɔ",
-            "AW": "aʊ",
-            "AY": "ai",
-            "B": "b",
-            "CH": "tʃ",
-            "D": "d",
-            "DH": "ð",
-            "EH": "ɛ",
-            "ER": "ə",
-            "EY": "ei",
-            "F": "f",
-            "G": "g",
-            "HH": "h",
-            "IH": "i",
-            "IY": "I",
-            "JH": "dʒ",
-            "K": "k",
-            "L": "l",
-            "M": "m",
-            "N": "n",
-            "NG": "ŋ",
-            "OW": "oʊ",
-            "OY": "ɔi",
-            "P": "p",
-            "R": "ɹ",
-            "S": "s",
-            "SH": "ʃ",
-            "T": "t",
-            "TH": "θ",
-            "UH": "ʊ",
-            "UW": "U",
-            "V": "v",
-            "W": "w",
-            "Y": "j",
-            "Z": "z",
-            "ZH": "ʒ",
-        }
-        return arpabet_to_ipa
-
-    def string_to_arpabet(self, phrase: str) -> Tuple[List[Text]]:
-        """
-        This function takes a phrase (string) and outputs a tuple of
-        two lists. The first list is a list of cmu pronunciations and
-        the second list is a list of the corresponding stress patterns
-        OUTPUT EXAMPLE:
-        (['AH0 D R EH1 S', 'HH ER0', 'M IY1 T IH0 NG', 'T AY1 M'], ['01', '0', '10', '1'])
-        """
-        # FIXME: this should be a list of tuples.
-        words = re.split(r"\s+", phrase)
-        cmu = possible_pronunciations(words)
-        cmu_flat = [i for element in cmu for i in element]
-        stress = generate_stress_assignment(cmu)
-        stress_flat = [i for element in stress for i in element]
-        return cmu_flat, stress_flat
-
-    # return lbe errors
-    def calc_lbes(
-        self, target_stress: List[Text], transcript_stress: List[Text]
-    ) -> List[LexicalBoundaryErrorReport]:
-        """
-        This function a target stress pattern and a transcript stress pattern and returns
-        a decompisition of lexical boundary errors.
-        LBE_IS: Insertion Strong
-        LBE_IW: Insertion Weak
-        LBE_DS: Deletion Strong
-        LBE_DW: Deletion Weak
-        EXPECTED INPUT: target = ['01', '0', '10', '1'] - transcript = ['01', '0', '10', '1']
-        EXPECTED OUTPUT: (0.0, 1.0, 1.0, 0.0)
-        """
-        if len("".join(transcript_stress)) >= 7 or len("".join(transcript_stress)) <= 5:
-            return None, None, None, None
-        if len("".join(transcript_stress)) == 6:
-            LBE_IS_count = 0
-            LBE_IW_count = 0
-            LBE_DS_count = 0
-            LBE_DW_count = 0
-
-            loc_target_stress = []
-            # print(loc_target_stress)
-            for ind_stress in range(len(target_stress)):
-                if ind_stress == 0:
-                    loc_target_stress.append(len(target_stress[ind_stress]))
-                else:
-                    loc_target_stress.append(
-                        len(target_stress[ind_stress]) + loc_target_stress[-1]
-                    )
-
-            loc_transcript_stress = []
-            for ind_stress in range(len(transcript_stress)):
-                if ind_stress == 0:
-                    loc_transcript_stress.append(len(transcript_stress[ind_stress]))
-                else:
-                    loc_transcript_stress.append(
-                        len(transcript_stress[ind_stress]) + loc_transcript_stress[-1]
-                    )
-
-            concat_target_stress = "".join(target_stress)
-            # print(concat_target_stress)
-            # print(target_stress)
-            # print(transcript_stress)
-            for stress in loc_transcript_stress:
-                if stress not in loc_target_stress:
-                    # print(concat_target_stress)
-                    # print(stress)
-                    if concat_target_stress[stress] == "1":
-                        LBE_IS_count += 1
-                    elif concat_target_stress[stress] == "0":
-                        LBE_IW_count += 1
-            for stress in loc_target_stress:
-                if stress not in loc_transcript_stress:
-                    if concat_target_stress[stress] == "1":
-                        LBE_DS_count += 1
-                    elif concat_target_stress[stress] == "0":
-                        LBE_DW_count += 1
-            LBE_IS = float(LBE_IS_count)
-            LBE_IW = float(LBE_IW_count)
-            LBE_DS = float(LBE_DS_count)
-            LBE_DW = float(LBE_DW_count)
-        s = LBE_IS, LBE_IW, LBE_DS, LBE_DW
-        return s
+        pass
 
 
-if __name__ == "__main__":
-    phrases = ["address her meeting time", "admit the gear beyond"]
-    p = Phrase()
-
-    p = possible_pronunciations(phrases)
-    s = generate_stress_assignment(p)
-    a = arpabet_to_ipa()
-    ph = "address her meeting time"
-    b = processTarget(ph)
-    print(b)
-    a = processTarget(ph)
-    print(a[1])
-    # FIXME: write test cases
-    # DW: deletion before week (her) - this is the lexical boundary before (her)
-    target = ["01", "0", "10", "1"]  # address her meeting time
-    transcript = ["010", "10", "1"]  # adjusted reading time
-    transcript = ["1", "0", "0", "10", "1"]
-    transcript = ["01", "01", "0", "1"]
-    # insertion before strong syllable
-    IS = []
-    # insertion before week syllable
-    IW = []
-    # deletion before strong syllable
-    DS = []
-    # deletion before week syllable
-    DW = []
-    iS, iW, dS, dW = calcLBE(target, transcript)
-    IS.append(iS)
-    IW.append(iW)
-    DS.append(dS)
-    DW.append(dW)
-    cc = [i for i in target if i in transcript]
-    print(cc)
-    hh = {"01": "WS", "0": "W", "10": "SW", "1": "S"}
-    for i in target:
-        if i == "0":
-            print(i, "W")
-        elif i == "1":
-            print(i, "S")
-        elif i == "10":
-            print(i, "SW")
-        elif i == "01":
-            print(i, "WS")
-    if len(target) == len(transcript):
-        c = zip(target, transcript)
-        print(type(c))
-        for i in c:
-            if i[0] == i[1]:
-                print(i, "No lexical boundary")
-            elif i[0] != i[1]:
-                if len(i[0]) > len(i[1]):
-                    print(i, "There is a lexical boundary: Deletion")
-                else:
-                    print(i, "There is a lexical boundary: Insertion")
-    else:
-        print("How are you, ASU?")
-
-
-#         target = 'address'
-#         transcript = 'add is'
-#         ReAline.align(target, transcript)
-
-
-# for this small job of deletion before weak:
-#     WS (01) + W (0) > WSW (010)
-# firs loop for stress pattern in target for WS 01 followed by W 0
-# print True if found in target
-# loop in transcribed to find the 010
-
-
-# for key in a_dict:
-# ...     print(key, '->', a_dict[key])
-
-# indtance of deletion before strong
-# divide across retreat = ['01', '01', '01']
-# 'the body cross returned' = ['0', '10', '1', '01']
-# IS 01 > 0 and 1 added to next syllable divide > the body
-#  DW 01 > 0 accross > cross
-
-# index[0]01 index[1]01 index[2] 01
-# idex[0]0 index[1]0 index[2]1 index[3] 01
-
-
-# if there is a space after 0 and before 1, this I
-# if there is a
-
-# Q1 Is there one index in target mapped to multiple indecies in transcribed?
-#     YES, Example 01 > 0 1  or 10 > 1 0
-#     example: address  her ['01', '0'] in  'address her meeting time' address ['01']
-#         is mapped to 0
-# Q2 Is there one index in transcribed mapped to multiple indecies in trarget?
-#     example: address  her ['01', '0'] in  'address her meeting time' address ['01']
-#         is mapped to index[0]  in 'adjusted reading time' adjusted = WSW 010
-
-
-# [49]: for i in transcript:
-#     ...: for k, v in d.items():
-#     ...: if i == k:
-#     ...: print(i, v)
+# class StressSequence:
+#     """A sequence of stress assignments.
+#     """
+#     sequence: List[Stress]
+#
+# class SimpleStressSequence:
+#    sequence:
+# stress = [str(p.value) for p in pron]
+# ['-', '0', '-', '1', '-']
+# syllable_structure =
+# pron -> stress -> syllable counts
+# ['-', '0', '-', '1', '-'] -> "WS"
+# First token has two syllables: Strong Weak
+# ["SW", "S", "W", "SW"]
+# Each X represents a syllable
+# ["X" ,"X" ,"X", "X", "XX"]
+# mask_syllable_stress(["SW", "S", "W", "SW"]) -> ["XX", "X", "X", "XX"]
+# Output:
+# second token of transcript (1) inserts before weak syllable
+# [(1, "IW")]

@@ -1,0 +1,18 @@
+# manually run via pre-commit run --all-files
+# alternatively, pre-commit run <hook_id> to run a specific hook
+default_language_version:
+  python: python3.8
+minimum_pre_commit_version: 2.9.2
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+    - id: check-yaml
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: stable
+  hooks:
+    - id: black
+      language_version: python3

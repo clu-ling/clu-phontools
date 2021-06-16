@@ -1,30 +1,9 @@
 #!/usr/bin/env python
 import numpy as np
 from pydantic.dataclasses import dataclass
+from pydantic import BaseModel
 from typing import Dict, List, Tuple, Text
-from clu.phontools.realine import ReAline
-
-
-@dataclass
-class PhonemeErrors:
-    """
-    stores phoneme errors.
-    """
-
-    insertions: List[Tuple[Text, Text]]
-    deletions: List[Tuple[Text, Text]]
-    substitutions: List[Tuple[Text, Text]]
-
-    @property
-    def edit_distance(self) -> int:
-        return len(self.insertions) + len(self.deletions) + len(self.substitutions)
-
-    def to_dict(self) -> Dict[str, float]:
-        return {
-            "insertions": self.insertions,
-            "deletions": self.deletions,
-            "substitutions": self.substitutions,
-        }
+from clu.phontools.alignment.realine import ReAline
 
 
 class Metrics(object):
@@ -55,26 +34,6 @@ class Metrics(object):
         TODO: add docstring
         """
         return [Metrics.similarity(i) for i in alignments]
-
-    @staticmethod
-    def phoneme_errors(alignments: List[Tuple[str, str]]):
-        """
-        TODO: add docstring
-        """
-        insertions = []
-        deletions = []
-        substitutions = []
-        for pair in alignments:
-            (phone_1, phone_2) = pair
-            if phone_1 == "-":
-                insertions.append(pair)
-            elif phone_2 == "-":
-                deletions.append(pair)
-            elif phone_1 != phone_2 and phone_1 != "-" and phone_2 != "-":
-                substitutions.append(pair)
-        return PhonemeErrors(
-            insertions=insertions, deletions=deletions, substitutions=substitutions
-        )
 
 
 # alignments = [('æ', 'æ'), ('d', 'd'), ('v', 'v'), ('æ', 'æ'), ('n', 'n'), ('s', 's'), ('b', 'b'), ('ʌ', 'ʌ'), ('t', 't'), ('-', 's'), ('æ', 'ɛ'), ('t', 't'), ('ə', 'ə'), ('p', '-'), ('i', 'i'), ('l', 'l')]

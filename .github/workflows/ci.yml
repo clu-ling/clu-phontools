@@ -33,7 +33,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     - name: Login to DockerHub
-      uses: docker/login-action@v1 
+      uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -50,13 +50,19 @@ jobs:
 #        docker buildx build --output=type=docker --platform linux/arm64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:arm64" .
     # Tests
     - name: "Tests and coverage (experiments)"
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
       run: |
-        docker run -i "parsertongue/clu-phontools:latest" green -vvv /app
+        docker run -i "${ORG}/${IMAGE_NAME}:latest" green -vvv /app
     # Type checks
     - name: "Type checks (clu-phontools)"
       continue-on-error: true
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
       run : |
-        docker run -i "parsertongue/clu-phontools:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
+        docker run -i "${ORG}/${IMAGE_NAME}:latest" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
     # publish
     - name: "Publish docker image (clu-phontools image)"
       env:
@@ -65,8 +71,28 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: docker push --all-tags "${ORG}/${IMAGE_NAME}"
 
+    # code formatting and linting
+    - name: "Code formatting & linting"
+      continue-on-error: true
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: docker run -i "${ORG}/${IMAGE_NAME}" black --check /app
 
-    - name: Deploy
+    # docs
+    - name: "Create documentation (API docs)"
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" pdoc --html -c latex_math=True --force --output-dir docs/api clu
+    # docs
+    - name: "Create documentation (other)"
+      env:
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
+      run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" mkdocs build -c
+      #run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" portray as_html
+    - name: Deploy docs
       if: github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v3
       with:

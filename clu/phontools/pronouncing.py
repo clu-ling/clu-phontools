@@ -1,29 +1,121 @@
-from typing import Dict, Text, Tuple, List, Optional
-from clu.phontools.struct import Pronunciation, Word, Stress
+from abc import ABC, abstractmethod
+from typing import Dict, Text, Tuple, List, Optional, Sequence, Callable
+from clu.phontools.struct import Pronunciation, SimpleWord, Stress
 import os
 
 
-# FIXME: add APRAbetToIPA mappings
-arpabet_to_ipa: Dict[str, str] = {}
-
-ipa_to_arpabet = {v: k for k, v in arpabet_to_ipa.items()}
+ConverterFunc = Callable[[Text], Text]
+identity: Callable[[Text], Text] = lambda x: x
 
 
-class PronouncingDict(dict):
+class ConverterUtils:
+
+    """Converter utilities to map between phonological symbol sets"""
+
+    # FIXME: add more symbols
+    # TODO: test cases
+    arpabet_to_ipa_dict: Dict[Text, Text] = {
+        "AA": "ɒ",
+        "AE": "æ",
+        # FIXME: this should translate to "ʌ" OR "ə" depending on the stress assignment
+        "AH": "ʌ",
+        "AO": "ɔ",
+        "AW": "aʊ",
+        "AY": "ai",
+        "B": "b",
+        "CH": "tʃ",
+        "D": "d",
+        "DH": "ð",
+        "EH": "ɛ",
+        "ER": "ə",
+        "EY": "ei",
+        "F": "f",
+        "G": "g",
+        "HH": "h",
+        "IH": "i",
+        "IY": "I",
+        "JH": "dʒ",
+        "K": "k",
+        "L": "l",
+        "M": "m",
+        "N": "n",
+        "NG": "ŋ",
+        "OW": "oʊ",
+        "OY": "ɔi",
+        "P": "p",
+        "R": "ɹ",
+        "S": "s",
+        "SH": "ʃ",
+        "T": "t",
+        "TH": "θ",
+        "UH": "ʊ",
+        "UW": "U",
+        "V": "v",
+        "W": "w",
+        "Y": "j",
+        "Z": "z",
+        "ZH": "ʒ",
+    }
+    """Dictionary mapping arpabet symbols to IPA"""
+
+    # reverse mapping
+    # ipa_to_arpabet_dict = {v: k for k, v in arpabet_to_ipa.items()}
+
+    def arpabet_to_ipa(symbol: Text) -> Text:
+        """Converts an Arpabet symbol to IPA
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_arpa = ('B', 'EH1', 'L')
+        bell_ipa = tuple(ConverterUtils.arpabet_to_ipa(symb) for symb in bell_arpa)
+        # should produce ('b', 'ɛ', 'l')
+        """
+        stress: Optional[Text] = (
+            None
+            if symbol[-1]
+            not in {
+                Stress.PRIMARY.value,
+                Stress.SECONDARY.value,
+                Stress.NO_STRESS.value,
+            }
+            else symbol[-1]
+        )
+        base_form: Text = symbol if not stress else symbol[:-1]
+        return ConverterUtils.arpabet_to_ipa_dict.get(base_form, base_form)
+
+    def ipa_to_arpabet(symbol: Text) -> Text:
+        """Converts an Arpabet symbol to IPA
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_ipa = ('b', 'ɛ', 'l')
+        bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)
+        # should produce ('B', 'EH', 'L')
+        """
+        for (arpa, ipa) in ConverterUtils.arpabet_to_ipa_dict.items():
+            if ipa == symbol:
+                return arpa
+        # in case of failure, parrot back symbol
+        return symbol
+
+
+class PronouncingDict(dict, ABC):
     """
     Maps tuples of pronunciations -> lexical entries
     """
 
-    def __init__(self, pairs: List[Tuple[Word, Pronunciation]] = []):
+    def __init__(self, pairs: List[Tuple[SimpleWord, Pronunciation]] = []):
         self._dict: Dict[Word, List[Pronunciation]] = self._generate_dict(pairs)
 
-    def stress_for(self, pronunciation: Pronunciation) -> List[int]:
-        """
-        Subclasses of PronunciationDict should implement stress_for
-        """
-        return []
+    @abstractmethod
+    def stress_for(self, pronunciation: Pronunciation) -> Sequence[Stress]:
+        """Returns the stress assignment for each phone in the pronunciation
 
-    def _preprocess_key(self, key: Word) -> Word:
+        Subclasses of `clu.phontools.pronouncing.PronouncingDict` should implement `clu.phontools.pronouncing.PronouncingDict.stress_for`
+        """
+        pass
+
+    def _preprocess_key(self, key: SimpleWord) -> SimpleWord:
         return key.lower()
 
     def keys(self):
@@ -41,21 +133,21 @@ class PronouncingDict(dict):
     def __len__(self):
         return len(self._dict)
 
-    def get(self, key: Text) -> Word:
+    def get(self, key: Text) -> SimpleWord:
         return self._dict.get(self._preprocess_key(key), [])
 
-    def add(self, key: Pronunciation, value: Word) -> None:
+    def add(self, key: Pronunciation, value: SimpleWord) -> None:
         self._dict[self._preprocess_key(key)] = value
 
-    def __getitem__(self, key: Word) -> List[Pronunciation]:
+    def __getitem__(self, key: SimpleWord) -> List[Pronunciation]:
         return self._dict.__getitem__(key)
 
-    def __setitem__(self, key: Word, value: List[Pronunciation]) -> None:
+    def __setitem__(self, key: SimpleWord, value: List[Pronunciation]) -> None:
         self._dict.__setitem__(self, self._preprocess_key(key), value)
 
     def _generate_dict(
-        self, pairs: List[Tuple[Word, Pronunciation]]
-    ) -> Dict[Word, List[Pronunciation]]:
+        self, pairs: List[Tuple[SimpleWord, Pronunciation]]
+    ) -> Dict[SimpleWord, List[Pronunciation]]:
         pronounciation_dict = dict()
         for (k, v) in pairs:
             key = self._preprocess_key(k)
@@ -66,13 +158,11 @@ class PronouncingDict(dict):
 
 
 class CMUPronouncingDict(PronouncingDict):
-    def __init__(self, pairs: List[Tuple[Word, Pronunciation]] = []):
+    def __init__(self, pairs: List[Tuple[SimpleWord, Pronunciation]] = []):
         super().__init__(pairs)
 
-    def stress_for(self, pronunciation: Pronunciation) -> List[Stress]:
-        """
-        Subclasses of PronunciationDict should implement stress_for
-        """
+    def stress_for(self, pronunciation: Pronunciation) -> Sequence[Stress]:
+        """Returns the stress assignment for each phone in the pronunciation"""
         stress_pattern = []
         for phone in pronunciation:
             assignment = Stress.NON_VOWEL
@@ -94,7 +184,7 @@ class CMUPronouncingDict(PronouncingDict):
 
     @staticmethod
     def from_cmu_dict(
-        filepath: Optional[str] = None, converter: Dict[str, str] = arpabet_to_ipa
+        filepath: Optional[str] = None, converter: ConverterFunc = identity
     ) -> "CMUPronouncingDict":
         cmudict_file = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "resources", "cmudict"
@@ -116,6 +206,6 @@ class CMUPronouncingDict(PronouncingDict):
                     pronunciation = "".join(res[1:]).split(" ")
                     # ARPAbet pronunciation.
                     # optionally convert to provided format
-                    value = tuple(converter.get(phon, phon) for phon in pronunciation)
+                    value = tuple(converter(phon) for phon in pronunciation)
                     pairs.append((key, value))
         return CMUPronouncingDict(pairs)
