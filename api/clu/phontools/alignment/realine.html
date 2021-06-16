@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>clu.phontools.alignment.realine API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>clu.phontools.alignment.realine</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import Dict, Tuple, Text, Sequence
+from pydantic import BaseModel
+from clu.phontools import features
+import numpy as np
+
+
+class PhonemeErrors(BaseModel):
+    &#34;&#34;&#34;
+    stores phoneme errors.
+    &#34;&#34;&#34;
+
+    insertions: Sequence[Tuple[Text, Text]]
+    deletions: Sequence[Tuple[Text, Text]]
+    substitutions: Sequence[Tuple[Text, Text]]
+
+    @property
+    def edit_distance(self) -&gt; int:
+        return len(self.insertions) + len(self.deletions) + len(self.substitutions)
+
+    def to_dict(self) -&gt; Dict[str, float]:
+        return {
+            &#34;insertions&#34;: self.insertions,
+            &#34;deletions&#34;: self.deletions,
+            &#34;substitutions&#34;: self.substitutions,
+        }
+
+
+class ReAline:
+    &#34;&#34;&#34;
+    Feature-based algorithm for aligning two sequences of phones.
+
+    Based on Kondrak 2002
+    &#34;&#34;&#34;
+
+    inf = float(&#34;inf&#34;)
+
+    def __init__(
+        self,
+        similarity_matrix=features.similarity_matrix,
+        feature_matrix=features.feature_matrix,
+        salience=features.salience,
+        consonants=features.consonants,
+        C_skip=features.C_skip,
+        C_vwl=features.C_vwl,
+        C_sub=features.C_sub,
+        C_exp=features.C_exp,
+        R_c=features.R_c,
+        R_v=features.R_v,
+    ):
+        self.similarity_matrix = similarity_matrix
+        self.feature_matrix = feature_matrix
+        self.consonants = consonants
+        self.salience = salience
+        self.C_skip = C_skip
+        # weight assigned to vowel, consonant pairs
+        self.C_vwl = C_vwl
+        self.C_sub = C_sub
+        self.C_exp = C_exp
+        # List of relevant features for consonants
+        self.R_c = R_c
+        # List of relevant features for vowels
+        self.R_v = R_v
+        # sanity check
+        self.sanity_check()
+
+    @staticmethod
+    def phoneme_errors(alignments: Sequence[Tuple[Text, Text]]) -&gt; PhonemeErrors:
+        &#34;&#34;&#34;
+        Counts insertions, deletions, and substitutions according to the output of Re-Aline
+        &#34;&#34;&#34;
+        insertions = []
+        deletions = []
+        substitutions = []
+        for pair in alignments:
+            (phone_1, phone_2) = pair
+            if phone_1 == &#34;-&#34;:
+                insertions.append(pair)
+            elif phone_2 == &#34;-&#34;:
+                deletions.append(pair)
+            elif phone_1 != phone_2 and phone_1 != &#34;-&#34; and phone_2 != &#34;-&#34;:
+                substitutions.append(pair)
+        return PhonemeErrors(
+            insertions=insertions, deletions=deletions, substitutions=substitutions
+        )
+
+    def sanity_check(self):
+        &#34;&#34;&#34;
+        Sanity check that ensures necessary features are present
+        &#34;&#34;&#34;
+
+        similarity_matrix = self.similarity_matrix
+        feature_matrix = self.feature_matrix
+        salience = self.salience
+        consonants = self.consonants
+
+        # ensure all salience values are found in feature matrix
+        feats = set()
+        feat_values = set()
+        for phone_fm in feature_matrix.values():
+            for (k, v) in phone_fm.items():
+                feats.add(k)
+                feat_values.add(v)
+
+        assert (
+            len(salience.keys() - feats) == 0
+        ), f&#34;salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}&#34;
+
+        assert (
+            len(similarity_matrix.keys() - feat_values) == 0
+        ), f&#34;similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}&#34;
+
+        missing = [c for c in consonants if c not in feature_matrix.keys()]
+        assert (
+            len(missing) == 0
+        ), f&#34;Some consonants missing from feature_matrix: {missing}&#34;
+
+    def sigma_skip(self, p: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of an indel of P.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return self.C_skip
+
+    def V(self, p: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Return vowel weight if P is vowel.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return 0 if p in self.consonants else self.C_vwl
+
+    def R(self, p: Text, q: Text) -&gt; Sequence[Text]:
+        &#34;&#34;&#34;
+        Return relevant features for segment comparsion.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        consonants = self.consonants
+
+        return self.R_c if p in consonants or q else self.R_v
+
+    def diff(self, p: Text, q: Text, f: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns difference between phonetic segments P and Q for feature F.
+        (Kondrak 2002: 52, 54)
+        &#34;&#34;&#34;
+        p_features, q_features = self.feature_matrix[p], self.feature_matrix[q]
+        return abs(
+            self.similarity_matrix[p_features[f]]
+            - self.similarity_matrix[q_features[f]]
+        )
+
+    def delta(self, p: Text, q: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Return weighted sum of difference between P and Q.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        features = self.R(p, q)
+        total = 0
+        for f in features:
+            total += self.diff(p, q, f) * self.salience[f]
+        return total
+
+    def sigma_sub(self, p: Text, q: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of a substitution of P with Q.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
+
+    def sigma_exp(self, p: Text, q: Sequence[Text]) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of an expansion/compression.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        q1 = q[0]
+        q2 = q[1]
+        return (
+            self.C_exp
+            - self.delta(p, q1)
+            - self.delta(p, q2)
+            - self.V(p)
+            - max(self.V(q1), self.V(q2))
+        )
+
+    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -&gt; Sequence[Tuple[Text, Text]]:
+        &#34;&#34;&#34;
+        Retrieve the path through the similarity matrix S starting at (i, j).
+
+        :return: Alignment of seq1 and seq2
+        &#34;&#34;&#34;
+        if S[i, j] == 0:
+            return out
+        else:
+            if (
+                j &gt; 1
+                and S[i - 1, j - 2] + self.sigma_exp(seq1[i - 1], seq2[j - 2 : j]) + s
+                &gt;= T
+            ):
+                out.insert(0, (seq1[i - 1], seq2[j - 2 : j]))
+                self._retrieve(
+                    i - 1,
+                    j - 2,
+                    s + self.sigma_exp(seq1[i - 1], seq2[j - 2 : j]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+            elif (
+                i &gt; 1
+                and S[i - 2, j - 1] + self.sigma_exp(seq2[j - 1], seq1[i - 2 : i]) + s
+                &gt;= T
+            ):
+                out.insert(0, (seq1[i - 2 : i], seq2[j - 1]))
+                self._retrieve(
+                    i - 2,
+                    j - 1,
+                    s + self.sigma_exp(seq2[j - 1], seq1[i - 2 : i]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+            elif S[i, j - 1] + self.sigma_skip(seq2[j - 1]) + s &gt;= T:
+                out.insert(0, (&#34;-&#34;, seq2[j - 1]))
+                self._retrieve(
+                    i, j - 1, s + self.sigma_skip(seq2[j - 1]), S, T, seq1, seq2, out
+                )
+            elif S[i - 1, j] + self.sigma_skip(seq1[i - 1]) + s &gt;= T:
+                out.insert(0, (seq1[i - 1], &#34;-&#34;))
+                self._retrieve(
+                    i - 1, j, s + self.sigma_skip(seq1[i - 1]), S, T, seq1, seq2, out
+                )
+            elif S[i - 1, j - 1] + self.sigma_sub(seq1[i - 1], seq2[j - 1]) + s &gt;= T:
+                out.insert(0, (seq1[i - 1], seq2[j - 1]))
+                self._retrieve(
+                    i - 1,
+                    j - 1,
+                    s + self.sigma_sub(seq1[i - 1], seq2[j - 1]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+        return out
+
+    def align(
+        self, seq1: Sequence[Text], seq2: Sequence[Text], epsilon: float = 0
+    ) -&gt; Sequence[Tuple[Text, Text]]:
+        &#34;&#34;&#34;
+        Computes the alignment of two symbol sequences.
+
+        :param seq1: a sequence of symbols
+        :param seq2: a sequence of symbols
+
+        :type epsilon: float (0.0 to 1.0)
+        :param epsilon: Adjusts threshold similarity score for near-optimal alignments
+        :return: Alignment(s) of seq1 and seq2
+        (Kondrak 2002: 51)
+        &#34;&#34;&#34;
+
+        assert 0.0 &lt;= epsilon &lt;= 1.0, &#34;Epsilon must be between 0.0 and 1.0.&#34;
+
+        m = len(seq1)
+        n = len(seq2)
+        # This includes Kondrak&#39;s initialization of row 0 and column 0 to all 0s.
+        S = np.zeros((m + 1, n + 1), dtype=float)
+        # If i &lt;= 1 or j &lt;= 1, don&#39;t allow expansions as it doesn&#39;t make sense,
+        # and breaks array and string indices. Make sure they never get chosen
+        # by setting them to -inf.
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                edit1 = S[i - 1, j] + self.sigma_skip(seq1[i - 1])
+                edit2 = S[i, j - 1] + self.sigma_skip(seq2[j - 1])
+                edit3 = S[i - 1, j - 1] + self.sigma_sub(seq1[i - 1], seq2[j - 1])
+                if i &gt; 1:
+                    edit4 = S[i - 2, j - 1] + self.sigma_exp(
+                        seq2[j - 1], seq1[i - 2 : i]
+                    )
+                else:
+                    edit4 = -ReAline.inf
+                if j &gt; 1:
+                    edit5 = S[i - 1, j - 2] + self.sigma_exp(
+                        seq1[i - 1], seq2[j - 2 : j]
+                    )
+                else:
+                    edit5 = -ReAline.inf
+                S[i, j] = max(edit1, edit2, edit3, edit4, edit5, 0)
+        T = (1 - epsilon) * np.amax(S)  # Threshold score for near-optimal alignments
+
+        alignments = []
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if S[i, j] &gt;= T:
+                    alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
+        return [pair for alignment in alignments for pair in alignment]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors"><code class="flex name class">
+<span>class <span class="ident">PhonemeErrors</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>stores phoneme errors.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PhonemeErrors(BaseModel):
+    &#34;&#34;&#34;
+    stores phoneme errors.
+    &#34;&#34;&#34;
+
+    insertions: Sequence[Tuple[Text, Text]]
+    deletions: Sequence[Tuple[Text, Text]]
+    substitutions: Sequence[Tuple[Text, Text]]
+
+    @property
+    def edit_distance(self) -&gt; int:
+        return len(self.insertions) + len(self.deletions) + len(self.substitutions)
+
+    def to_dict(self) -&gt; Dict[str, float]:
+        return {
+            &#34;insertions&#34;: self.insertions,
+            &#34;deletions&#34;: self.deletions,
+            &#34;substitutions&#34;: self.substitutions,
+        }</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+<li>pydantic.utils.Representation</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors.deletions"><code class="name">var <span class="ident">deletions</span> : Sequence[Tuple[str, str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors.insertions"><code class="name">var <span class="ident">insertions</span> : Sequence[Tuple[str, str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors.substitutions"><code class="name">var <span class="ident">substitutions</span> : Sequence[Tuple[str, str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors.edit_distance"><code class="name">var <span class="ident">edit_distance</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def edit_distance(self) -&gt; int:
+    return len(self.insertions) + len(self.deletions) + len(self.substitutions)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.PhonemeErrors.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict[str, float]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self) -&gt; Dict[str, float]:
+    return {
+        &#34;insertions&#34;: self.insertions,
+        &#34;deletions&#34;: self.deletions,
+        &#34;substitutions&#34;: self.substitutions,
+    }</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline"><code class="flex name class">
+<span>class <span class="ident">ReAline</span></span>
+<span>(</span><span>similarity_matrix={'bilabial': 1.0, 'labiodental': 0.95, 'dental': 0.9, 'alveolar': 0.85, 'retroflex': 0.8, 'palato-alveolar': 0.75, 'palatal': 0.7, 'velar': 0.6, 'uvular': 0.5, 'pharyngeal': 0.3, 'glottal': 0.1, 'labiovelar': 1.0, 'vowel': -1.0, 'stop': 1.0, 'affricate': 0.9, 'fricative': 0.85, 'trill': 0.7, 'tap': 0.65, 'approximant': 0.6, 'high': 1.0, 'mid': 0.5, 'low': 0.0, 'vowel2': 0.5, 'front': 1.0, 'central': 0.5, 'back': 0.0, 'plus': 1.0, 'minus': 0.0, 'lexical': 0.0}, feature_matrix={'tʃ': {'place': 'palato-alveolar', 'manner': 'affricate', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'dʒ': {'place': 'palato-alveolar', 'manner': 'affricate', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'p': {'place': 'bilabial', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'b': {'place': 'bilabial', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 't': {'place': 'alveolar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'd': {'place': 'alveolar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʈ': {'place': 'retroflex', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɖ': {'place': 'retroflex', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'c': {'place': 'palatal', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɟ': {'place': 'palatal', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'k': {'place': 'velar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'g': {'place': 'velar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɡ': {'place': 'velar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'q': {'place': 'uvular', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɢ': {'place': 'uvular', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʔ': {'place': 'glottal', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'm': {'place': 'bilabial', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɱ': {'place': 'labiodental', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'n': {'place': 'alveolar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɳ': {'place': 'retroflex', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɲ': {'place': 'palatal', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ŋ': {'place': 'velar', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɴ': {'place': 'uvular', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'N': {'place': 'uvular', 'manner': 'stop', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'plus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʙ': {'place': 'bilabial', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'r': {'place': 'alveolar', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʀ': {'place': 'uvular', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'R': {'place': 'uvular', 'manner': 'trill', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɾ': {'place': 'alveolar', 'manner': 'tap', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɽ': {'place': 'retroflex', 'manner': 'tap', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɸ': {'place': 'bilabial', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'β': {'place': 'bilabial', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'f': {'place': 'labiodental', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'v': {'place': 'labiodental', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'θ': {'place': 'dental', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ð': {'place': 'dental', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 's': {'place': 'alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'z': {'place': 'alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʃ': {'place': 'palato-alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʒ': {'place': 'palato-alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʂ': {'place': 'retroflex', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʐ': {'place': 'retroflex', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ç': {'place': 'palatal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʝ': {'place': 'palatal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'x': {'place': 'velar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɣ': {'place': 'velar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'χ': {'place': 'uvular', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʁ': {'place': 'uvular', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ħ': {'place': 'pharyngeal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ʕ': {'place': 'pharyngeal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'h': {'place': 'glottal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɦ': {'place': 'glottal', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɬ': {'place': 'alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'minus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'plus', 'aspirated': 'minus'}, 'ɮ': {'place': 'alveolar', 'manner': 'fricative', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'plus', 'aspirated': 'minus'}, 'ʋ': {'place': 'labiodental', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɹ': {'place': 'alveolar', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɻ': {'place': 'retroflex', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'plus', 'lateral': 'minus', 'aspirated': 'minus'}, 'j': {'place': 'palatal', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɰ': {'place': 'velar', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'l': {'place': 'alveolar', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'plus', 'aspirated': 'minus'}, 'w': {'place': 'labiovelar', 'manner': 'approximant', 'syllabic': 'minus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'aspirated': 'minus'}, 'ɑ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ɑ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ɑ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ɑ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɪ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɪ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɪ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'i': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'i1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'i2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'i3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'y': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'y1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'y2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'y3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'e': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'e1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'e2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'e3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'E': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'E1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'E2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'E3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ø': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ø1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ø2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ø3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɛ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɛ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɛ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɛ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'œ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'œ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'œ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'œ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'front', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'æ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'æ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'æ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'æ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'a': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'a1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'a2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'a3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'A': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'A1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'A2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'A3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ɨ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɨ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɨ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɨ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ʉ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʉ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʉ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʉ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'central', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ə': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ə1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ə2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ə3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'central', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'u': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'u1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'u2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'u3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'U': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'U1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'U2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'U3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'o': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'o1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'o2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'o3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'O': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'O1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'O2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'O3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'ɔ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'ɔ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'ɔ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'ɔ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'plus', 'long': 'plus', 'aspirated': 'minus'}, 'ɒ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɒ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɒ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ɒ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'low', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'I': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'I1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'I2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'I3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'front', 'round': 'minus', 'long': 'plus', 'aspirated': 'minus'}, 'ʌ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ʌ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ʌ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ʌ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'mid', 'back': 'back', 'round': 'minus', 'long': 'minus', 'aspirated': 'minus'}, 'ʊ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʊ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʊ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ʊ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɜ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɜ1': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɜ2': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɜ3': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɑɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɑi': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɔɪ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'ɑʊ': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus'}, 'LB': {'place': 'vowel', 'manner': 'vowel2', 'syllabic': 'plus', 'voice': 'plus', 'nasal': 'minus', 'retroflex': 'minus', 'lateral': 'minus', 'high': 'high', 'back': 'back', 'round': 'plus', 'long': 'minus', 'aspirated': 'minus', 'boundary': 'lexical'}}, salience={'syllabic': 5, 'place': 40, 'manner': 50, 'voice': 5, 'nasal': 20, 'retroflex': 10, 'lateral': 10, 'aspirated': 5, 'long': 0, 'high': 3, 'back': 2, 'round': 2, 'boundary': 0}, consonants=['N', 'R', 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x', 'z', 'ç', 'ð', 'ħ', 'ŋ', 'ɖ', 'ɟ', 'ɢ', 'ɣ', 'ɦ', 'ɬ', 'ɮ', 'ɰ', 'ɱ', 'ɲ', 'ɳ', 'ɴ', 'ɸ', 'ɹ', 'ɻ', 'ɽ', 'ɾ', 'ʀ', 'ʁ', 'ʂ', 'ʃ', 'ʈ', 'ʋ', 'ʒ', 'ʔ', 'ʕ', 'ʙ', 'ʝ', 'β', 'θ', 'χ', 'ʐ', 'w', 'ɜ', 'ɡ', 'LB'], C_skip=10, C_vwl=5, C_sub=35, C_exp=45, R_c=['aspirated', 'lateral', 'manner', 'nasal', 'place', 'retroflex', 'syllabic', 'voice'], R_v=['back', 'lateral', 'long', 'manner', 'nasal', 'place', 'retroflex', 'round', 'syllabic', 'voice'])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Feature-based algorithm for aligning two sequences of phones.</p>
+<p>Based on Kondrak 2002</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ReAline:
+    &#34;&#34;&#34;
+    Feature-based algorithm for aligning two sequences of phones.
+
+    Based on Kondrak 2002
+    &#34;&#34;&#34;
+
+    inf = float(&#34;inf&#34;)
+
+    def __init__(
+        self,
+        similarity_matrix=features.similarity_matrix,
+        feature_matrix=features.feature_matrix,
+        salience=features.salience,
+        consonants=features.consonants,
+        C_skip=features.C_skip,
+        C_vwl=features.C_vwl,
+        C_sub=features.C_sub,
+        C_exp=features.C_exp,
+        R_c=features.R_c,
+        R_v=features.R_v,
+    ):
+        self.similarity_matrix = similarity_matrix
+        self.feature_matrix = feature_matrix
+        self.consonants = consonants
+        self.salience = salience
+        self.C_skip = C_skip
+        # weight assigned to vowel, consonant pairs
+        self.C_vwl = C_vwl
+        self.C_sub = C_sub
+        self.C_exp = C_exp
+        # List of relevant features for consonants
+        self.R_c = R_c
+        # List of relevant features for vowels
+        self.R_v = R_v
+        # sanity check
+        self.sanity_check()
+
+    @staticmethod
+    def phoneme_errors(alignments: Sequence[Tuple[Text, Text]]) -&gt; PhonemeErrors:
+        &#34;&#34;&#34;
+        Counts insertions, deletions, and substitutions according to the output of Re-Aline
+        &#34;&#34;&#34;
+        insertions = []
+        deletions = []
+        substitutions = []
+        for pair in alignments:
+            (phone_1, phone_2) = pair
+            if phone_1 == &#34;-&#34;:
+                insertions.append(pair)
+            elif phone_2 == &#34;-&#34;:
+                deletions.append(pair)
+            elif phone_1 != phone_2 and phone_1 != &#34;-&#34; and phone_2 != &#34;-&#34;:
+                substitutions.append(pair)
+        return PhonemeErrors(
+            insertions=insertions, deletions=deletions, substitutions=substitutions
+        )
+
+    def sanity_check(self):
+        &#34;&#34;&#34;
+        Sanity check that ensures necessary features are present
+        &#34;&#34;&#34;
+
+        similarity_matrix = self.similarity_matrix
+        feature_matrix = self.feature_matrix
+        salience = self.salience
+        consonants = self.consonants
+
+        # ensure all salience values are found in feature matrix
+        feats = set()
+        feat_values = set()
+        for phone_fm in feature_matrix.values():
+            for (k, v) in phone_fm.items():
+                feats.add(k)
+                feat_values.add(v)
+
+        assert (
+            len(salience.keys() - feats) == 0
+        ), f&#34;salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}&#34;
+
+        assert (
+            len(similarity_matrix.keys() - feat_values) == 0
+        ), f&#34;similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}&#34;
+
+        missing = [c for c in consonants if c not in feature_matrix.keys()]
+        assert (
+            len(missing) == 0
+        ), f&#34;Some consonants missing from feature_matrix: {missing}&#34;
+
+    def sigma_skip(self, p: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of an indel of P.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return self.C_skip
+
+    def V(self, p: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Return vowel weight if P is vowel.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return 0 if p in self.consonants else self.C_vwl
+
+    def R(self, p: Text, q: Text) -&gt; Sequence[Text]:
+        &#34;&#34;&#34;
+        Return relevant features for segment comparsion.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        consonants = self.consonants
+
+        return self.R_c if p in consonants or q else self.R_v
+
+    def diff(self, p: Text, q: Text, f: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns difference between phonetic segments P and Q for feature F.
+        (Kondrak 2002: 52, 54)
+        &#34;&#34;&#34;
+        p_features, q_features = self.feature_matrix[p], self.feature_matrix[q]
+        return abs(
+            self.similarity_matrix[p_features[f]]
+            - self.similarity_matrix[q_features[f]]
+        )
+
+    def delta(self, p: Text, q: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Return weighted sum of difference between P and Q.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        features = self.R(p, q)
+        total = 0
+        for f in features:
+            total += self.diff(p, q, f) * self.salience[f]
+        return total
+
+    def sigma_sub(self, p: Text, q: Text) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of a substitution of P with Q.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
+
+    def sigma_exp(self, p: Text, q: Sequence[Text]) -&gt; int:
+        &#34;&#34;&#34;
+        Returns score of an expansion/compression.
+        (Kondrak 2002: 54)
+        &#34;&#34;&#34;
+        q1 = q[0]
+        q2 = q[1]
+        return (
+            self.C_exp
+            - self.delta(p, q1)
+            - self.delta(p, q2)
+            - self.V(p)
+            - max(self.V(q1), self.V(q2))
+        )
+
+    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -&gt; Sequence[Tuple[Text, Text]]:
+        &#34;&#34;&#34;
+        Retrieve the path through the similarity matrix S starting at (i, j).
+
+        :return: Alignment of seq1 and seq2
+        &#34;&#34;&#34;
+        if S[i, j] == 0:
+            return out
+        else:
+            if (
+                j &gt; 1
+                and S[i - 1, j - 2] + self.sigma_exp(seq1[i - 1], seq2[j - 2 : j]) + s
+                &gt;= T
+            ):
+                out.insert(0, (seq1[i - 1], seq2[j - 2 : j]))
+                self._retrieve(
+                    i - 1,
+                    j - 2,
+                    s + self.sigma_exp(seq1[i - 1], seq2[j - 2 : j]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+            elif (
+                i &gt; 1
+                and S[i - 2, j - 1] + self.sigma_exp(seq2[j - 1], seq1[i - 2 : i]) + s
+                &gt;= T
+            ):
+                out.insert(0, (seq1[i - 2 : i], seq2[j - 1]))
+                self._retrieve(
+                    i - 2,
+                    j - 1,
+                    s + self.sigma_exp(seq2[j - 1], seq1[i - 2 : i]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+            elif S[i, j - 1] + self.sigma_skip(seq2[j - 1]) + s &gt;= T:
+                out.insert(0, (&#34;-&#34;, seq2[j - 1]))
+                self._retrieve(
+                    i, j - 1, s + self.sigma_skip(seq2[j - 1]), S, T, seq1, seq2, out
+                )
+            elif S[i - 1, j] + self.sigma_skip(seq1[i - 1]) + s &gt;= T:
+                out.insert(0, (seq1[i - 1], &#34;-&#34;))
+                self._retrieve(
+                    i - 1, j, s + self.sigma_skip(seq1[i - 1]), S, T, seq1, seq2, out
+                )
+            elif S[i - 1, j - 1] + self.sigma_sub(seq1[i - 1], seq2[j - 1]) + s &gt;= T:
+                out.insert(0, (seq1[i - 1], seq2[j - 1]))
+                self._retrieve(
+                    i - 1,
+                    j - 1,
+                    s + self.sigma_sub(seq1[i - 1], seq2[j - 1]),
+                    S,
+                    T,
+                    seq1,
+                    seq2,
+                    out,
+                )
+        return out
+
+    def align(
+        self, seq1: Sequence[Text], seq2: Sequence[Text], epsilon: float = 0
+    ) -&gt; Sequence[Tuple[Text, Text]]:
+        &#34;&#34;&#34;
+        Computes the alignment of two symbol sequences.
+
+        :param seq1: a sequence of symbols
+        :param seq2: a sequence of symbols
+
+        :type epsilon: float (0.0 to 1.0)
+        :param epsilon: Adjusts threshold similarity score for near-optimal alignments
+        :return: Alignment(s) of seq1 and seq2
+        (Kondrak 2002: 51)
+        &#34;&#34;&#34;
+
+        assert 0.0 &lt;= epsilon &lt;= 1.0, &#34;Epsilon must be between 0.0 and 1.0.&#34;
+
+        m = len(seq1)
+        n = len(seq2)
+        # This includes Kondrak&#39;s initialization of row 0 and column 0 to all 0s.
+        S = np.zeros((m + 1, n + 1), dtype=float)
+        # If i &lt;= 1 or j &lt;= 1, don&#39;t allow expansions as it doesn&#39;t make sense,
+        # and breaks array and string indices. Make sure they never get chosen
+        # by setting them to -inf.
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                edit1 = S[i - 1, j] + self.sigma_skip(seq1[i - 1])
+                edit2 = S[i, j - 1] + self.sigma_skip(seq2[j - 1])
+                edit3 = S[i - 1, j - 1] + self.sigma_sub(seq1[i - 1], seq2[j - 1])
+                if i &gt; 1:
+                    edit4 = S[i - 2, j - 1] + self.sigma_exp(
+                        seq2[j - 1], seq1[i - 2 : i]
+                    )
+                else:
+                    edit4 = -ReAline.inf
+                if j &gt; 1:
+                    edit5 = S[i - 1, j - 2] + self.sigma_exp(
+                        seq1[i - 1], seq2[j - 2 : j]
+                    )
+                else:
+                    edit5 = -ReAline.inf
+                S[i, j] = max(edit1, edit2, edit3, edit4, edit5, 0)
+        T = (1 - epsilon) * np.amax(S)  # Threshold score for near-optimal alignments
+
+        alignments = []
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if S[i, j] &gt;= T:
+                    alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
+        return [pair for alignment in alignments for pair in alignment]</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.ReAline.inf"><code class="name">var <span class="ident">inf</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.ReAline.phoneme_errors"><code class="name flex">
+<span>def <span class="ident">phoneme_errors</span></span>(<span>alignments: Sequence[Tuple[str, str]]) ‑> <a title="clu.phontools.alignment.realine.PhonemeErrors" href="#clu.phontools.alignment.realine.PhonemeErrors">PhonemeErrors</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Counts insertions, deletions, and substitutions according to the output of Re-Aline</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def phoneme_errors(alignments: Sequence[Tuple[Text, Text]]) -&gt; PhonemeErrors:
+    &#34;&#34;&#34;
+    Counts insertions, deletions, and substitutions according to the output of Re-Aline
+    &#34;&#34;&#34;
+    insertions = []
+    deletions = []
+    substitutions = []
+    for pair in alignments:
+        (phone_1, phone_2) = pair
+        if phone_1 == &#34;-&#34;:
+            insertions.append(pair)
+        elif phone_2 == &#34;-&#34;:
+            deletions.append(pair)
+        elif phone_1 != phone_2 and phone_1 != &#34;-&#34; and phone_2 != &#34;-&#34;:
+            substitutions.append(pair)
+    return PhonemeErrors(
+        insertions=insertions, deletions=deletions, substitutions=substitutions
+    )</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="clu.phontools.alignment.realine.ReAline.R"><code class="name flex">
+<span>def <span class="ident">R</span></span>(<span>self, p: str, q: str) ‑> Sequence[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return relevant features for segment comparsion.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def R(self, p: Text, q: Text) -&gt; Sequence[Text]:
+    &#34;&#34;&#34;
+    Return relevant features for segment comparsion.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    consonants = self.consonants
+
+    return self.R_c if p in consonants or q else self.R_v</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.V"><code class="name flex">
+<span>def <span class="ident">V</span></span>(<span>self, p: str) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return vowel weight if P is vowel.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def V(self, p: Text) -&gt; int:
+    &#34;&#34;&#34;
+    Return vowel weight if P is vowel.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    return 0 if p in self.consonants else self.C_vwl</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.align"><code class="name flex">
+<span>def <span class="ident">align</span></span>(<span>self, seq1: Sequence[str], seq2: Sequence[str], epsilon: float = 0) ‑> Sequence[Tuple[str, str]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the alignment of two symbol sequences.</p>
+<p>:param seq1: a sequence of symbols
+:param seq2: a sequence of symbols</p>
+<p>:type epsilon: float (0.0 to 1.0)
+:param epsilon: Adjusts threshold similarity score for near-optimal alignments
+:return: Alignment(s) of seq1 and seq2
+(Kondrak 2002: 51)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def align(
+    self, seq1: Sequence[Text], seq2: Sequence[Text], epsilon: float = 0
+) -&gt; Sequence[Tuple[Text, Text]]:
+    &#34;&#34;&#34;
+    Computes the alignment of two symbol sequences.
+
+    :param seq1: a sequence of symbols
+    :param seq2: a sequence of symbols
+
+    :type epsilon: float (0.0 to 1.0)
+    :param epsilon: Adjusts threshold similarity score for near-optimal alignments
+    :return: Alignment(s) of seq1 and seq2
+    (Kondrak 2002: 51)
+    &#34;&#34;&#34;
+
+    assert 0.0 &lt;= epsilon &lt;= 1.0, &#34;Epsilon must be between 0.0 and 1.0.&#34;
+
+    m = len(seq1)
+    n = len(seq2)
+    # This includes Kondrak&#39;s initialization of row 0 and column 0 to all 0s.
+    S = np.zeros((m + 1, n + 1), dtype=float)
+    # If i &lt;= 1 or j &lt;= 1, don&#39;t allow expansions as it doesn&#39;t make sense,
+    # and breaks array and string indices. Make sure they never get chosen
+    # by setting them to -inf.
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            edit1 = S[i - 1, j] + self.sigma_skip(seq1[i - 1])
+            edit2 = S[i, j - 1] + self.sigma_skip(seq2[j - 1])
+            edit3 = S[i - 1, j - 1] + self.sigma_sub(seq1[i - 1], seq2[j - 1])
+            if i &gt; 1:
+                edit4 = S[i - 2, j - 1] + self.sigma_exp(
+                    seq2[j - 1], seq1[i - 2 : i]
+                )
+            else:
+                edit4 = -ReAline.inf
+            if j &gt; 1:
+                edit5 = S[i - 1, j - 2] + self.sigma_exp(
+                    seq1[i - 1], seq2[j - 2 : j]
+                )
+            else:
+                edit5 = -ReAline.inf
+            S[i, j] = max(edit1, edit2, edit3, edit4, edit5, 0)
+    T = (1 - epsilon) * np.amax(S)  # Threshold score for near-optimal alignments
+
+    alignments = []
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if S[i, j] &gt;= T:
+                alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
+    return [pair for alignment in alignments for pair in alignment]</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.delta"><code class="name flex">
+<span>def <span class="ident">delta</span></span>(<span>self, p: str, q: str) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return weighted sum of difference between P and Q.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delta(self, p: Text, q: Text) -&gt; int:
+    &#34;&#34;&#34;
+    Return weighted sum of difference between P and Q.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    features = self.R(p, q)
+    total = 0
+    for f in features:
+        total += self.diff(p, q, f) * self.salience[f]
+    return total</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.diff"><code class="name flex">
+<span>def <span class="ident">diff</span></span>(<span>self, p: str, q: str, f: str) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns difference between phonetic segments P and Q for feature F.
+(Kondrak 2002: 52, 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def diff(self, p: Text, q: Text, f: Text) -&gt; int:
+    &#34;&#34;&#34;
+    Returns difference between phonetic segments P and Q for feature F.
+    (Kondrak 2002: 52, 54)
+    &#34;&#34;&#34;
+    p_features, q_features = self.feature_matrix[p], self.feature_matrix[q]
+    return abs(
+        self.similarity_matrix[p_features[f]]
+        - self.similarity_matrix[q_features[f]]
+    )</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.sanity_check"><code class="name flex">
+<span>def <span class="ident">sanity_check</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sanity check that ensures necessary features are present</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sanity_check(self):
+    &#34;&#34;&#34;
+    Sanity check that ensures necessary features are present
+    &#34;&#34;&#34;
+
+    similarity_matrix = self.similarity_matrix
+    feature_matrix = self.feature_matrix
+    salience = self.salience
+    consonants = self.consonants
+
+    # ensure all salience values are found in feature matrix
+    feats = set()
+    feat_values = set()
+    for phone_fm in feature_matrix.values():
+        for (k, v) in phone_fm.items():
+            feats.add(k)
+            feat_values.add(v)
+
+    assert (
+        len(salience.keys() - feats) == 0
+    ), f&#34;salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}&#34;
+
+    assert (
+        len(similarity_matrix.keys() - feat_values) == 0
+    ), f&#34;similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}&#34;
+
+    missing = [c for c in consonants if c not in feature_matrix.keys()]
+    assert (
+        len(missing) == 0
+    ), f&#34;Some consonants missing from feature_matrix: {missing}&#34;</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.sigma_exp"><code class="name flex">
+<span>def <span class="ident">sigma_exp</span></span>(<span>self, p: str, q: Sequence[str]) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns score of an expansion/compression.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sigma_exp(self, p: Text, q: Sequence[Text]) -&gt; int:
+    &#34;&#34;&#34;
+    Returns score of an expansion/compression.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    q1 = q[0]
+    q2 = q[1]
+    return (
+        self.C_exp
+        - self.delta(p, q1)
+        - self.delta(p, q2)
+        - self.V(p)
+        - max(self.V(q1), self.V(q2))
+    )</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.sigma_skip"><code class="name flex">
+<span>def <span class="ident">sigma_skip</span></span>(<span>self, p: str) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns score of an indel of P.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sigma_skip(self, p: Text) -&gt; int:
+    &#34;&#34;&#34;
+    Returns score of an indel of P.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    return self.C_skip</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.realine.ReAline.sigma_sub"><code class="name flex">
+<span>def <span class="ident">sigma_sub</span></span>(<span>self, p: str, q: str) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns score of a substitution of P with Q.
+(Kondrak 2002: 54)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sigma_sub(self, p: Text, q: Text) -&gt; int:
+    &#34;&#34;&#34;
+    Returns score of a substitution of P with Q.
+    (Kondrak 2002: 54)
+    &#34;&#34;&#34;
+    return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="clu.phontools.alignment" href="index.html">clu.phontools.alignment</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="clu.phontools.alignment.realine.PhonemeErrors" href="#clu.phontools.alignment.realine.PhonemeErrors">PhonemeErrors</a></code></h4>
+<ul class="">
+<li><code><a title="clu.phontools.alignment.realine.PhonemeErrors.deletions" href="#clu.phontools.alignment.realine.PhonemeErrors.deletions">deletions</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.PhonemeErrors.edit_distance" href="#clu.phontools.alignment.realine.PhonemeErrors.edit_distance">edit_distance</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.PhonemeErrors.insertions" href="#clu.phontools.alignment.realine.PhonemeErrors.insertions">insertions</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.PhonemeErrors.substitutions" href="#clu.phontools.alignment.realine.PhonemeErrors.substitutions">substitutions</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.PhonemeErrors.to_dict" href="#clu.phontools.alignment.realine.PhonemeErrors.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="clu.phontools.alignment.realine.ReAline" href="#clu.phontools.alignment.realine.ReAline">ReAline</a></code></h4>
+<ul class="two-column">
+<li><code><a title="clu.phontools.alignment.realine.ReAline.R" href="#clu.phontools.alignment.realine.ReAline.R">R</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.V" href="#clu.phontools.alignment.realine.ReAline.V">V</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.align" href="#clu.phontools.alignment.realine.ReAline.align">align</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.delta" href="#clu.phontools.alignment.realine.ReAline.delta">delta</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.diff" href="#clu.phontools.alignment.realine.ReAline.diff">diff</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.inf" href="#clu.phontools.alignment.realine.ReAline.inf">inf</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.phoneme_errors" href="#clu.phontools.alignment.realine.ReAline.phoneme_errors">phoneme_errors</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.sanity_check" href="#clu.phontools.alignment.realine.ReAline.sanity_check">sanity_check</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.sigma_exp" href="#clu.phontools.alignment.realine.ReAline.sigma_exp">sigma_exp</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.sigma_skip" href="#clu.phontools.alignment.realine.ReAline.sigma_skip">sigma_skip</a></code></li>
+<li><code><a title="clu.phontools.alignment.realine.ReAline.sigma_sub" href="#clu.phontools.alignment.realine.ReAline.sigma_sub">sigma_sub</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
