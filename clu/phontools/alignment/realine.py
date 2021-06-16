@@ -1,4 +1,4 @@
-from typing import Dict, List, Tuple, Text, Sequence
+from typing import Dict, Tuple, Text, Sequence
 from pydantic import BaseModel
 from clu.phontools import features
 import numpy as np
@@ -25,7 +25,7 @@ class PhonemeErrors(BaseModel):
         }
 
 
-class ReAline(object):
+class ReAline:
     """
     Feature-based algorithm for aligning two sequences of phones.
 
@@ -64,7 +64,7 @@ class ReAline(object):
         self.sanity_check()
 
     @staticmethod
-    def phoneme_errors(alignments: List[Tuple[Text, Text]]) -> PhonemeErrors:
+    def phoneme_errors(alignments: Sequence[Tuple[Text, Text]]) -> PhonemeErrors:
         """
         Counts insertions, deletions, and substitutions according to the output of Re-Aline
         """
@@ -101,17 +101,14 @@ class ReAline(object):
                 feats.add(k)
                 feat_values.add(v)
 
-        # check that all features has an assigned salience
         assert (
             len(salience.keys() - feats) == 0
         ), f"salience and features for each sound in feature_matrix do not match: {salience.keys() - feats}"
 
-        # FIXME: re-enable this check
         assert (
             len(similarity_matrix.keys() - feat_values) == 0
         ), f"similarity_matrix and feature values for each sound in feature_matrix do not match: {similarity_matrix.keys() - feat_values}"
 
-        # FIXME: re-enable this check
         missing = [c for c in consonants if c not in feature_matrix.keys()]
         assert (
             len(missing) == 0
@@ -131,7 +128,7 @@ class ReAline(object):
         """
         return 0 if p in self.consonants else self.C_vwl
 
-    def R(self, p: Text, q: Text) -> List[Text]:
+    def R(self, p: Text, q: Text) -> Sequence[Text]:
         """
         Return relevant features for segment comparsion.
         (Kondrak 2002: 54)
@@ -169,7 +166,7 @@ class ReAline(object):
         """
         return self.C_sub - self.delta(p, q) - self.V(p) - self.V(q)
 
-    def sigma_exp(self, p: Text, q: List[Text]) -> int:
+    def sigma_exp(self, p: Text, q: Sequence[Text]) -> int:
         """
         Returns score of an expansion/compression.
         (Kondrak 2002: 54)
@@ -184,7 +181,7 @@ class ReAline(object):
             - max(self.V(q1), self.V(q2))
         )
 
-    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -> List[Tuple[Text, Text]]:
+    def _retrieve(self, i, j, s, S, T, seq1, seq2, out) -> Sequence[Tuple[Text, Text]]:
         """
         Retrieve the path through the similarity matrix S starting at (i, j).
 
@@ -250,8 +247,8 @@ class ReAline(object):
         return out
 
     def align(
-        self, seq1: List[Text], seq2: List[Text], epsilon: float = 0
-    ) -> List[List[Tuple[Text, Text]]]:
+        self, seq1: Sequence[Text], seq2: Sequence[Text], epsilon: float = 0
+    ) -> Sequence[Tuple[Text, Text]]:
         """
         Computes the alignment of two symbol sequences.
 
@@ -298,4 +295,4 @@ class ReAline(object):
             for j in range(1, n + 1):
                 if S[i, j] >= T:
                     alignments.append(self._retrieve(i, j, 0, S, T, seq1, seq2, []))
-        return alignments
+        return [pair for alignment in alignments for pair in alignment]

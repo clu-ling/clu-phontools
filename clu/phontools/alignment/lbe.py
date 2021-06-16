@@ -66,7 +66,7 @@ class LexicalBoundaryErrorReport(BaseModel):
 def calculate_lbes_from_phrases(
     target_phrase: Phrase, transcript_phrase: Phrase
 ) -> LexicalBoundaryErrorReport:
-    """Calculates lexical boundary errors from stress-based syllable structures via a pair of `clu.phontools.struct.Phrase` using rules described in [(Jiao et al., 2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
+    """Calculates lexical boundary errors from stress-based syllable structures via a pair of `clu.phontools.struct.Phrase` using rules described in [Jiao et al. (2019)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6808349/pdf/JSLHR-62-3359.pdf#page=4)"""
     target: Sequence[Text] = target_phrase.coarse_stress
     # FIXME: should these be masked?
     transcript: Sequence[Text] = target_phrase.mask_syllables(mask="X")
@@ -94,11 +94,9 @@ def calculate_lbes_from_stress(
         target_term, target_idx = target_remaining[0]
         transcript_term, transcript_idx = transcript_remaining[0]
 
-        # print(f"\nerrors: {errors}")
-        # print(f"target_remaining: {target_remaining}")
-        # print(f"transcript_remaining: {transcript_remaining}")
         # base case. no error
         if len(target_term) == len(transcript_term):
+            # advance both sequences
             target_remaining = target_remaining[1:]
             transcript_remaining = transcript_remaining[1:]
 
@@ -139,6 +137,7 @@ def calculate_lbes_from_stress(
                 target_term, target_idx = target_remaining[0]
             if len(transcript_remaining) > 0:
                 transcript_term, transcript_idx = transcript_remaining[0]
+
             # 3. categorize deletion error
             if target_term[0] == CoarseStress.WEAK.value:
                 error = LexicalBoundaryError(
