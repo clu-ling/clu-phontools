@@ -3,4 +3,4 @@
 # clu-phontools
 `clu-phontools` is a collection of tools for phonological analysis.
 
-See [the docs](https://clu-ling/.github.io/clu-phontools).
+See [the docs](https://clu-ling.github.io/clu-phontools).
