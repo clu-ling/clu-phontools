@@ -6,10 +6,37 @@ from clu.phontools.alignment.realine import ReAline
 from typing import Dict, Text, Tuple, List, Optional, Sequence, Callable
 
 
+class Symbol:
+    # FIXME: need to track index of symbol
+    def __init__(self, char: Text):
+        self._symbol = char
+
+    def __repr__(self):
+        return self._symbol
+
+
+class IntermediateSymbol(Symbol):
+    def __init__(self):
+        super().__init__(char="NULL")
+
+
+def prepare_symbols(word: Text) -> Sequence[Symbol]:
+    res = [IntermediateSymbol()]
+    for char in word:
+        res.append(Symbol(char))
+        res.append(IntermediateSymbol())
+    return res
+
+
+def assign_index(symbols: List) -> List[Tuple[int, Symbol]]:
+    return [(indx, symbol) for indx, symbol in enumerate(symbols)]
+
+
 class Actions(Enum):
     """
     The actions used by the parser.
     """
+
     DISCARD_T = auto()
     DISCARD_G = auto()
     SHIFT_T = auto()
@@ -32,8 +59,8 @@ class Graph:
     This dataclass encodes all the aligment output (edges, vertics, and nodes)
     wether these are transcript or gold. Based on this graph, we constrcut the oracle
     """
-    pass
 
+    pass
 
 
 class Parser:
@@ -42,17 +69,35 @@ class Parser:
 
     @staticmethod
     def add_special_symbol(text: Text) -> Text:
+        """
+        class means intermediate symbols: 
+            wrap each letter is a symbol class 
+        """
         symbol = text[0]
         for item in text[1:]:
-            symbol += '-' + item
-        return '-' + symbol + '-'
+            symbol += "-" + item
+        return "-" + symbol + "-"
 
 
 class Oracle:
     pass
 
 
+# class State:
+#     transcribed_queue: Sequence[Symbol]
+#     gold_queue: Sequence[Symbol]
+#     # NOTE: this might need to be a Sequence[Graph]
+#     stack: Sequence[Symbol]
+#     # the graph you've constructed so far
+#     graph: Graph
 
 
+# class Graph:
+#     edges: Sequence[Edge]
 
+
+# class Edge:
+#     source: Symbol
+#     destination: Symbol
+#     label: Text
 
