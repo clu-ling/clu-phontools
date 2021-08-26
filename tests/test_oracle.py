@@ -1,52 +1,52 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from unittest.mock import patch
 from clu.phontools.alignment.realine import ReAline
-from clu.phontools.alignment.parser import (
-    Oracle,
-    Parser,
-    Actions,
-    Symbol,
-    IntermediateSymbol,
-    prepare_symbols,
-    assign_index,
-)
+from clu.phontools.alignment.parser import Symbol, Index, Actions, Parser
 
 
 """
-Test `clu.phontools.alignment.parser.prepare_symbols` behaviors
-Test `clu.phontools.alignment.parser.assign_index` behaviors
+Test `clu.phontools.alignment.parser.Symbol()` behaviors
+Test `clu.phontools.alignment.parser.Index.prepare_symbols()` behaviors
+Test `clu.phontools.alignment.parser.Index.assign_indexes()` behaviors
 """
 
 
 class SymbolsTests(unittest.TestCase):
-    def prepare_symbols_test(self):
-        """`clu.phontools.alignment.parser.prepare_symbols()` should return the correct enumerations of the actions used by the parser
+    def symbol_test(self):
+        """`clu.phontools.alignment.parser.Symbol()` should return the correct enumerations of the actions used by the parser
         """
         text = "cat"
+        symbols = Symbol(text)
         self.assertEqual(
-            Symbol(text),
-            "cat",
-            f"Symbol() should return 'cat'",
+            text,
+            str(symbols),
+            f"Symbol() should return an object which is equal to the given string",
         )
-        # symbol = Symbol()
-        # text = "cat"
-        # self.assertEqual(
-        #     prepare_symbols(text),
-        #     [NULL, c, NULL, a, NULL, t, NULL],
-        #     f"prepare_symbols() should return [NULL, c, NULL, a, NULL, t, NULL]",
-        # )
 
-    # def assign_index_test(self):
-    #     """`clu.phontools.alignment.parser.assign_index()` should return the correct enumerations of the actions used by the parser
-    #     """
-    #     # list = [NULL, c, NULL, a, NULL, t, NULL]
-    #     # self.assertEqual(
-    #     #     Parser.assign_indexs(list),
-    #     #     "[(0,NULL), (1,c), NULL, a, NULL, t, NULL]",
-    #     #     f"Parser.prepare_symbols() should return [NULL, c, NULL, a, NULL, t, NULL]",
-    #     # )
-    #     pass
+    def prepare_symbols_test(self):
+        text = "cat"
+        symbols = Index.prepare_symbols(text)
+        res = "[NULL, c, NULL, a, NULL, t, NULL]"
+        self.assertEqual(
+            symbols,
+            res,
+            f"Index.prepare_symbols() should return an object where a special symbol 'NULL' is inserted between the characters of a given word",
+        )
+
+    def assign_index_test(self):
+        text = "cat"
+        indexes_symbols = (
+            "[(0, NULL), (1, c), (2, NULL), (3, a), (4, NULL), (5, t), (6, NULL)]"
+        )
+        symbols = Index.prepare_symbols(text)
+        indexes = Index.assign_index(symbols)
+        self.assertEqual(
+            indexes_symbols,
+            indexes,
+            f"Index.prepare_index() should return a list of tuples with indexes and symbols.",
+        )
 
 
 """
@@ -54,35 +54,35 @@ Test `clu.phontools.alignment.parser.Actions` behaviors
 """
 
 
-# class ActionsTests(unittest.TestCase):
-#     def test_actions(self):
-#         """`clu.phontools.alignment.parser.Actions.describe()` should return the correct enumerations of the actions used by the parser
-#         """
-#         assert len(Actions) == 11
+class ActionsTests(unittest.TestCase):
+    def test_actions(self):
+        """`clu.phontools.alignment.parser.Actions.describe()` should return the correct enumerations of the actions used by the parser
+        """
+        assert len(Actions) == 11
 
-#         assert Actions.DISCARD_T.describe() == ("DISCARD_T", 1)
-#         assert Actions.DISCARD_G.describe() == ("DISCARD_G", 2)
-#         assert Actions.SHIFT_T.describe() == ("SHIFT_T", 3)
-#         assert Actions.SHIFT_G.describe() == ("SHIFT_G", 4)
-#         assert Actions.STACK_SWAP.describe() == ("STACK_SWAP", 5)
-#         assert Actions.INSERTION_PRESERVE_COPY_CHILD.describe() == (
-#             "INSERTION_PRESERVE_COPY_CHILD",
-#             6,
-#         )
-#         assert Actions.INSERTION_PRESERVE_COPY_PARENT.describe() == (
-#             "INSERTION_PRESERVE_COPY_PARENT",
-#             7,
-#         )
-#         assert Actions.DELETION_PRESERVE_COPY_CHILD.describe() == (
-#             "DELETION_PRESERVE_COPY_CHILD",
-#             8,
-#         )
-#         assert Actions.DELETION_PRESERVE_COPY_PARENT.describe() == (
-#             "DELETION_PRESERVE_COPY_PARENT",
-#             9,
-#         )
-#         assert Actions.ALIGN.describe() == ("ALIGN", 10)
-#         assert Actions.SUBSTITUTION.describe() == ("SUBSTITUTION", 11)
+        assert Actions.DISCARD_T.describe() == ("DISCARD_T", 1)
+        assert Actions.DISCARD_G.describe() == ("DISCARD_G", 2)
+        assert Actions.SHIFT_T.describe() == ("SHIFT_T", 3)
+        assert Actions.SHIFT_G.describe() == ("SHIFT_G", 4)
+        assert Actions.STACK_SWAP.describe() == ("STACK_SWAP", 5)
+        assert Actions.INSERTION_PRESERVE_COPY_CHILD.describe() == (
+            "INSERTION_PRESERVE_COPY_CHILD",
+            6,
+        )
+        assert Actions.INSERTION_PRESERVE_COPY_PARENT.describe() == (
+            "INSERTION_PRESERVE_COPY_PARENT",
+            7,
+        )
+        assert Actions.DELETION_PRESERVE_COPY_CHILD.describe() == (
+            "DELETION_PRESERVE_COPY_CHILD",
+            8,
+        )
+        assert Actions.DELETION_PRESERVE_COPY_PARENT.describe() == (
+            "DELETION_PRESERVE_COPY_PARENT",
+            9,
+        )
+        assert Actions.ALIGN.describe() == ("ALIGN", 10)
+        assert Actions.SUBSTITUTION.describe() == ("SUBSTITUTION", 11)
 
 
 """
@@ -90,18 +90,18 @@ Test `clu.phontools.alignment.parser.Parser` behaviors
 """
 
 
-# class ParserTests(unittest.TestCase):
-#     def test_add_special_symbol(self):
-#         """`clu.phontools.alignment.parser.Parser.add_special_symbol()` should return 'a string with a special character (-) between its letter/phones'
-#         :INPUT: cat
-#         :OUTPUT: -c-a-t-
-#         """
-#         text = "cat"
-#         self.assertEqual(
-#             Parser.add_special_symbol(text),
-#             "-c-a-t-",
-#             f"Parser.add_special_symbol() should return '-c-a-t-'",
-#         )
+class ParserTests(unittest.TestCase):
+    def test_add_special_symbol(self):
+        """`clu.phontools.alignment.parser.Parser.add_special_symbol()` should return 'a string with a special character (-) between its letter/phones'
+        :INPUT: cat
+        :OUTPUT: -c-a-t-
+        """
+        text = "cat"
+        self.assertEqual(
+            Parser.add_special_symbol(text),
+            "-c-a-t-",
+            f"Parser.add_special_symbol() should return '-c-a-t-'",
+        )
 
 
 """

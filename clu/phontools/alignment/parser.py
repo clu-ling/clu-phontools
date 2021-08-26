@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 from clu.phontools.alignment.realine import ReAline
-from typing import Dict, Text, Tuple, List, Optional, Sequence, Callable
+from typing import Dict, Text, Tuple, List, Optional, Sequence, Callable, Any
 
 
 class Symbol:
@@ -20,16 +20,27 @@ class IntermediateSymbol(Symbol):
         super().__init__(char="NULL")
 
 
-def prepare_symbols(word: Text) -> Sequence[Symbol]:
-    res = [IntermediateSymbol()]
-    for char in word:
-        res.append(Symbol(char))
-        res.append(IntermediateSymbol())
-    return res
+class Index:
+    # FIXME: we use Any and we will fix it later so that the code accepts any seq.
+    def __init__(self, word: Sequence[Any], start=0):
+        self.word = word
+        self.satrt = start
 
+    def __repr__(self):
+        return str(self.word)
 
-def assign_index(symbols: List) -> List[Tuple[int, Symbol]]:
-    return [(indx, symbol) for indx, symbol in enumerate(symbols)]
+    @staticmethod
+    def prepare_symbols(word: Text) -> Sequence[Symbol]:
+        res = [IntermediateSymbol()]
+        for char in word:
+            res.append(Symbol(char))
+            res.append(IntermediateSymbol())
+        return res
+
+    @staticmethod
+    def assign_index(symbols: List) -> List[Tuple[int, Symbol]]:
+        indexes = [(indx, symbol) for indx, symbol in enumerate(symbols)]
+        return indexes
 
 
 class Actions(Enum):
@@ -70,8 +81,8 @@ class Parser:
     @staticmethod
     def add_special_symbol(text: Text) -> Text:
         """
-        class means intermediate symbols: 
-            wrap each letter is a symbol class 
+        class means intermediate symbols:
+            wrap each letter is a symbol class
         """
         symbol = text[0]
         for item in text[1:]:
@@ -79,8 +90,8 @@ class Parser:
         return "-" + symbol + "-"
 
 
-class Oracle:
-    pass
+# class Oracle:
+#     pass
 
 
 # class State:
