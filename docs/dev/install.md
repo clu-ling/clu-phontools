@@ -2,7 +2,7 @@
 
 ## Anaconda
 
-`clu-phontools` is written for **Python >= v3.8**.  One option to develop is to install all virtual environment (ex. `conda`, `venv`, `poetry`, etc.).  Using `conda`, the library can be installed interactively with a compatible environment using the following commands:
+`clu-phontools` is written for **Python >= v3.8**.  One option for development is to install the library in a virtual environment (ex. `conda`, `venv`, `poetry`, etc.).  Using `conda`, the library can be installed interactively in an isolated environment using the following commands:
 
 ```bash
 conda create --name clu-phontools python=3.8 ipython

@@ -136,8 +136,12 @@ class PronouncingDict(dict, ABC):
     def get(self, key: Text) -> SimpleWord:
         return self._dict.get(self._preprocess_key(key), [])
 
-    def add(self, key: Pronunciation, value: SimpleWord) -> None:
-        self._dict[self._preprocess_key(key)] = value
+    def add(self, key: SimpleWord, value: Pronunciation) -> None:
+        """Adds a pronunciation for the given word
+        """
+        clean_key: SimpleWord = self._preprocess_key(key)
+        old: List[Pronunciation] = self._dict.get(clean_key, [])
+        self._dict[clean_key] = old + [value]
 
     def __getitem__(self, key: SimpleWord) -> List[Pronunciation]:
         return self._dict.__getitem__(key)
