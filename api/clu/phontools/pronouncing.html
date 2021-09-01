@@ -165,8 +165,12 @@ class PronouncingDict(dict, ABC):
     def get(self, key: Text) -&gt; SimpleWord:
         return self._dict.get(self._preprocess_key(key), [])
 
-    def add(self, key: Pronunciation, value: SimpleWord) -&gt; None:
-        self._dict[self._preprocess_key(key)] = value
+    def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
+        &#34;&#34;&#34;Adds a pronunciation for the given word
+        &#34;&#34;&#34;
+        clean_key: SimpleWord = self._preprocess_key(key)
+        old: List[Pronunciation] = self._dict.get(clean_key, [])
+        self._dict[clean_key] = old + [value]
 
     def __getitem__(self, key: SimpleWord) -&gt; List[Pronunciation]:
         return self._dict.__getitem__(key)
@@ -412,6 +416,7 @@ def from_cmu_dict(
 <ul class="hlist">
 <li><code><b><a title="clu.phontools.pronouncing.PronouncingDict" href="#clu.phontools.pronouncing.PronouncingDict">PronouncingDict</a></b></code>:
 <ul class="hlist">
+<li><code><a title="clu.phontools.pronouncing.PronouncingDict.add" href="#clu.phontools.pronouncing.PronouncingDict.add">add</a></code></li>
 <li><code><a title="clu.phontools.pronouncing.PronouncingDict.get" href="#clu.phontools.pronouncing.PronouncingDict.get">get</a></code></li>
 <li><code><a title="clu.phontools.pronouncing.PronouncingDict.items" href="#clu.phontools.pronouncing.PronouncingDict.items">items</a></code></li>
 <li><code><a title="clu.phontools.pronouncing.PronouncingDict.keys" href="#clu.phontools.pronouncing.PronouncingDict.keys">keys</a></code></li>
@@ -644,8 +649,12 @@ bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)</p>
     def get(self, key: Text) -&gt; SimpleWord:
         return self._dict.get(self._preprocess_key(key), [])
 
-    def add(self, key: Pronunciation, value: SimpleWord) -&gt; None:
-        self._dict[self._preprocess_key(key)] = value
+    def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
+        &#34;&#34;&#34;Adds a pronunciation for the given word
+        &#34;&#34;&#34;
+        clean_key: SimpleWord = self._preprocess_key(key)
+        old: List[Pronunciation] = self._dict.get(clean_key, [])
+        self._dict[clean_key] = old + [value]
 
     def __getitem__(self, key: SimpleWord) -&gt; List[Pronunciation]:
         return self._dict.__getitem__(key)
@@ -676,16 +685,20 @@ bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)</p>
 <h3>Methods</h3>
 <dl>
 <dt id="clu.phontools.pronouncing.PronouncingDict.add"><code class="name flex">
-<span>def <span class="ident">add</span></span>(<span>self, key: Tuple[str, ...], value: str) ‑> NoneType</span>
+<span>def <span class="ident">add</span></span>(<span>self, key: str, value: Tuple[str, ...]) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Adds a pronunciation for the given word</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add(self, key: Pronunciation, value: SimpleWord) -&gt; None:
-    self._dict[self._preprocess_key(key)] = value</code></pre>
+<pre><code class="python">def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
+    &#34;&#34;&#34;Adds a pronunciation for the given word
+    &#34;&#34;&#34;
+    clean_key: SimpleWord = self._preprocess_key(key)
+    old: List[Pronunciation] = self._dict.get(clean_key, [])
+    self._dict[clean_key] = old + [value]</code></pre>
 </details>
 </dd>
 <dt id="clu.phontools.pronouncing.PronouncingDict.get"><code class="name flex">
