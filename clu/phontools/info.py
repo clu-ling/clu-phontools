@@ -6,7 +6,7 @@ class AppInfo:
     General information about the application.
     """
 
-    version: str = "0.1"
+    version: str = "0.1-beta"
     description: str = "Re-Aline."
     authors: List[str] = ["myedibleenso", "elsayed-issa", "mohmdsh"]
     contact: str = "gus@parsertongue.org"
