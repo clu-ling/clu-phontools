@@ -26,7 +26,7 @@ with open("README.md", "r") as f:
 test_deps = required + ["green>=2.5.0", "coverage", "mypy"]
 # NOTE: <packagename> @ allows installation of git-based URLs
 dev_deps = test_deps + [
-    "black @ git+git://github.com/psf/black.git",
+    "black",
     "mkdocs==1.2.1",
     # "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
     # "portray @ git+git://github.com/myedibleenso/portray.git@avoid-regressions",
@@ -41,11 +41,13 @@ dev_deps = test_deps + [
 
 setup(
     name="clu-phontools",
+    python_requires=">=3.8",
     packages=["clu.phontools"],
     version=info.version,
     keywords=["nlp", "re-aline", "sequence alignment"],
     description=info.description,
     long_description=readme,
+    long_description_content_type="text/markdown",
     url=info.repo,
     download_url=info.download_url,
     author=" and ".join(info.authors),
@@ -64,7 +66,7 @@ setup(
     extras_require={
         "test": test_deps,
         "dev": dev_deps,
-        "all": test_deps
+        "all": dev_deps
         # 'docs': docs_deps
     },
     include_package_data=True,
