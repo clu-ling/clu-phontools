@@ -3,49 +3,144 @@
 import unittest
 from unittest.mock import patch
 from clu.phontools.alignment.realine import ReAline
-from clu.phontools.alignment.parser import Symbol, Index, Actions, Parser
+from clu.phontools.alignment.parser import (
+    Symbol,
+    IntermediateSymbol,
+    Index,
+    State,
+    Actions,
+)
 
 
 """
-Test `clu.phontools.alignment.parser.Symbol()` behaviors
 Test `clu.phontools.alignment.parser.Index.prepare_symbols()` behaviors
 Test `clu.phontools.alignment.parser.Index.assign_indexes()` behaviors
 """
 
 
 class SymbolsTests(unittest.TestCase):
-    def symbol_test(self):
-        """`clu.phontools.alignment.parser.Symbol()` should return the correct enumerations of the actions used by the parser
-        """
-        text = "cat"
-        symbols = Symbol(text)
-        self.assertEqual(
-            text,
-            str(symbols),
-            f"Symbol() should return an object which is equal to the given string",
-        )
-
     def prepare_symbols_test(self):
-        text = "cat"
-        symbols = Index.prepare_symbols(text)
-        res = "[NULL, c, NULL, a, NULL, t, NULL]"
+        gold = "cat"
+        symbols = Index.prepare_symbols(gold)
+        res = ["NULL", "c", "NULL", "a", "NULL", "t", "NULL"]
+
         self.assertEqual(
-            symbols,
             res,
+            symbols,
             f"Index.prepare_symbols() should return an object where a special symbol 'NULL' is inserted between the characters of a given word",
         )
 
     def assign_index_test(self):
         text = "cat"
-        indexes_symbols = (
-            "[(0, NULL), (1, c), (2, NULL), (3, a), (4, NULL), (5, t), (6, NULL)]"
-        )
         symbols = Index.prepare_symbols(text)
-        indexes = Index.assign_index(symbols)
+        indexes = str(Index.assign_index(symbols))
+        res = [
+            (0, "NULL"),
+            (1, "c"),
+            (2, "NULL"),
+            (3, "a"),
+            (4, "NULL"),
+            (5, "t"),
+            (6, "NULL"),
+        ]
         self.assertEqual(
-            indexes_symbols,
             indexes,
+            res,
             f"Index.prepare_index() should return a list of tuples with indexes and symbols.",
+        )
+
+
+class IndexTests(unittest.TestCase):
+    """ Test `clu.phontools.paraser.Index` which assigns index to each
+      character of a string, and returns both index and character
+       in a list of tuples 
+    """
+
+    def test_prepare_symbols(self):
+        print("mohammed")
+        self.assertEqual(
+            Index.prepare_symbols("cat"),
+            ["NULL", "c", "NULL", "a", "NULL", "t", "NULL"],
+        )
+
+    def test_assign_index(self):
+        self.assertEqual(
+            Index.assign_index(Index.prepare_symbols("cat")),
+            [
+                (0, "NULL"),
+                (1, "c"),
+                (2, "NULL"),
+                (3, "a"),
+                (4, "NULL"),
+                (5, "t"),
+                (6, "NULL"),
+            ],
+        )
+
+
+"""
+Test `clu.phontools.alignment.parser.Edge` behaviors
+"""
+
+
+class SymbolsTests(unittest.TestCase):
+    def edge_test(self):
+        gold = "cat"
+        transcript = "cats"
+
+        res = [
+            ("c", "align", "c"),
+            ("a", "align", "a"),
+            ("t", "align", "t"),
+            ("-", "insertions", "s"),
+        ]
+
+
+"""
+Test `clu.phontools.alignment.parser.State` behaviors
+"""
+
+
+class StateTests(unittest.TestCase):
+    def test_gold_queue(self):
+        state = State("cat", "cat")
+        self.assertEqual(
+            state.gold_queue(),
+            [
+                (0, "NULL"),
+                (1, "c"),
+                (2, "NULL"),
+                (3, "a"),
+                (4, "NULL"),
+                (5, "t"),
+                (6, "NULL"),
+            ],
+        )
+
+    def test_transcribed_queue(self):
+        state = State("cat", "cat")
+        self.assertEqual(
+            state.transcribed_queue(),
+            [
+                (0, "NULL"),
+                (1, "c"),
+                (2, "NULL"),
+                (3, "a"),
+                (4, "NULL"),
+                (5, "t"),
+                (6, "NULL"),
+            ],
+        )
+
+    def test_realine_output(self):
+        state = State("cat", "cat")
+        self.assertEqual(state.realine_output(), [("c", "c"), ("a", "a"), ("t", "t")])
+
+    def test_graph(self):
+        state = State("cat", "cat")
+        self.assertEqual(
+            state.graph(),
+            [("c", "align", "c"), ("a", "align", "a"), ("t", "align", "t")],
         )
 
 
@@ -102,20 +197,4 @@ class ParserTests(unittest.TestCase):
             "-c-a-t-",
             f"Parser.add_special_symbol() should return '-c-a-t-'",
         )
-
-
-"""
-Test behavior of Oracle
-"""
-
-
-# class OracleTests(unittest.TestCase):
-#     def test_hello(self):
-#         """`clu.phontools.alignment.parser.Oracle.greet()` should return 'hello'"""
-
-#         self.assertEqual(
-#             Oracle.greet(),
-#             'Hello',
-#             f"Oracle.greet() should return 'hello', but {Oracle.greet()} was returned",
-#         )
 
