@@ -9,6 +9,7 @@ from clu.phontools.alignment.parser import (
     Index,
     State,
     Actions,
+    Parser,
 )
 
 
@@ -186,15 +187,42 @@ Test `clu.phontools.alignment.parser.Parser` behaviors
 
 
 class ParserTests(unittest.TestCase):
-    def test_add_special_symbol(self):
-        """`clu.phontools.alignment.parser.Parser.add_special_symbol()` should return 'a string with a special character (-) between its letter/phones'
-        :INPUT: cat
-        :OUTPUT: -c-a-t-
+    def test_check_edge(self):
         """
-        text = "cat"
+        `clu.phontools.alignment.parser.Parser.check_stack()` should return `True` or `False` to check if the two symbols on the
+        stack are in the gold graph
+        """
+        gold_graph = [
+            ("b", "b"),
+            ("æ", "ɛ"),
+            ("l", "l"),
+        ]
+        stack = ["b", "b"]
+        stack_top = stack[-1]
+        stack_bottom = stack[-2]
         self.assertEqual(
-            Parser.add_special_symbol(text),
-            "-c-a-t-",
-            f"Parser.add_special_symbol() should return '-c-a-t-'",
+            Parser.check_edge(),
+            (stack_top, stack_bottom) == gold_graph[0],
+            f"Parser.check_edge() should return `True` or `False`",
         )
+
+    def test_discard(self):
+        stack = [1, 2]
+        self.assertEqual(
+            Parser.discard(stack), [], f"Parser.discard() returns a totally empty stack"
+        )
+
+
+# class ParserTests(unittest.TestCase):
+#     def test_add_special_symbol(self):
+#         """`clu.phontools.alignment.parser.Parser.add_special_symbol()` should return 'a string with a special character (-) between its letter/phones'
+#         :INPUT: cat
+#         :OUTPUT: -c-a-t-
+#         """
+#         text = "cat"
+#         self.assertEqual(
+#             Parser.add_special_symbol(text),
+#             "-c-a-t-",
+#             f"Parser.add_special_symbol() should return '-c-a-t-'",
+#         )
 
