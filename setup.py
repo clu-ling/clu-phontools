@@ -56,7 +56,7 @@ setup(
     extras_require={
         "test": test_deps,
         # "dev": dev_deps,
-        "all": test_deps
+        "all": dev_deps
         # 'docs': docs_deps
     },
     include_package_data=True,

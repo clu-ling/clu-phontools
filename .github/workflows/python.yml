@@ -33,9 +33,6 @@ jobs:
         #   - os: windows-latest
         #     python-version: '3.6'
     needs: setup
-    env:
-      QUALTRICS_API_TOKEN: ${{ secrets.QUALTRICS_API_TOKEN }}
-      QUALTRICS_DATA_CENTER_ID: ${{ secrets.QUALTRICS_DATA_CENTER_ID }}
     steps:
     # Checkout code
     - name: Checkout code
@@ -51,16 +48,16 @@ jobs:
         python -c "import sys; print(sys.version)"
 
     # Library
-    - name: "Install library (qualtrics)"
+    - name: "Install library (clu-phontools)"
       #working-directory: ./
       run: |
         pip install -e ".[all]"
     # Tests
-    - name: "Tests and coverage (qualtrics)"
+    - name: "Tests and coverage (clu-phontools)"
       run: |
         green -vvvv --run-coverage .
     # Type checks
-    - name: "Type checks (qualtrics)"
+    - name: "Type checks (clu-phontools)"
       continue-on-error: true
       run: |
         mypy --install-types --non-interactive --ignore-missing-imports --follow-imports=skip --strict-optional --no-site-packages --exclude "^(build|misc)/$" .
