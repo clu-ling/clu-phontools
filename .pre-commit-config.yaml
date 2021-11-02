@@ -6,13 +6,37 @@ minimum_pre_commit_version: 2.9.2
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v2.3.0
+  rev: v4.0.1
   hooks:
+    - id: check-merge-conflict
     - id: check-yaml
     - id: end-of-file-fixer
     - id: trailing-whitespace
+# formatting
 - repo: https://github.com/psf/black
-  rev: stable
+  rev: 21.10b0
   hooks:
     - id: black
-      language_version: python3
+# type checks
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: 'v0.910-1'  # Use the sha / tag you want to point at
+  hooks:
+    - id: mypy
+
+# run tests
+- repo: local
+  hooks:
+    # tests
+    - id: tests
+      name: run tests
+      pass_filenames: false
+      entry: "green -vvv --run-coverage ."
+      language: system
+      types: [python]
+      stages: [push]
+    # typehints
+    # - id: mypy
+    #   name: typehints (mypy)
+    #   entry: mypy -v --exclude "setup\.(py|cfg)|(build|misc|bin|\.github)/$" .
+    #   language: system
+    #   #stages: [push]
