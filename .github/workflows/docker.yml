@@ -48,9 +48,11 @@ jobs:
         docker build -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:latest" .
         docker buildx build --load --platform linux/amd64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:amd64" .
         docker buildx build --load --platform linux/arm64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:arm64" .
+        docker images
     # Tests
     - name: "Test multiarch build (clu-phontools)"
       run: |
+        docker images
         docker run -i "${ORG}/${IMAGE_NAME}:amd64" python --version
         docker run -i "${ORG}/${IMAGE_NAME}:arm64" python --version
     - name: "Tests and coverage (clu-phontools)"
