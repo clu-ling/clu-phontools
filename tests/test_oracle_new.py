@@ -181,26 +181,54 @@ Testing some actions
 
 class TestSomeMethodsNecessaryForOracle(unittest.TestCase):
     def test_stack_is_empty(self):
-        """`clu.phontools.alignment.stack_is_empty` return a bool value"""
+        """`clu.phontools.alignment.stack_is_empty` returns a bool value"""
         stack = deque()
         res = stack_is_empty(stack)
         assert res == True
 
     def test_check_len_stack(self):
-        """`clu.phontools.alignment.check_len_stack` return a bool value"""
+        """`clu.phontools.alignment.check_len_stack` returns a bool value"""
         stack = deque(["æ", "æ"])
         res = check_len_stack(stack)
         assert res == 2
 
     def test_pop_for_queue(self):
-        pass
+        """`clu.phontools.alignment.pop_for_queue` returns the queue and deletes the item on the left end of the queue """
+        queue = deque(["NULL", "æ"])
+        res = pop_for_queue(queue)
+
+        desired_res = deque(["æ"])  # or stack
+
+        self.assertEqual(
+            res,
+            desired_res,
+            f"clu.phontools.alignment.pop_for_stack({queue}) produced {desired_res}",
+        )
 
     def test_pop_for_stack(self):
-        """`clu.phontools.alignment.pop_for_stack` return a bool value"""
-        pass
+        """`clu.phontools.alignment.pop_for_stack` returns the stack and deletes the item on the right end of the queue"""
+        stack = deque(["æ", "æ"])
+        res = pop_for_stack(stack)
 
-    def test_shift_for_stack(self):
-        pass
+        desired_res = deque(["æ"])  # or stack
+
+        self.assertEqual(
+            res,
+            desired_res,
+            f"clu.phontools.alignment.pop_for_stack({stack}) produced {desired_res}",
+        )
+
+    def test_shift(self):
+        """`clu.phontools.alignment.shift` performs two functions: 1) takes the item on the left end  and inserts it on the left end (index 0) in the stack"""
+        stack = deque()
+        queue = deque(["NULL", "æ"])
+
+        res = shift(stack, queue)
+
+        desired_stack = stack
+        desired_queue = queue
+        assert len(stack) != len(desired_stack)
+        assert len(queue) != len(desired_queue)
 
     def test_discard(self):
         pass
@@ -221,9 +249,17 @@ class TestParseSymbol(unittest.TestCase):
     def test_generate_queues(self):
         """`clu.phontools.alignment.ParseSymbol.generate_queues` returns a ParseSymbol object"""
 
-        gold = ["NULL", "c", "NULL", "a", "NULL", "t", "NULL"]
+        queue = [
+            (0, "NULL"),
+            (1, "c"),
+            (2, "NULL"),
+            (3, "a"),
+            (4, "NULL"),
+            (5, "t"),
+            (6, "NULL"),
+        ]
 
-        output = ParseSymbol.generate_queues(gold)
+        output = ParseSymbol.parse(queue)
 
         gold_queue = [
             ParseSymbol(
@@ -251,19 +287,6 @@ class TestParseSymbol(unittest.TestCase):
         self.assertEqual(
             output,
             gold_queue,
-            f"clu.phontools.alignment.ParseSymbol.generate_queues({gold}) produced {gold_queue}",
+            f"clu.phontools.alignment.ParseSymbol.generate_queues({queue}) produced {gold_queue}",
         )
-
-
-"""ReAline output -> List[State]"""
-# each state represents everything we need to predict the next action
-
-"""Test .pop() for Q"""
-"""Test .pop() for Stack"""
-"""Test .shift() for """
-
-
-"""Test gold Phones -> Sequence[ParseSymbol]"""
-
-"""ReAline output (an alignment as a graph) to "gold" Graph"""
 
