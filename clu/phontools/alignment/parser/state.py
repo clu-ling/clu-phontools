@@ -34,11 +34,15 @@ class State:
     ) -> State:
         """Return a copy of the current state with one or more attributes modified"""
         return State(
-            stack=stack or self.stack,
-            gold_queue=gold_queue or self.gold_queue,
-            transcribed_queue=transcribed_queue or self.transcribed_queue,
-            gold_graph=gold_graph or self.gold_graph,
-            current_graph=current_graph or self.current_graph,
+            stack=stack if stack is not None else self.stack,
+            gold_queue=gold_queue if gold_queue is not None else self.gold_queue,
+            transcribed_queue=transcribed_queue
+            if transcribed_queue is not None
+            else self.transcribed_queue,
+            gold_graph=gold_graph if gold_graph is not None else self.gold_graph,
+            current_graph=current_graph
+            if current_graph is not None
+            else self.current_graph,
         )
 
     @property
@@ -83,17 +87,48 @@ class State:
     def _perform_DISCARD_G(self) -> Optional[State]:
         return None
 
-    # FIXME: implement me
+    def is_valid_SHIFT_T(self) -> bool:
+        """SHIFT_T valid iff len(transcribed_queue) > 0"""
+        return len(self.transcribed_queue) > 0
+
     def _perform_SHIFT_T(self) -> Optional[State]:
-        return None
+        """Shifts first item from transcribed_queue to top of stack"""
+        if not self.is_valid_SHIFT_T():
+            return None
+        stack = self.stack.copy()
+        t_queue = self.transcribed_queue.copy()
+        next_ps = t_queue.pop()
+        stack.push(next_ps)
+        return self.copy(stack=stack, transcribed_queue=t_queue)
 
-    # FIXME: implement me
+    def is_valid_SHIFT_G(self) -> bool:
+        """SHIFT_G valid iff len(gold_queue) > 0"""
+        return len(self.gold_queue) > 0
+
     def _perform_SHIFT_G(self) -> Optional[State]:
-        return None
+        """Shifts first item from gold_queue to top of stack"""
+        if not self.is_valid_SHIFT_G():
+            return None
+        stack = self.stack.copy()
+        g_queue = self.gold_queue.copy()
+        next_ps = g_queue.pop()
+        stack.push(next_ps)
+        return self.copy(stack=stack, gold_queue=g_queue)
 
-    # FIXME: implement me
+    def is_valid_STACK_SWAP(self) -> bool:
+        """STACK_SWAP is valid iff there are at least two items on the stack."""
+        return len(self.stack) >= 2
+
     def _perform_STACK_SWAP(self) -> Optional[State]:
-        return None
+        """Swaps the top two items on the stack"""
+        if not self.is_valid_STACK_SWAP():
+            return None
+        stack = self.stack.copy()
+        s1 = stack.pop()
+        s2 = stack.pop()
+        for ps in [s2, s1]:
+            stack.push(s2)
+        return self.copy(stack=stack)
 
     # FIXME: implement me
     def _perform_INSERTION_PRESERVE_COPY_CHILD(self) -> Optional[State]:
@@ -116,17 +151,14 @@ class State:
         top two items on the stack have TRANSCRIPT and GOLD TranscriptTypes.
         """
         stack = self.stack.copy()
-        s1 = stack.pop()
-        s2 = stack.pop()
-        return (
-            True
-            if len(stack) < 2
-            and (
-                set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT])
-                == set([s1.source, s2.source])
+        if len(stack) >= 2:
+            s1 = stack.pop()
+            s2 = stack.pop()
+            # TODO: do we want to enforce an order here?
+            return set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT]) == set(
+                [s1.source, s2.source]
             )
-            else False
-        )
+        return False
 
     def _perform_ALIGN(self) -> Optional[State]:
         """Adds an ALIGN edge between top two items of Stack (if present)"""
