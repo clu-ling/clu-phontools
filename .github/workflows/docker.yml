@@ -20,6 +20,11 @@ jobs:
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
   python:
+    env:
+      ORG: "parsertongue"
+      IMAGE_NAME: "clu-phontools"
+      TAG: "latest"
+      DOCKERFILE: "Dockerfile"
     name: "Python library"
     runs-on: ubuntu-latest
     needs: setup
@@ -40,10 +45,6 @@ jobs:
     # Library (docker)
     - name: "Build multiarch docker image (clu-phontools)"
       #working-directory: ./
-      env:
-        DOCKERFILE: "Dockerfile"
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: |
         docker build -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:latest" .
         docker buildx build --load --platform linux/amd64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:amd64" .
@@ -51,55 +52,34 @@ jobs:
         docker images
     # Tests
     - name: "Test multiarch build (clu-phontools)"
-      env:
-        DOCKERFILE: "Dockerfile"
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: |
         docker images
         docker run -i "${ORG}/${IMAGE_NAME}:amd64" python --version
         docker run -i "${ORG}/${IMAGE_NAME}:arm64" python --version
     - name: "Tests and coverage (clu-phontools)"
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: |
         docker run -i "${ORG}/${IMAGE_NAME}" green -vvv /app
     # Type checks
     - name: "Type checks (clu-phontools)"
       continue-on-error: true
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run : |
         docker run -i "${ORG}/${IMAGE_NAME}" mypy --ignore-missing-imports --follow-imports=skip --strict-optional /app
     # publish
     - name: "Publish docker image (clu-phontools image)"
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       if: github.ref == 'refs/heads/main'
       run: |
-        docker buildx build --platform=linux/amd64,linux/arm64 -f ${DOCKERFILE} --push -t "${ORG}/${IMAGE_NAME}:latest" -t "${ORG}/${IMAGE_NAME}:${{ needs.setup.outputs.sha_short }}" .
+        docker buildx build --platform=linux/amd64,linux/arm64 -f ${DOCKERFILE} --push -t "${ORG}/${IMAGE_NAME}:${TAG}" -t "${ORG}/${IMAGE_NAME}:${{ needs.setup.outputs.sha_short }}" .
+
     # code formatting and linting
     - name: "Code formatting & linting"
       continue-on-error: true
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: docker run -i "${ORG}/${IMAGE_NAME}" black --check /app
 
     # docs
     - name: "Create documentation (API docs)"
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" pdoc --html -c latex_math=True --force --output-dir docs/api clu
     # docs
     - name: "Create documentation (other)"
-      env:
-        ORG: "parsertongue"
-        IMAGE_NAME: "clu-phontools"
       run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" mkdocs build -c
       #run: docker run -i -v "$GITHUB_WORKSPACE:/app" "${ORG}/${IMAGE_NAME}" portray as_html
     # - name: Deploy docs
