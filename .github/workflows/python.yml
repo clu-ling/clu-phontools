@@ -1,0 +1,86 @@
+# dockerless action
+name: Project CI (Python)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  setup:
+    name: setup
+    runs-on: ubuntu-latest
+    outputs:
+      sha_short: ${{ steps.sha.outputs.sha_short }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: generate short commit hash
+      id: sha
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+  python:
+    name: "Python library"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #, macos-latest, windows-latest]
+        python-version: [ '3.8', '3.9' ]
+        # exclude:
+        #   - os: macos-latest
+        #     python-version: '3.8'
+        #   - os: windows-latest
+        #     python-version: '3.6'
+    needs: setup
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        #architecture: x64
+    - name: Display Python version
+      run: |
+        python -c "import sys; print(sys.version)"
+
+    # Library
+    - name: "Install library (clu-phontools)"
+      #working-directory: ./
+      run: |
+        pip install -e ".[all]"
+    # Tests
+    - name: "Tests and coverage (clu-phontools)"
+      run: |
+        green -vvvv --run-coverage .
+    # Type checks
+    - name: "Type checks (clu-phontools)"
+      continue-on-error: true
+      run: |
+        mypy --install-types --non-interactive --ignore-missing-imports --follow-imports=skip --strict-optional --no-site-packages --exclude "^(build|misc)/$" .
+    # code formatting and linting
+    - name: "Code formatting & linting"
+      continue-on-error: true
+      run: |
+        black --check .
+    # docs (API)
+    - name: "Create documentation (API docs)"
+      run: |
+        pdoc --html -c latex_math=True --force --output-dir docs/api clu
+    # docs (other)
+    - name: "Create documentation (other)"
+      run: |
+        mkdocs build -c
+    - name: Deploy docs
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        # see https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: ${{ github.event.head_commit.message }}
