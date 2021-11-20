@@ -46,7 +46,7 @@ class StateTests(unittest.TestCase):
 
         self.assertTrue(
             state.is_valid_ALIGN(),
-            f"configured state should allow ALIGN action when top two items on stack are from GOLD and TRANSCRIPT"
+            f"configured state should allow ALIGN action when top two items on stack are from GOLD and TRANSCRIPT",
         )
 
         self.assertTrue(
@@ -66,22 +66,24 @@ class StateTests(unittest.TestCase):
             f"ALIGN must point from TRANSCRIPT -> GOLD",
         )
 
-        problem_stack = Stack([
-          ParseSymbol(
-              symbol="a",
-              original_index=0,
-              index=0,
-              source=TranscriptTypes.GOLD,
-          ),
-          ParseSymbol(
-              symbol="b",
-              original_index=1,
-              index=1,
-              source=TranscriptTypes.GOLD,
-          ),
-        ])
+        problem_stack = Stack(
+            [
+                ParseSymbol(
+                    symbol="a",
+                    original_index=0,
+                    index=0,
+                    source=TranscriptTypes.GOLD,
+                ),
+                ParseSymbol(
+                    symbol="b",
+                    original_index=1,
+                    index=1,
+                    source=TranscriptTypes.GOLD,
+                ),
+            ]
+        )
         bad_state = state.copy(stack=problem_stack)
         self.assertFalse(
             bad_state.is_valid_ALIGN(),
-            f"state should NOT allow ALIGN action when top two items on stack are both from GOLD"
+            f"state should NOT allow ALIGN action when top two items on stack are both from GOLD",
         )

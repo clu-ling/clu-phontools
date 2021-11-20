@@ -118,13 +118,21 @@ class State:
         stack = self.stack.copy()
         s1 = stack.pop()
         s2 = stack.pop()
-        return True if len(stack) < 2 and (set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT]) == set([s1.source, s2.source])) else False
+        return (
+            True
+            if len(stack) < 2
+            and (
+                set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT])
+                == set([s1.source, s2.source])
+            )
+            else False
+        )
 
     def _perform_ALIGN(self) -> Optional[State]:
         """Adds an ALIGN edge between top two items of Stack (if present)"""
         # check if action is valid
         if not self.is_valid_ALIGN():
-          return None
+            return None
         stack = self.stack.copy()
         s1 = stack.pop()
         s2 = stack.pop()
