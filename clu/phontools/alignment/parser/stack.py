@@ -10,16 +10,15 @@ __all__ = ["Stack"]
 class Stack:
     """"""
 
-    def __init__(self, symbols: List[ParseSymbol] = []):
-        self._symbols: List[ParseSymbol] = symbols
+    def __init__(self, symbols: Optional[List[ParseSymbol]] = None):
+        self._symbols: List[ParseSymbol] = symbols or []
 
     def __len__(self) -> int:
         return len(self._symbols)
 
-    # TODO: implement me
-    def push(self) -> None:
+    def push(self, ps: ParseSymbol) -> None:
         """Pushes a symbol onto the Stack"""
-        pass
+        self._symbols.append(ps)
 
     def copy(self) -> Stack:
         """Creates a new Stack from the current state of this Stack"""

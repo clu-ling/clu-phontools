@@ -111,18 +111,30 @@ class State:
     def _perform_DELETION_PRESERVE_COPY_PARENT(self) -> Optional[State]:
         return None
 
-    def _perform_ALIGN(self) -> Optional[State]:
-        """Adds an ALIGN edge between top two items of Stack (if present)"""
-        # create a copy to safely modify
+    def is_valid_ALIGN(self) -> bool:
+        """ALIGN is valid iff there are at least two items on the stack AND
+        top two items on the stack have TRANSCRIPT and GOLD TranscriptTypes.
+        """
         stack = self.stack.copy()
-        if len(stack) < 2:
-            return None
         s1 = stack.pop()
         s2 = stack.pop()
-        # FIXME: is this the right direction?
-        edge = Edge(source=s1, destination=s2, label=Actions.ALIGN)
+        return True if len(stack) < 2 and (set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT]) == set([s1.source, s2.source])) else False
+
+    def _perform_ALIGN(self) -> Optional[State]:
+        """Adds an ALIGN edge between top two items of Stack (if present)"""
+        # check if action is valid
+        if not self.is_valid_ALIGN():
+          return None
+        stack = self.stack.copy()
+        s1 = stack.pop()
+        s2 = stack.pop()
+        keep: ParseSymbol = s1 if s1.source == TranscriptTypes.GOLD else s2
+        drop: ParseSymbol = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
+        # ALIGN must point from Transcript -> GOLD
+        edge = Edge(source=drop, destination=keep, label=Actions.ALIGN)
         new_graph = Graph(edges=self.current_graph.edges + [edge])
-        return self.copy(current_graph=new_graph)
+        stack.push(keep)
+        return self.copy(stack=stack, current_graph=new_graph)
 
     # FIXME: implement me
     def _perform_SUBSTITUTION(self) -> Optional[State]:
