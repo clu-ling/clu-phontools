@@ -166,8 +166,7 @@ class PronouncingDict(dict, ABC):
         return self._dict.get(self._preprocess_key(key), [])
 
     def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
-        &#34;&#34;&#34;Adds a pronunciation for the given word
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Adds a pronunciation for the given word&#34;&#34;&#34;
         clean_key: SimpleWord = self._preprocess_key(key)
         old: List[Pronunciation] = self._dict.get(clean_key, [])
         self._dict[clean_key] = old + [value]
@@ -650,8 +649,7 @@ bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)</p>
         return self._dict.get(self._preprocess_key(key), [])
 
     def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
-        &#34;&#34;&#34;Adds a pronunciation for the given word
-        &#34;&#34;&#34;
+        &#34;&#34;&#34;Adds a pronunciation for the given word&#34;&#34;&#34;
         clean_key: SimpleWord = self._preprocess_key(key)
         old: List[Pronunciation] = self._dict.get(clean_key, [])
         self._dict[clean_key] = old + [value]
@@ -694,8 +692,7 @@ bell_arpa = tuple(ConverterUtils.ipa_to_arpabet(symb) for symb in bell_ipa)</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add(self, key: SimpleWord, value: Pronunciation) -&gt; None:
-    &#34;&#34;&#34;Adds a pronunciation for the given word
-    &#34;&#34;&#34;
+    &#34;&#34;&#34;Adds a pronunciation for the given word&#34;&#34;&#34;
     clean_key: SimpleWord = self._preprocess_key(key)
     old: List[Pronunciation] = self._dict.get(clean_key, [])
     self._dict[clean_key] = old + [value]</code></pre>
