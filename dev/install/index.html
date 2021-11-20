@@ -147,9 +147,11 @@
 <pre><code class="language-bash">conda create --name clu-phontools python=3.8 ipython
 source activate clu-phontools
 # execute the following command from the project root:
-pip install -e &quot;.[dev]&quot;
+pip install -e &quot;.[all]&quot;
+# install the pre-commit hooks (as a convenience)
+pre-commit install -t pre-push
 </code></pre>
-<p><code>[dev]</code> will include dependencies for running tests and generating the documentation.</p>
+<p><code>[all]</code> will include dependencies for running tests and generating the documentation.</p>
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link"></a></h2>
 <p>For those familiar with Docker, another option is to use a container with bind mounts as a development environment.  Note that the instructions below assume you're developing using a Linux-based environment (they've also been tested on MacOS Catalina).</p>
 <p>First, you'll need to build the docker image:</p>
