@@ -51,6 +51,10 @@ jobs:
         docker images
     # Tests
     - name: "Test multiarch build (clu-phontools)"
+      env:
+        DOCKERFILE: "Dockerfile"
+        ORG: "parsertongue"
+        IMAGE_NAME: "clu-phontools"
       run: |
         docker images
         docker run -i "${ORG}/${IMAGE_NAME}:amd64" python --version
