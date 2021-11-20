@@ -8,10 +8,12 @@
 conda create --name clu-phontools python=3.8 ipython
 source activate clu-phontools
 # execute the following command from the project root:
-pip install -e ".[dev]"
+pip install -e ".[all]"
+# install the pre-commit hooks (as a convenience)
+pre-commit install -t pre-push
 ```
 
-`[dev]` will include dependencies for running tests and generating the documentation.
+`[all]` will include dependencies for running tests and generating the documentation.
 
 
 ## Docker
