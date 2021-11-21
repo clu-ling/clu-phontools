@@ -233,7 +233,8 @@ class State:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class State:
+<pre><code class="python">@dataclass
+class State:
     &#34;&#34;&#34; &#34;&#34;&#34;
 
     stack: Stack
@@ -409,7 +410,7 @@ class State:
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.state.State.gold_graph"><code class="name">var <span class="ident">gold_graph</span> : Union[<a title="clu.phontools.alignment.parser.graph.Graph" href="graph.html#clu.phontools.alignment.parser.graph.Graph">Graph</a>, NoneType]</code></dt>
+<dt id="clu.phontools.alignment.parser.state.State.gold_graph"><code class="name">var <span class="ident">gold_graph</span> : Optional[<a title="clu.phontools.alignment.parser.graph.Graph" href="graph.html#clu.phontools.alignment.parser.graph.Graph">Graph</a>]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -555,7 +556,7 @@ top two items on the stack have TRANSCRIPT and GOLD TranscriptTypes.</p></div>
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.state.State.perform_action"><code class="name flex">
-<span>def <span class="ident">perform_action</span></span>(<span>self, action: Actions) ‑> Union[<a title="clu.phontools.alignment.parser.state.State" href="#clu.phontools.alignment.parser.state.State">State</a>, NoneType]</span>
+<span>def <span class="ident">perform_action</span></span>(<span>self, action: Actions) ‑> Optional[<a title="clu.phontools.alignment.parser.state.State" href="#clu.phontools.alignment.parser.state.State">State</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Applies the provided action to the state</p></div>

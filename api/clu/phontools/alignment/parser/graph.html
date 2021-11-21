@@ -142,7 +142,8 @@ class Edge:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Edge:
+<pre><code class="python">@dataclass
+class Edge:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
     source: Symbol
@@ -175,7 +176,8 @@ class Edge:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Graph:
+<pre><code class="python">@dataclass
+class Graph:
     &#34;&#34;&#34;An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)&#34;&#34;&#34;
 
     edges: List[Edge] = field(default_factory=list)
