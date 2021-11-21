@@ -95,5 +95,5 @@ class Edge:
     label: Actions
 
     def nodes(self) -> List[Symbol]:
-      """Distinct nodes (Symbols) in Edge"""
-      return list(set([source, destination]))
+        """Distinct nodes (Symbols) in Edge"""
+        return list(set([source, destination]))

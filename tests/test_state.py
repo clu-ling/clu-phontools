@@ -13,28 +13,28 @@ class StateTests(unittest.TestCase):
 
     # for test purposes
     gold_a = Symbol(
-      symbol="a",
-      original_index=0,
-      index=0,
-      source=TranscriptTypes.GOLD,
+        symbol="a",
+        original_index=0,
+        index=0,
+        source=TranscriptTypes.GOLD,
     )
     gold_b = Symbol(
-      symbol="b",
-      original_index=1,
-      index=1,
-      source=TranscriptTypes.GOLD,
+        symbol="b",
+        original_index=1,
+        index=1,
+        source=TranscriptTypes.GOLD,
     )
     trans_a = Symbol(
-      symbol="a",
-      original_index=0,
-      index=0,
-      source=TranscriptTypes.TRANSCRIPT,
+        symbol="a",
+        original_index=0,
+        index=0,
+        source=TranscriptTypes.TRANSCRIPT,
     )
     trans_b = Symbol(
-      symbol="b",
-      original_index=1,
-      index=1,
-      source=TranscriptTypes.TRANSCRIPT,
+        symbol="b",
+        original_index=1,
+        index=1,
+        source=TranscriptTypes.TRANSCRIPT,
     )
 
     # Actions
@@ -46,7 +46,7 @@ class StateTests(unittest.TestCase):
                 [
                     # top of stack
                     StateTests.trans_a,
-                    StateTests.gold_a
+                    StateTests.gold_a,
                 ]
             ),
             gold_queue=Queue([]),
@@ -91,12 +91,7 @@ class StateTests(unittest.TestCase):
             f"ALIGN must point from TRANSCRIPT -> GOLD",
         )
 
-        problem_stack = Stack(
-            [
-                StateTests.gold_a,
-                StateTests.gold_b
-            ]
-        )
+        problem_stack = Stack([StateTests.gold_a, StateTests.gold_b])
         bad_state = state.copy(stack=problem_stack)
         self.assertFalse(
             bad_state.is_valid(ACTION),
@@ -153,11 +148,7 @@ class StateTests(unittest.TestCase):
             f"first item in stack of new_stack should now be 'a', but {top.symbol} found.",
         )
 
-        problem_stack = Stack(
-            [
-                StateTests.gold_a
-            ]
-        )
+        problem_stack = Stack([StateTests.gold_a])
         bad_state = state.copy(stack=problem_stack)
         self.assertFalse(
             bad_state.is_valid(ACTION),

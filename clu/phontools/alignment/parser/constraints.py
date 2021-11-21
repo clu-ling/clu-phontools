@@ -2,6 +2,7 @@ from __future__ import annotations
 from .symbols import Symbol, TranscriptTypes
 from .graph import Graph
 
+
 class Constraints:
     """
     Constraints used to validate Actions and guide our Oracle
@@ -10,8 +11,8 @@ class Constraints:
     @staticmethod
     def stack_top_two_different_sources(stack: Stack) -> bool:
         """
-        True iff 
-        1) stack has >= 2 items AND 
+        True iff
+        1) stack has >= 2 items AND
         2) top 2 items on the stack have different TranscriptTypes.
         """
         _stack = stack.copy()
