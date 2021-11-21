@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .symbols import ParseSymbol
+from .symbols import Symbol, TranscriptTypes
 from .actions import Actions
 from dataclasses import dataclass, field
 from typing import List
@@ -25,6 +25,6 @@ class Graph:
 class Edge:
     """"""
 
-    source: ParseSymbol
-    destination: ParseSymbol
+    source: Symbol
+    destination: Symbol
     label: Actions

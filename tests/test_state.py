@@ -17,13 +17,13 @@ class StateTests(unittest.TestCase):
             stack=Stack(
                 [
                     # top of stack
-                    ParseSymbol(
+                    Symbol(
                         symbol="a",
                         original_index=0,
                         index=0,
                         source=TranscriptTypes.TRANSCRIPT,
                     ),
-                    ParseSymbol(
+                    Symbol(
                         symbol="a",
                         original_index=0,
                         index=0,
@@ -68,13 +68,13 @@ class StateTests(unittest.TestCase):
 
         problem_stack = Stack(
             [
-                ParseSymbol(
+                Symbol(
                     symbol="a",
                     original_index=0,
                     index=0,
                     source=TranscriptTypes.GOLD,
                 ),
-                ParseSymbol(
+                Symbol(
                     symbol="b",
                     original_index=1,
                     index=1,
@@ -91,13 +91,13 @@ class StateTests(unittest.TestCase):
     def test_STACK_SWAP(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.STACK_SWAP."""
 
-        first_ps = ParseSymbol(
+        first_ps = Symbol(
             symbol="b",
             original_index=1,
             index=1,
             source=TranscriptTypes.TRANSCRIPT,
         )
-        second_ps = ParseSymbol(
+        second_ps = Symbol(
             symbol="a",
             original_index=0,
             index=0,
@@ -143,7 +143,7 @@ class StateTests(unittest.TestCase):
 
         problem_stack = Stack(
             [
-                ParseSymbol(
+                Symbol(
                     symbol="a",
                     original_index=0,
                     index=0,
@@ -160,7 +160,7 @@ class StateTests(unittest.TestCase):
     def test_SHIFT_G(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.SHIFT_G."""
 
-        ps = ParseSymbol(
+        ps = Symbol(
             symbol="a",
             original_index=0,
             index=0,
@@ -210,7 +210,7 @@ class StateTests(unittest.TestCase):
     def test_SHIFT_T(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.SHIFT_T."""
 
-        ps = ParseSymbol(
+        ps = Symbol(
             symbol="a",
             original_index=0,
             index=0,

@@ -14,21 +14,21 @@ class ReAlineOutputUtils:
 
     # TODO: @Sayed, implement this
     @staticmethod
-    def to_symbols(text: Text, source: TranscriptTypes) -> List[ParseSymbol]:
+    def to_symbols(text: Text, source: TranscriptTypes) -> List[Symbol]:
         # "I like turtles" -> [
-        # ParseSymbol(original_index=-1, index=0, symbol="NULL", source=source),
-        # ParseSymbol(original_index=0, index=1, symbol="AI", source=source)
+        # Symbol.create_null(index=0, source=source),
+        # Symbol(original_index=0, index=1, symbol="AI", source=source)
         # ...
-        # ParseSymbol(original_index=-1, index=10, symbol="NULL", source=source)
+        # ReAlineOutputUtils.create_null(index=10, source=source)
         # ]
         symbols = []
-        # insert NULL, create ParseSymbol instances, and append to symbols
+        # insert NULL, create Symbol instances, and append to symbols
         return symbols
 
     # TODO: @Sayed, implement this by "peeking into the future"
     @staticmethod
     def to_graph(
-        symbols: List[ParseSymbol], realine_output: List[Tuple[Text, Text, Text]]
+        symbols: List[Symbol], realine_output: List[Tuple[Text, Text, Text]]
     ) -> Graph:
         """"""
         # 1. create Edges

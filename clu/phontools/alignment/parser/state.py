@@ -50,12 +50,12 @@ class State:
         return {
             Actions.ALIGN: self._perform_ALIGN,
             Actions.DELETION: self._perform_DELETION,
-            Actions.DELETION_PRESERVE_COPY_CHILD: self._perform_DELETION_PRESERVE_COPY_CHILD,
-            Actions.DELETION_PRESERVE_COPY_PARENT: self._perform_DELETION_PRESERVE_COPY_PARENT,
+            Actions.DELETION_PRESERVE_CHILD: self._perform_DELETION_PRESERVE_CHILD,
+            Actions.DELETION_PRESERVE_PARENT: self._perform_DELETION_PRESERVE_PARENT,
             Actions.DISCARD_G: self._perform_DISCARD_G,
             Actions.DISCARD_T: self._perform_DISCARD_T,
-            Actions.INSERTION_PRESERVE_COPY_CHILD: self._perform_INSERTION_PRESERVE_COPY_CHILD,
-            Actions.INSERTION_PRESERVE_COPY_PARENT: self._perform_INSERTION_PRESERVE_COPY_PARENT,
+            Actions.INSERTION_PRESERVE_CHILD: self._perform_INSERTION_PRESERVE_CHILD,
+            Actions.INSERTION_PRESERVE_PARENT: self._perform_INSERTION_PRESERVE_PARENT,
             Actions.SHIFT_G: self._perform_SHIFT_G,
             Actions.SHIFT_T: self._perform_SHIFT_T,
             Actions.STACK_SWAP: self._perform_STACK_SWAP,
@@ -131,19 +131,19 @@ class State:
         return self.copy(stack=stack)
 
     # FIXME: implement me
-    def _perform_INSERTION_PRESERVE_COPY_CHILD(self) -> Optional[State]:
+    def _perform_INSERTION_PRESERVE_CHILD(self) -> Optional[State]:
         return None
 
     # FIXME: implement me
-    def _perform_INSERTION_PRESERVE_COPY_PARENT(self) -> Optional[State]:
+    def _perform_INSERTION_PRESERVE_PARENT(self) -> Optional[State]:
         return None
 
     # FIXME: implement me
-    def _perform_DELETION_PRESERVE_COPY_CHILD(self) -> Optional[State]:
+    def _perform_DELETION_PRESERVE_CHILD(self) -> Optional[State]:
         return None
 
     # FIXME: implement me
-    def _perform_DELETION_PRESERVE_COPY_PARENT(self) -> Optional[State]:
+    def _perform_DELETION_PRESERVE_PARENT(self) -> Optional[State]:
         return None
 
     def is_valid_ALIGN(self) -> bool:
@@ -168,8 +168,8 @@ class State:
         stack = self.stack.copy()
         s1 = stack.pop()
         s2 = stack.pop()
-        keep: ParseSymbol = s1 if s1.source == TranscriptTypes.GOLD else s2
-        drop: ParseSymbol = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
+        keep: Symbol = s1 if s1.source == TranscriptTypes.GOLD else s2
+        drop: Symbol = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
         # ALIGN must point from Transcript -> GOLD
         edge = Edge(source=drop, destination=keep, label=Actions.ALIGN)
         new_graph = Graph(edges=self.current_graph.edges + [edge])
