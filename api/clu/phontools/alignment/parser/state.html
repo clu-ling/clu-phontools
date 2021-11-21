@@ -320,8 +320,7 @@ class State:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@dataclass
-class State:
+<pre><code class="python">class State:
     &#34;&#34;&#34; &#34;&#34;&#34;
 
     stack: Stack
@@ -683,7 +682,7 @@ def actions_map(self) -&gt; Dict[Actions, ActionFunc]:
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.state.State.last_action"><code class="name flex">
-<span>def <span class="ident">last_action</span></span>(<span>self) ‑> Optional[<a title="clu.phontools.alignment.parser.actions.Actions" href="actions.html#clu.phontools.alignment.parser.actions.Actions">Actions</a>]</span>
+<span>def <span class="ident">last_action</span></span>(<span>self) ‑> Union[<a title="clu.phontools.alignment.parser.actions.Actions" href="actions.html#clu.phontools.alignment.parser.actions.Actions">Actions</a>, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Easily access the last action applied</p></div>
@@ -697,7 +696,7 @@ def actions_map(self) -&gt; Dict[Actions, ActionFunc]:
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.state.State.perform_action"><code class="name flex">
-<span>def <span class="ident">perform_action</span></span>(<span>self, action: Actions) ‑> Optional[<a title="clu.phontools.alignment.parser.state.State" href="#clu.phontools.alignment.parser.state.State">State</a>]</span>
+<span>def <span class="ident">perform_action</span></span>(<span>self, action: Actions) ‑> Union[<a title="clu.phontools.alignment.parser.state.State" href="#clu.phontools.alignment.parser.state.State">State</a>, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Applies the provided action to the state</p></div>
