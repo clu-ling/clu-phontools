@@ -28,34 +28,98 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
-from .symbols import ParseSymbol
+from .symbols import Symbol, TranscriptTypes
 from .actions import Actions
 from dataclasses import dataclass, field
 from typing import List
+from networkx.drawing.nx_pydot import to_pydot
+from networkx.drawing.nx_agraph import to_agraph
+import pygraphviz as pgv
+import networkx as nx
+import pydot
 
 __all__ = [&#34;Graph&#34;, &#34;Edge&#34;]
 
 
 @dataclass
 class Graph:
+    &#34;&#34;&#34;An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)&#34;&#34;&#34;
+
     edges: List[Edge] = field(default_factory=list)
 
-    # FIXME: implement me
-    def has_children(self, ps: ParseSymbol) -&gt; bool:
-        # go over the edges and check which is the source and the destination
-        pass
+    def __post_init__(self):
+        ps2children: Dict[Symbol, List[Symbol]] = dict()
+        G = nx.DiGraph()
+        for edge in self.edges:
+            G.add_nodes_from(
+                [self._nx_make_node(edge.source), self._nx_make_node(edge.destination)]
+            )
+            G.add_edge(
+                self._nx_make_node_id(edge.source),
+                self._nx_make_node_id(edge.destination),
+                label=edge.label.simple(),
+            )
+            if edge.source != edge.destination:
+                children = ps2children.get(edge.source, [])
+                children.append(edge.destination)
+                ps2children[edge.source] = children
+        # mapping of node to its children
+        self._children: Dict[Symbol, List[Symbol]] = ps2children
+        self.G = G
+
+    def children_for(self, ps: Symbol) -&gt; List[Symbol]:
+        &#34;&#34;&#34;Retrieves children for the provided Symbol ps.&#34;&#34;&#34;
+        return self._children.get(ps, [])
+
+    def has_children(self, ps: Symbol) -&gt; bool:
+        &#34;&#34;&#34;Checks whether provided Symbol ps has children.&#34;&#34;&#34;
+        return ps.source in self._children
 
     def copy(self) -&gt; Graph:
         &#34;&#34;&#34;Creates a copy of the graph at this stage&#34;&#34;&#34;
         return Graph(edges=edges[:])
+
+    def _nx_make_node_id(self, ps: Symbol) -&gt; Text:
+        return f&#34;{str(ps.source)}-{ps.symbol}-{ps.index}&#34;
+
+    def _nx_make_node(self, ps: Symbol) -&gt; Tuple[Text, Dict[Text, Text]]:
+        return (
+            self._nx_make_node_id(ps),
+            {
+                &#34;label&#34;: ps.symbol,
+                &#34;shape&#34;: &#34;box&#34; if ps.source == TranscriptTypes.GOLD else &#34;circle&#34;,
+            },
+        )
+
+    def _dot_with_tiered_view(self, G: nx.Graph) -&gt; Text:
+        &#34;&#34;&#34;converts nx.Graph to pygraphviz.AGraph,
+        add subgraphs for a tiered view,
+        and returns dot&#34;&#34;&#34;
+        AG = to_agraph(G)
+        gold = set()
+        transcribed = set()
+        for edge in self.edges:
+            for node in (edge.source, edge.destination):
+                nx_id = self._nx_make_node_id(node)
+                if node.source == TranscriptTypes.GOLD:
+                    gold.add(nx_id)
+                elif node.source == TranscriptTypes.TRANSCRIPT:
+                    transcribed.add(nx_id)
+        AG.add_subgraph(sorted(list(gold)), rank=&#34;min&#34;)
+        AG.add_subgraph(sorted(list(transcribed)), rank=&#34;max&#34;)
+        return AG.string()
+
+    def to_dot(self) -&gt; Text:
+        &#34;&#34;&#34;Dot-based representation of the alignment graph.&#34;&#34;&#34;
+        return self._dot_with_tiered_view(self.G)
 
 
 @dataclass
 class Edge:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    source: ParseSymbol
-    destination: ParseSymbol
+    source: Symbol
+    destination: Symbol
     label: Actions</code></pre>
 </details>
 </section>
@@ -70,10 +134,10 @@ class Edge:
 <dl>
 <dt id="clu.phontools.alignment.parser.graph.Edge"><code class="flex name class">
 <span>class <span class="ident">Edge</span></span>
-<span>(</span><span>source: ParseSymbol, destination: ParseSymbol, label: Actions)</span>
+<span>(</span><span>source: Symbol, destination: Symbol, label: Actions)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Edge(source: 'ParseSymbol', destination: 'ParseSymbol', label: 'Actions')</p></div>
+<div class="desc"><p>Edge(source: 'Symbol', destination: 'Symbol', label: 'Actions')</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -81,13 +145,13 @@ class Edge:
 <pre><code class="python">class Edge:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    source: ParseSymbol
-    destination: ParseSymbol
+    source: Symbol
+    destination: Symbol
     label: Actions</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
-<dt id="clu.phontools.alignment.parser.graph.Edge.destination"><code class="name">var <span class="ident">destination</span> : <a title="clu.phontools.alignment.parser.symbols.ParseSymbol" href="symbols.html#clu.phontools.alignment.parser.symbols.ParseSymbol">ParseSymbol</a></code></dt>
+<dt id="clu.phontools.alignment.parser.graph.Edge.destination"><code class="name">var <span class="ident">destination</span> : <a title="clu.phontools.alignment.parser.symbols.Symbol" href="symbols.html#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -95,7 +159,7 @@ class Edge:
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.graph.Edge.source"><code class="name">var <span class="ident">source</span> : <a title="clu.phontools.alignment.parser.symbols.ParseSymbol" href="symbols.html#clu.phontools.alignment.parser.symbols.ParseSymbol">ParseSymbol</a></code></dt>
+<dt id="clu.phontools.alignment.parser.graph.Edge.source"><code class="name">var <span class="ident">source</span> : <a title="clu.phontools.alignment.parser.symbols.Symbol" href="symbols.html#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -106,22 +170,81 @@ class Edge:
 <span>(</span><span>edges: List[<a title="clu.phontools.alignment.parser.graph.Edge" href="#clu.phontools.alignment.parser.graph.Edge">Edge</a>] = &lt;factory&gt;)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Graph(edges: 'List[Edge]' = <factory>)</p></div>
+<div class="desc"><p>An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Graph:
+    &#34;&#34;&#34;An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)&#34;&#34;&#34;
+
     edges: List[Edge] = field(default_factory=list)
 
-    # FIXME: implement me
-    def has_children(self, ps: ParseSymbol) -&gt; bool:
-        # go over the edges and check which is the source and the destination
-        pass
+    def __post_init__(self):
+        ps2children: Dict[Symbol, List[Symbol]] = dict()
+        G = nx.DiGraph()
+        for edge in self.edges:
+            G.add_nodes_from(
+                [self._nx_make_node(edge.source), self._nx_make_node(edge.destination)]
+            )
+            G.add_edge(
+                self._nx_make_node_id(edge.source),
+                self._nx_make_node_id(edge.destination),
+                label=edge.label.simple(),
+            )
+            if edge.source != edge.destination:
+                children = ps2children.get(edge.source, [])
+                children.append(edge.destination)
+                ps2children[edge.source] = children
+        # mapping of node to its children
+        self._children: Dict[Symbol, List[Symbol]] = ps2children
+        self.G = G
+
+    def children_for(self, ps: Symbol) -&gt; List[Symbol]:
+        &#34;&#34;&#34;Retrieves children for the provided Symbol ps.&#34;&#34;&#34;
+        return self._children.get(ps, [])
+
+    def has_children(self, ps: Symbol) -&gt; bool:
+        &#34;&#34;&#34;Checks whether provided Symbol ps has children.&#34;&#34;&#34;
+        return ps.source in self._children
 
     def copy(self) -&gt; Graph:
         &#34;&#34;&#34;Creates a copy of the graph at this stage&#34;&#34;&#34;
-        return Graph(edges=edges[:])</code></pre>
+        return Graph(edges=edges[:])
+
+    def _nx_make_node_id(self, ps: Symbol) -&gt; Text:
+        return f&#34;{str(ps.source)}-{ps.symbol}-{ps.index}&#34;
+
+    def _nx_make_node(self, ps: Symbol) -&gt; Tuple[Text, Dict[Text, Text]]:
+        return (
+            self._nx_make_node_id(ps),
+            {
+                &#34;label&#34;: ps.symbol,
+                &#34;shape&#34;: &#34;box&#34; if ps.source == TranscriptTypes.GOLD else &#34;circle&#34;,
+            },
+        )
+
+    def _dot_with_tiered_view(self, G: nx.Graph) -&gt; Text:
+        &#34;&#34;&#34;converts nx.Graph to pygraphviz.AGraph,
+        add subgraphs for a tiered view,
+        and returns dot&#34;&#34;&#34;
+        AG = to_agraph(G)
+        gold = set()
+        transcribed = set()
+        for edge in self.edges:
+            for node in (edge.source, edge.destination):
+                nx_id = self._nx_make_node_id(node)
+                if node.source == TranscriptTypes.GOLD:
+                    gold.add(nx_id)
+                elif node.source == TranscriptTypes.TRANSCRIPT:
+                    transcribed.add(nx_id)
+        AG.add_subgraph(sorted(list(gold)), rank=&#34;min&#34;)
+        AG.add_subgraph(sorted(list(transcribed)), rank=&#34;max&#34;)
+        return AG.string()
+
+    def to_dot(self) -&gt; Text:
+        &#34;&#34;&#34;Dot-based representation of the alignment graph.&#34;&#34;&#34;
+        return self._dot_with_tiered_view(self.G)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -132,6 +255,20 @@ class Edge:
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="clu.phontools.alignment.parser.graph.Graph.children_for"><code class="name flex">
+<span>def <span class="ident">children_for</span></span>(<span>self, ps: Symbol) ‑> List[<a title="clu.phontools.alignment.parser.symbols.Symbol" href="symbols.html#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieves children for the provided Symbol ps.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def children_for(self, ps: Symbol) -&gt; List[Symbol]:
+    &#34;&#34;&#34;Retrieves children for the provided Symbol ps.&#34;&#34;&#34;
+    return self._children.get(ps, [])</code></pre>
+</details>
+</dd>
 <dt id="clu.phontools.alignment.parser.graph.Graph.copy"><code class="name flex">
 <span>def <span class="ident">copy</span></span>(<span>self) ‑> <a title="clu.phontools.alignment.parser.graph.Graph" href="#clu.phontools.alignment.parser.graph.Graph">Graph</a></span>
 </code></dt>
@@ -147,17 +284,31 @@ class Edge:
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.graph.Graph.has_children"><code class="name flex">
-<span>def <span class="ident">has_children</span></span>(<span>self, ps: ParseSymbol) ‑> bool</span>
+<span>def <span class="ident">has_children</span></span>(<span>self, ps: Symbol) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Checks whether provided Symbol ps has children.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def has_children(self, ps: ParseSymbol) -&gt; bool:
-    # go over the edges and check which is the source and the destination
-    pass</code></pre>
+<pre><code class="python">def has_children(self, ps: Symbol) -&gt; bool:
+    &#34;&#34;&#34;Checks whether provided Symbol ps has children.&#34;&#34;&#34;
+    return ps.source in self._children</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.parser.graph.Graph.to_dot"><code class="name flex">
+<span>def <span class="ident">to_dot</span></span>(<span>self) ‑> Text</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Dot-based representation of the alignment graph.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dot(self) -&gt; Text:
+    &#34;&#34;&#34;Dot-based representation of the alignment graph.&#34;&#34;&#34;
+    return self._dot_with_tiered_view(self.G)</code></pre>
 </details>
 </dd>
 </dl>
@@ -189,9 +340,11 @@ class Edge:
 <li>
 <h4><code><a title="clu.phontools.alignment.parser.graph.Graph" href="#clu.phontools.alignment.parser.graph.Graph">Graph</a></code></h4>
 <ul class="">
+<li><code><a title="clu.phontools.alignment.parser.graph.Graph.children_for" href="#clu.phontools.alignment.parser.graph.Graph.children_for">children_for</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.graph.Graph.copy" href="#clu.phontools.alignment.parser.graph.Graph.copy">copy</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.graph.Graph.edges" href="#clu.phontools.alignment.parser.graph.Graph.edges">edges</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.graph.Graph.has_children" href="#clu.phontools.alignment.parser.graph.Graph.has_children">has_children</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.graph.Graph.to_dot" href="#clu.phontools.alignment.parser.graph.Graph.to_dot">to_dot</a></code></li>
 </ul>
 </li>
 </ul>

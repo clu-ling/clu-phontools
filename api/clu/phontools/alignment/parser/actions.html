@@ -29,6 +29,7 @@
 </summary>
 <pre><code class="python">from __future__ import annotations
 from enum import Enum
+from typing import Text, Tuple
 
 __all__ = [&#34;Actions&#34;]
 
@@ -43,16 +44,31 @@ class Actions(Enum):
     SHIFT_T = &#34;SHIFT-T&#34;
     SHIFT_G = &#34;SHIFT-G&#34;
     STACK_SWAP = &#34;STACK-SWAP&#34;
-    INSERTION_PRESERVE_COPY_CHILD = &#34;INSERTION-PRESERVE-COPY-CHILD&#34;
-    INSERTION_PRESERVE_COPY_PARENT = &#34;INSERTION-PRESERVE-COPY-PARENT&#34;
-    DELETION_PRESERVE_COPY_CHILD = &#34;DELETION-PRESERVE-COPY-CHILD&#34;
-    DELETION_PRESERVE_COPY_PARENT = &#34;DELETION-PRESERVE-COPY-PARENT&#34;
+    INSERTION_PRESERVE_CHILD = &#34;INSERTION-PRESERVE-CHILD&#34;
+    INSERTION_PRESERVE_PARENT = &#34;INSERTION-PRESERVE-PARENT&#34;
+    DELETION_PRESERVE_CHILD = &#34;DELETION-PRESERVE-CHILD&#34;
+    DELETION_PRESERVE_PARENT = &#34;DELETION-PRESERVE-PARENT&#34;
     ALIGN = &#34;ALIGN&#34;
     SUBSTITUTION = &#34;SUBSTITUTION&#34;
     DELETION = &#34;DELETION&#34;
 
-    def describe(self):
-        return self.name, self.value</code></pre>
+    def describe(self) -&gt; Tuple[Text, Text]:
+        return (self.name, self.value)
+
+    def simple(self) -&gt; Text:
+        &#34;&#34;&#34;A simplified/more coarse-grained version of the label.&#34;&#34;&#34;
+        label = self.value
+        for prefix in [
+            &#34;INSERT&#34;,
+            &#34;ALIGN&#34;,
+            &#34;DELETION&#34;,
+            &#34;SUBSTITUTION&#34;,
+            &#34;SHIFT&#34;,
+            &#34;DISCARD&#34;,
+        ]:
+            if label.startswith(prefix):
+                return prefix
+        return label</code></pre>
 </details>
 </section>
 <section>
@@ -84,16 +100,31 @@ class Actions(Enum):
     SHIFT_T = &#34;SHIFT-T&#34;
     SHIFT_G = &#34;SHIFT-G&#34;
     STACK_SWAP = &#34;STACK-SWAP&#34;
-    INSERTION_PRESERVE_COPY_CHILD = &#34;INSERTION-PRESERVE-COPY-CHILD&#34;
-    INSERTION_PRESERVE_COPY_PARENT = &#34;INSERTION-PRESERVE-COPY-PARENT&#34;
-    DELETION_PRESERVE_COPY_CHILD = &#34;DELETION-PRESERVE-COPY-CHILD&#34;
-    DELETION_PRESERVE_COPY_PARENT = &#34;DELETION-PRESERVE-COPY-PARENT&#34;
+    INSERTION_PRESERVE_CHILD = &#34;INSERTION-PRESERVE-CHILD&#34;
+    INSERTION_PRESERVE_PARENT = &#34;INSERTION-PRESERVE-PARENT&#34;
+    DELETION_PRESERVE_CHILD = &#34;DELETION-PRESERVE-CHILD&#34;
+    DELETION_PRESERVE_PARENT = &#34;DELETION-PRESERVE-PARENT&#34;
     ALIGN = &#34;ALIGN&#34;
     SUBSTITUTION = &#34;SUBSTITUTION&#34;
     DELETION = &#34;DELETION&#34;
 
-    def describe(self):
-        return self.name, self.value</code></pre>
+    def describe(self) -&gt; Tuple[Text, Text]:
+        return (self.name, self.value)
+
+    def simple(self) -&gt; Text:
+        &#34;&#34;&#34;A simplified/more coarse-grained version of the label.&#34;&#34;&#34;
+        label = self.value
+        for prefix in [
+            &#34;INSERT&#34;,
+            &#34;ALIGN&#34;,
+            &#34;DELETION&#34;,
+            &#34;SUBSTITUTION&#34;,
+            &#34;SHIFT&#34;,
+            &#34;DISCARD&#34;,
+        ]:
+            if label.startswith(prefix):
+                return prefix
+        return label</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -109,11 +140,11 @@ class Actions(Enum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_CHILD"><code class="name">var <span class="ident">DELETION_PRESERVE_COPY_CHILD</span></code></dt>
+<dt id="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD"><code class="name">var <span class="ident">DELETION_PRESERVE_CHILD</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_PARENT"><code class="name">var <span class="ident">DELETION_PRESERVE_COPY_PARENT</span></code></dt>
+<dt id="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_PARENT"><code class="name">var <span class="ident">DELETION_PRESERVE_PARENT</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -125,11 +156,11 @@ class Actions(Enum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_CHILD"><code class="name">var <span class="ident">INSERTION_PRESERVE_COPY_CHILD</span></code></dt>
+<dt id="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_CHILD"><code class="name">var <span class="ident">INSERTION_PRESERVE_CHILD</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_PARENT"><code class="name">var <span class="ident">INSERTION_PRESERVE_COPY_PARENT</span></code></dt>
+<dt id="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_PARENT"><code class="name">var <span class="ident">INSERTION_PRESERVE_PARENT</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -153,7 +184,7 @@ class Actions(Enum):
 <h3>Methods</h3>
 <dl>
 <dt id="clu.phontools.alignment.parser.actions.Actions.describe"><code class="name flex">
-<span>def <span class="ident">describe</span></span>(<span>self)</span>
+<span>def <span class="ident">describe</span></span>(<span>self) ‑> Tuple[str, str]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -161,8 +192,33 @@ class Actions(Enum):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def describe(self):
-    return self.name, self.value</code></pre>
+<pre><code class="python">def describe(self) -&gt; Tuple[Text, Text]:
+    return (self.name, self.value)</code></pre>
+</details>
+</dd>
+<dt id="clu.phontools.alignment.parser.actions.Actions.simple"><code class="name flex">
+<span>def <span class="ident">simple</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A simplified/more coarse-grained version of the label.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def simple(self) -&gt; Text:
+    &#34;&#34;&#34;A simplified/more coarse-grained version of the label.&#34;&#34;&#34;
+    label = self.value
+    for prefix in [
+        &#34;INSERT&#34;,
+        &#34;ALIGN&#34;,
+        &#34;DELETION&#34;,
+        &#34;SUBSTITUTION&#34;,
+        &#34;SHIFT&#34;,
+        &#34;DISCARD&#34;,
+    ]:
+        if label.startswith(prefix):
+            return prefix
+    return label</code></pre>
 </details>
 </dd>
 </dl>
@@ -188,17 +244,18 @@ class Actions(Enum):
 <ul class="">
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.ALIGN" href="#clu.phontools.alignment.parser.actions.Actions.ALIGN">ALIGN</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION" href="#clu.phontools.alignment.parser.actions.Actions.DELETION">DELETION</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_CHILD">DELETION_PRESERVE_COPY_CHILD</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_COPY_PARENT">DELETION_PRESERVE_COPY_PARENT</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD">DELETION_PRESERVE_CHILD</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_PARENT">DELETION_PRESERVE_PARENT</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.DISCARD_G" href="#clu.phontools.alignment.parser.actions.Actions.DISCARD_G">DISCARD_G</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.DISCARD_T" href="#clu.phontools.alignment.parser.actions.Actions.DISCARD_T">DISCARD_T</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_CHILD">INSERTION_PRESERVE_COPY_CHILD</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_COPY_PARENT">INSERTION_PRESERVE_COPY_PARENT</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_CHILD">INSERTION_PRESERVE_CHILD</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_PARENT">INSERTION_PRESERVE_PARENT</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.SHIFT_G" href="#clu.phontools.alignment.parser.actions.Actions.SHIFT_G">SHIFT_G</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.SHIFT_T" href="#clu.phontools.alignment.parser.actions.Actions.SHIFT_T">SHIFT_T</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.STACK_SWAP" href="#clu.phontools.alignment.parser.actions.Actions.STACK_SWAP">STACK_SWAP</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.SUBSTITUTION" href="#clu.phontools.alignment.parser.actions.Actions.SUBSTITUTION">SUBSTITUTION</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.describe" href="#clu.phontools.alignment.parser.actions.Actions.describe">describe</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.simple" href="#clu.phontools.alignment.parser.actions.Actions.simple">simple</a></code></li>
 </ul>
 </li>
 </ul>

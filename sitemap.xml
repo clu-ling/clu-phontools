@@ -2,57 +2,57 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/contributing/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/install/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/tutorial/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/dev/documentation/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/dev/formatting/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/dev/install/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/dev/test/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/examples/asu-use-case/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/examples/misc/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://clu-ling.github.io/clu-phontools/examples/rest-api/</loc>
-         <lastmod>2021-11-20</lastmod>
+         <lastmod>2021-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

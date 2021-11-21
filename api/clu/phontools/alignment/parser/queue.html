@@ -28,7 +28,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
-from .symbols import ParseSymbol
+from .symbols import Symbol
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
@@ -39,8 +39,8 @@ __all__ = [&#34;Queue&#34;]
 class Queue:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    def __init__(self, symbols: Optional[List[ParseSymbol]] = None):
-        self._symbols: List[ParseSymbol] = symbols or []
+    def __init__(self, symbols: Optional[List[Symbol]] = None):
+        self._symbols: List[Symbol] = symbols or []
 
     def __len__(self) -&gt; int:
         return len(self._symbols)
@@ -50,11 +50,11 @@ class Queue:
         # deep copy
         return Queue(symbols=self._symbols[:])
 
-    def push(self, ps: ParseSymbol) -&gt; None:
+    def push(self, ps: Symbol) -&gt; None:
         &#34;&#34;&#34;pushes an element into the first position of the queue&#34;&#34;&#34;
         self._symbols = [ps] + self._symbols
 
-    def pop(self) -&gt; Optional[ParseSymbol]:
+    def pop(self) -&gt; Optional[Symbol]:
         &#34;&#34;&#34;pops off the first element in the queue
         and sets self._symbols to whatever remains&#34;&#34;&#34;
         # check if Queue is empty
@@ -81,7 +81,7 @@ class Queue:
 <dl>
 <dt id="clu.phontools.alignment.parser.queue.Queue"><code class="flex name class">
 <span>class <span class="ident">Queue</span></span>
-<span>(</span><span>symbols: Optional[List[ParseSymbol]] = None)</span>
+<span>(</span><span>symbols: Optional[List[Symbol]] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -92,8 +92,8 @@ class Queue:
 <pre><code class="python">class Queue:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    def __init__(self, symbols: Optional[List[ParseSymbol]] = None):
-        self._symbols: List[ParseSymbol] = symbols or []
+    def __init__(self, symbols: Optional[List[Symbol]] = None):
+        self._symbols: List[Symbol] = symbols or []
 
     def __len__(self) -&gt; int:
         return len(self._symbols)
@@ -103,11 +103,11 @@ class Queue:
         # deep copy
         return Queue(symbols=self._symbols[:])
 
-    def push(self, ps: ParseSymbol) -&gt; None:
+    def push(self, ps: Symbol) -&gt; None:
         &#34;&#34;&#34;pushes an element into the first position of the queue&#34;&#34;&#34;
         self._symbols = [ps] + self._symbols
 
-    def pop(self) -&gt; Optional[ParseSymbol]:
+    def pop(self) -&gt; Optional[Symbol]:
         &#34;&#34;&#34;pops off the first element in the queue
         and sets self._symbols to whatever remains&#34;&#34;&#34;
         # check if Queue is empty
@@ -154,7 +154,7 @@ class Queue:
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.queue.Queue.pop"><code class="name flex">
-<span>def <span class="ident">pop</span></span>(<span>self) ‑> Union[<a title="clu.phontools.alignment.parser.symbols.ParseSymbol" href="symbols.html#clu.phontools.alignment.parser.symbols.ParseSymbol">ParseSymbol</a>, NoneType]</span>
+<span>def <span class="ident">pop</span></span>(<span>self) ‑> Union[<a title="clu.phontools.alignment.parser.symbols.Symbol" href="symbols.html#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a>, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>pops off the first element in the queue
@@ -163,7 +163,7 @@ and sets self._symbols to whatever remains</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def pop(self) -&gt; Optional[ParseSymbol]:
+<pre><code class="python">def pop(self) -&gt; Optional[Symbol]:
     &#34;&#34;&#34;pops off the first element in the queue
     and sets self._symbols to whatever remains&#34;&#34;&#34;
     # check if Queue is empty
@@ -176,7 +176,7 @@ and sets self._symbols to whatever remains</p></div>
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.queue.Queue.push"><code class="name flex">
-<span>def <span class="ident">push</span></span>(<span>self, ps: ParseSymbol) ‑> NoneType</span>
+<span>def <span class="ident">push</span></span>(<span>self, ps: Symbol) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>pushes an element into the first position of the queue</p></div>
@@ -184,7 +184,7 @@ and sets self._symbols to whatever remains</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def push(self, ps: ParseSymbol) -&gt; None:
+<pre><code class="python">def push(self, ps: Symbol) -&gt; None:
     &#34;&#34;&#34;pushes an element into the first position of the queue&#34;&#34;&#34;
     self._symbols = [ps] + self._symbols</code></pre>
 </details>

@@ -28,11 +28,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
-from dataclasses import dataclass
-from enum import Enum
-from typing import Text
 
-__all__ = [&#34;ParseSymbol&#34;, &#34;TranscriptTypes&#34;]
+# from dataclasses import dataclass
+from enum import Enum
+from typing import Literal, Text
+
+__all__ = [&#34;Symbol&#34;, &#34;TranscriptTypes&#34;]
 
 
 class TranscriptTypes(Enum):
@@ -42,14 +43,27 @@ class TranscriptTypes(Enum):
     TRANSCRIPT: Text = &#34;TRANSCRIPT&#34;
 
 
-@dataclass
-class ParseSymbol:
+class Symbol:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    symbol: Text
-    original_index: int
-    index: int
-    source: TranscriptTypes</code></pre>
+    NULL: Literal[&#34;NULL&#34;] = &#34;NULL&#34;
+
+    def __init__(
+        self, symbol: Text, original_index: int, index: int, source: TranscriptTypes
+    ):
+        self.symbol: Text = symbol
+        self.original_index: int = original_index
+        self.index: int = index
+        self.source: TranscriptTypes = source
+
+    def is_null(self) -&gt; bool:
+        &#34;&#34;&#34;Checks whether the symbol is NULL&#34;&#34;&#34;
+        return self.symbol == Symbol.NULL
+
+    @staticmethod
+    def create_null(index: int, source: TranscriptTypes) -&gt; Symbol:
+        &#34;&#34;&#34;Easily create a Symbol for NULL&#34;&#34;&#34;
+        return Symbol(original_index=-1, index=index, symbol=Symbol.NULL, source=source)</code></pre>
 </details>
 </section>
 <section>
@@ -61,41 +75,78 @@ class ParseSymbol:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="clu.phontools.alignment.parser.symbols.ParseSymbol"><code class="flex name class">
-<span>class <span class="ident">ParseSymbol</span></span>
+<dt id="clu.phontools.alignment.parser.symbols.Symbol"><code class="flex name class">
+<span>class <span class="ident">Symbol</span></span>
 <span>(</span><span>symbol: Text, original_index: int, index: int, source: <a title="clu.phontools.alignment.parser.symbols.TranscriptTypes" href="#clu.phontools.alignment.parser.symbols.TranscriptTypes">TranscriptTypes</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>ParseSymbol(symbol: 'Text', original_index: 'int', index: 'int', source: 'TranscriptTypes')</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ParseSymbol:
+<pre><code class="python">class Symbol:
     &#34;&#34;&#34;&#34;&#34;&#34;
 
-    symbol: Text
-    original_index: int
-    index: int
-    source: TranscriptTypes</code></pre>
+    NULL: Literal[&#34;NULL&#34;] = &#34;NULL&#34;
+
+    def __init__(
+        self, symbol: Text, original_index: int, index: int, source: TranscriptTypes
+    ):
+        self.symbol: Text = symbol
+        self.original_index: int = original_index
+        self.index: int = index
+        self.source: TranscriptTypes = source
+
+    def is_null(self) -&gt; bool:
+        &#34;&#34;&#34;Checks whether the symbol is NULL&#34;&#34;&#34;
+        return self.symbol == Symbol.NULL
+
+    @staticmethod
+    def create_null(index: int, source: TranscriptTypes) -&gt; Symbol:
+        &#34;&#34;&#34;Easily create a Symbol for NULL&#34;&#34;&#34;
+        return Symbol(original_index=-1, index=index, symbol=Symbol.NULL, source=source)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
-<dt id="clu.phontools.alignment.parser.symbols.ParseSymbol.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
+<dt id="clu.phontools.alignment.parser.symbols.Symbol.NULL"><code class="name">var <span class="ident">NULL</span> : Literal['NULL']</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.symbols.ParseSymbol.original_index"><code class="name">var <span class="ident">original_index</span> : int</code></dt>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="clu.phontools.alignment.parser.symbols.Symbol.create_null"><code class="name flex">
+<span>def <span class="ident">create_null</span></span>(<span>index: int, source: <a title="clu.phontools.alignment.parser.symbols.TranscriptTypes" href="#clu.phontools.alignment.parser.symbols.TranscriptTypes">TranscriptTypes</a>) ‑> <a title="clu.phontools.alignment.parser.symbols.Symbol" href="#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a></span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Easily create a Symbol for NULL</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def create_null(index: int, source: TranscriptTypes) -&gt; Symbol:
+    &#34;&#34;&#34;Easily create a Symbol for NULL&#34;&#34;&#34;
+    return Symbol(original_index=-1, index=index, symbol=Symbol.NULL, source=source)</code></pre>
+</details>
 </dd>
-<dt id="clu.phontools.alignment.parser.symbols.ParseSymbol.source"><code class="name">var <span class="ident">source</span> : <a title="clu.phontools.alignment.parser.symbols.TranscriptTypes" href="#clu.phontools.alignment.parser.symbols.TranscriptTypes">TranscriptTypes</a></code></dt>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="clu.phontools.alignment.parser.symbols.Symbol.is_null"><code class="name flex">
+<span>def <span class="ident">is_null</span></span>(<span>self) ‑> bool</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
-</dd>
-<dt id="clu.phontools.alignment.parser.symbols.ParseSymbol.symbol"><code class="name">var <span class="ident">symbol</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>Checks whether the symbol is NULL</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_null(self) -&gt; bool:
+    &#34;&#34;&#34;Checks whether the symbol is NULL&#34;&#34;&#34;
+    return self.symbol == Symbol.NULL</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -148,12 +199,11 @@ class ParseSymbol:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="clu.phontools.alignment.parser.symbols.ParseSymbol" href="#clu.phontools.alignment.parser.symbols.ParseSymbol">ParseSymbol</a></code></h4>
+<h4><code><a title="clu.phontools.alignment.parser.symbols.Symbol" href="#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a></code></h4>
 <ul class="">
-<li><code><a title="clu.phontools.alignment.parser.symbols.ParseSymbol.index" href="#clu.phontools.alignment.parser.symbols.ParseSymbol.index">index</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.symbols.ParseSymbol.original_index" href="#clu.phontools.alignment.parser.symbols.ParseSymbol.original_index">original_index</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.symbols.ParseSymbol.source" href="#clu.phontools.alignment.parser.symbols.ParseSymbol.source">source</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.symbols.ParseSymbol.symbol" href="#clu.phontools.alignment.parser.symbols.ParseSymbol.symbol">symbol</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.symbols.Symbol.NULL" href="#clu.phontools.alignment.parser.symbols.Symbol.NULL">NULL</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.symbols.Symbol.create_null" href="#clu.phontools.alignment.parser.symbols.Symbol.create_null">create_null</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.symbols.Symbol.is_null" href="#clu.phontools.alignment.parser.symbols.Symbol.is_null">is_null</a></code></li>
 </ul>
 </li>
 <li>

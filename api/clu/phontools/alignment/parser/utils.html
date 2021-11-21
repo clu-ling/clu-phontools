@@ -43,21 +43,21 @@ class ReAlineOutputUtils:
 
     # TODO: @Sayed, implement this
     @staticmethod
-    def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[ParseSymbol]:
+    def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[Symbol]:
         # &#34;I like turtles&#34; -&gt; [
-        # ParseSymbol(original_index=-1, index=0, symbol=&#34;NULL&#34;, source=source),
-        # ParseSymbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
+        # Symbol.create_null(index=0, source=source),
+        # Symbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
         # ...
-        # ParseSymbol(original_index=-1, index=10, symbol=&#34;NULL&#34;, source=source)
+        # ReAlineOutputUtils.create_null(index=10, source=source)
         # ]
         symbols = []
-        # insert NULL, create ParseSymbol instances, and append to symbols
+        # insert NULL, create Symbol instances, and append to symbols
         return symbols
 
     # TODO: @Sayed, implement this by &#34;peeking into the future&#34;
     @staticmethod
     def to_graph(
-        symbols: List[ParseSymbol], realine_output: List[Tuple[Text, Text, Text]]
+        symbols: List[Symbol], realine_output: List[Tuple[Text, Text, Text]]
     ) -&gt; Graph:
         &#34;&#34;&#34;&#34;&#34;&#34;
         # 1. create Edges
@@ -121,21 +121,21 @@ class ReAlineOutputUtils:
 
     # TODO: @Sayed, implement this
     @staticmethod
-    def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[ParseSymbol]:
+    def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[Symbol]:
         # &#34;I like turtles&#34; -&gt; [
-        # ParseSymbol(original_index=-1, index=0, symbol=&#34;NULL&#34;, source=source),
-        # ParseSymbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
+        # Symbol.create_null(index=0, source=source),
+        # Symbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
         # ...
-        # ParseSymbol(original_index=-1, index=10, symbol=&#34;NULL&#34;, source=source)
+        # ReAlineOutputUtils.create_null(index=10, source=source)
         # ]
         symbols = []
-        # insert NULL, create ParseSymbol instances, and append to symbols
+        # insert NULL, create Symbol instances, and append to symbols
         return symbols
 
     # TODO: @Sayed, implement this by &#34;peeking into the future&#34;
     @staticmethod
     def to_graph(
-        symbols: List[ParseSymbol], realine_output: List[Tuple[Text, Text, Text]]
+        symbols: List[Symbol], realine_output: List[Tuple[Text, Text, Text]]
     ) -&gt; Graph:
         &#34;&#34;&#34;&#34;&#34;&#34;
         # 1. create Edges
@@ -220,7 +220,7 @@ def get_states(gold: Text, transcribed: Text, realine_output) -&gt; Graph:
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.utils.ReAlineOutputUtils.to_graph"><code class="name flex">
-<span>def <span class="ident">to_graph</span></span>(<span>symbols: List[ParseSymbol], realine_output: List[Tuple[Text, Text, Text]]) ‑> <a title="clu.phontools.alignment.parser.graph.Graph" href="graph.html#clu.phontools.alignment.parser.graph.Graph">Graph</a></span>
+<span>def <span class="ident">to_graph</span></span>(<span>symbols: List[Symbol], realine_output: List[Tuple[Text, Text, Text]]) ‑> <a title="clu.phontools.alignment.parser.graph.Graph" href="graph.html#clu.phontools.alignment.parser.graph.Graph">Graph</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -230,7 +230,7 @@ def get_states(gold: Text, transcribed: Text, realine_output) -&gt; Graph:
 </summary>
 <pre><code class="python">@staticmethod
 def to_graph(
-    symbols: List[ParseSymbol], realine_output: List[Tuple[Text, Text, Text]]
+    symbols: List[Symbol], realine_output: List[Tuple[Text, Text, Text]]
 ) -&gt; Graph:
     &#34;&#34;&#34;&#34;&#34;&#34;
     # 1. create Edges
@@ -240,7 +240,7 @@ def to_graph(
 </details>
 </dd>
 <dt id="clu.phontools.alignment.parser.utils.ReAlineOutputUtils.to_symbols"><code class="name flex">
-<span>def <span class="ident">to_symbols</span></span>(<span>text: Text, source: TranscriptTypes) ‑> List[<a title="clu.phontools.alignment.parser.symbols.ParseSymbol" href="symbols.html#clu.phontools.alignment.parser.symbols.ParseSymbol">ParseSymbol</a>]</span>
+<span>def <span class="ident">to_symbols</span></span>(<span>text: Text, source: TranscriptTypes) ‑> List[<a title="clu.phontools.alignment.parser.symbols.Symbol" href="symbols.html#clu.phontools.alignment.parser.symbols.Symbol">Symbol</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -249,15 +249,15 @@ def to_graph(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[ParseSymbol]:
+def to_symbols(text: Text, source: TranscriptTypes) -&gt; List[Symbol]:
     # &#34;I like turtles&#34; -&gt; [
-    # ParseSymbol(original_index=-1, index=0, symbol=&#34;NULL&#34;, source=source),
-    # ParseSymbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
+    # Symbol.create_null(index=0, source=source),
+    # Symbol(original_index=0, index=1, symbol=&#34;AI&#34;, source=source)
     # ...
-    # ParseSymbol(original_index=-1, index=10, symbol=&#34;NULL&#34;, source=source)
+    # ReAlineOutputUtils.create_null(index=10, source=source)
     # ]
     symbols = []
-    # insert NULL, create ParseSymbol instances, and append to symbols
+    # insert NULL, create Symbol instances, and append to symbols
     return symbols</code></pre>
 </details>
 </dd>
