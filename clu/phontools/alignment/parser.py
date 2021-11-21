@@ -75,6 +75,7 @@ class RealineOutput:
 
     @property
     def alignments(self):
+        # [[('c','c')]]
         realiner = ReAline()
         al = []
         for item in self.get_gold_and_transcript:
@@ -83,7 +84,13 @@ class RealineOutput:
             al.append(output)
         return al
 
-    def realine_graph(self):
+    # 1. create a list of ParseSymbol instances
+
+    def to_parsesymbols(self, gold, transcript) -> List[ParseSymbol]:
+        # ParseSymbol(symbol="NULL", original_index=-1, index=0, source, TranscriptTypes.GOLD)
+        some_class.to_parsesymbols("I like turtles", "I like purple tools")
+
+    def realine_graph(self) -> Graph:
         gold_graph = []
         for alignment in self.alignments:
             edge = []
@@ -268,12 +275,12 @@ class ParseSymbol:
                         symbol=symbol,
                         original_index=original_index,
                         index=index,
-                        source=source,
+                        source=source,  # TranscriptTypes.GOLD if item[0] else TranscriptTypes.TRANSCRIPT
                     )
                 )
             elif item[1] != "NULL":
                 symbol = item[1]
-                original_index = (item[0] - 1)/2
+                original_index = (item[0] - 1) / 2
                 index = item[0]
                 source = "GOLD"
                 parsed_symbols.append(
@@ -286,112 +293,25 @@ class ParseSymbol:
                 )
         return parsed_symbols
 
-#parse_symbol = ParseSymbol
-#print(parse_symbol.parse(example))
+
+# parse_symbol = ParseSymbol
+# print(parse_symbol.parse(example))
+
 
 @dataclass()
 class Graph:
-    edge_order: List[Edge]
+    edges: List[Edge]
 
     def has_children(self, ps: ParseSymbol) -> bool:
         # go over the edges and check which is the source and the destination
         pass
 
 
+@dataclass
 class Edge:
-    source: ParseSymbol
+    source: ParseSymbol  # is an instance
     destination: ParseSymbol
     label: Actions
-
-
-gold_parse = Graph(
-    edge_order=[
-        Edge(
-            source=ParseSymbol(
-                symbol="NULL",
-                original_index=-1,
-                index=0,
-                source=TranscriptTypes.TRANSCRIPT,
-            ),
-            destination=ParseSymbol(
-                symbol="NULL",
-                original_index=-1,
-                index=0,
-                source=TranscriptTypes.TRANSCRIPT,
-            ),
-            label=Actions.DISCARD_T,
-        ),
-        # gold_queue = [null c null a null t null]
-        # trans_queue = [c null a null t null]
-        # stack = []
-        Edge(
-            source=ParseSymbol(
-                symbol="NULL", original_index=-1, index=0, source=TranscriptTypes.GOLD
-            ),
-            destination=ParseSymbol(
-                symbol="NULL", original_index=-1, index=0, source=TranscriptTypes.GOLD
-            ),
-            label=Actions.DISCARD_G,
-        ),
-        # gold_queue = [c null a null t null]
-        # trans_queue = [c null a null t null]
-        # stack = []
-        Edge(
-            source=ParseSymbol(
-                symbol="c", original_index=0, index=1, source=TranscriptTypes.TRANSCRIPT
-            ),
-            destination=ParseSymbol(
-                symbol="c", original_index=0, index=1, source=TranscriptTypes.GOLD
-            ),
-            label=Actions.ALIGN,
-        ),
-        # gold_queue = [null a null t null]
-        # trans_queue = [null a null t null]
-        # stack = []
-        Edge(
-            source=ParseSymbol(
-                symbol="NULL",
-                original_index=-1,
-                index=2,
-                source=TranscriptTypes.TRANSCRIPT,
-            ),
-            destination=ParseSymbol(
-                symbol="NULL",
-                original_index=-1,
-                index=2,
-                source=TranscriptTypes.TRANSCRIPT,
-            ),
-            label=Actions.DISCARD_T,
-        ),
-        # gold_queue = [null a null t null]
-        # trans_queue = [a null t null]
-        # stack = []
-        Edge(
-            source=ParseSymbol(
-                symbol="NULL", original_index=-1, index=3, source="Gold"
-            ),
-            destination=ParseSymbol(
-                symbol="NULL", original_index=-1, index=3, source="Gold"
-            ),
-            label=Actions.DISCARD_G,
-        ),
-        # gold_queue = [a null t null]
-        # trans_queue = [a null t null]
-        # stack = []
-        Edge(
-            source=ParseSymbol(
-                symbol="a", original_index=1, index=4, source=TranscriptTypes.TRANSCRIPT
-            ),
-            destination=ParseSymbol(
-                symbol="a", original_index=1, index=4, source=TranscriptTypes.GOLD
-            ),
-            label=Actions.ALIGN,
-        ),
-        # gold_queue = [null t null]
-        # trans_queue = [null t null]
-        # stack = []
-    ]
-)
 
 
 # utility method to tell us
@@ -491,3 +411,29 @@ class Parser:
 
         self.stack.insert(item1, element2)
         self.stack.insert(item2, element1)
+
+
+if __name__ == "__main__":
+    # (1) realine gold graph
+    realine_output = RealineOutput()
+    gold_graph = realine_output.realine_graph()
+    print(gold_graph)
+
+    # (2) indexes
+    print(prepare_data_for_parse_symbol_class())
+
+    # (3) ParseSymbol
+    q = [
+        (0, "NULL"),
+        (1, "c"),
+        (2, "NULL"),
+        (3, "a"),
+        (4, "NULL"),
+        (5, "t"),
+        (6, "NULL"),
+    ]
+
+    parse_symbol = ParseSymbol
+    parsed = parse_symbol.parse(q)
+    # print(parsed)
+

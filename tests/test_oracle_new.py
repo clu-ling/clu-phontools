@@ -290,3 +290,92 @@ class TestParseSymbol(unittest.TestCase):
             f"clu.phontools.alignment.ParseSymbol.generate_queues({queue}) produced {gold_queue}",
         )
 
+
+gold_parse = Graph(
+    edge_order=[
+        Edge(
+            source=ParseSymbol(
+                symbol="NULL",
+                original_index=-1,
+                index=0,
+                source=TranscriptTypes.TRANSCRIPT,
+            ),
+            destination=ParseSymbol(
+                symbol="NULL",
+                original_index=-1,
+                index=0,
+                source=TranscriptTypes.TRANSCRIPT,
+            ),
+            label=Actions.DISCARD_T,
+        ),
+        # gold_queue = [null c null a null t null]
+        # trans_queue = [c null a null t null]
+        # stack = []
+        Edge(
+            source=ParseSymbol(
+                symbol="NULL", original_index=-1, index=0, source=TranscriptTypes.GOLD
+            ),
+            destination=ParseSymbol(
+                symbol="NULL", original_index=-1, index=0, source=TranscriptTypes.GOLD
+            ),
+            label=Actions.DISCARD_G,
+        ),
+        # gold_queue = [c null a null t null]
+        # trans_queue = [c null a null t null]
+        # stack = []
+        Edge(
+            source=ParseSymbol(
+                symbol="c", original_index=0, index=1, source=TranscriptTypes.TRANSCRIPT
+            ),
+            destination=ParseSymbol(
+                symbol="c", original_index=0, index=1, source=TranscriptTypes.GOLD
+            ),
+            label=Actions.ALIGN,
+        ),
+        # gold_queue = [null a null t null]
+        # trans_queue = [null a null t null]
+        # stack = []
+        Edge(
+            source=ParseSymbol(
+                symbol="NULL",
+                original_index=-1,
+                index=2,
+                source=TranscriptTypes.TRANSCRIPT,
+            ),
+            destination=ParseSymbol(
+                symbol="NULL",
+                original_index=-1,
+                index=2,
+                source=TranscriptTypes.TRANSCRIPT,
+            ),
+            label=Actions.DISCARD_T,
+        ),
+        # gold_queue = [null a null t null]
+        # trans_queue = [a null t null]
+        # stack = []
+        Edge(
+            source=ParseSymbol(
+                symbol="NULL", original_index=-1, index=3, source="Gold"
+            ),
+            destination=ParseSymbol(
+                symbol="NULL", original_index=-1, index=3, source="Gold"
+            ),
+            label=Actions.DISCARD_G,
+        ),
+        # gold_queue = [a null t null]
+        # trans_queue = [a null t null]
+        # stack = []
+        Edge(
+            source=ParseSymbol(
+                symbol="a", original_index=1, index=4, source=TranscriptTypes.TRANSCRIPT
+            ),
+            destination=ParseSymbol(
+                symbol="a", original_index=1, index=4, source=TranscriptTypes.GOLD
+            ),
+            label=Actions.ALIGN,
+        ),
+        # gold_queue = [null t null]
+        # trans_queue = [null t null]
+        # stack = []
+    ]
+)

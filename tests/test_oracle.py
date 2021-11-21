@@ -11,6 +11,11 @@ from clu.phontools.alignment.parser import (
     Actions,
     Parser,
 )
+from clu.phontools.lang.en import EnglishUtils
+from clu.phontools.struct import *
+from clu.phontools.pronouncing import ConverterUtils
+from clu.phontools.alignment.realine import *
+from clu.phontools.alignment.lbe import *
 
 
 """
@@ -19,7 +24,15 @@ Test `clu.phontools.alignment.parser.Index.assign_indexes()` behaviors
 """
 
 
-class SymbolsTests(unittest.TestCase):
+class Engold_phrases = glishUtils.all_possible_phrases_for(gold_phrase)]
+
+        transcribed_phrases = EnglishUtils.all_possible_phrases_for(gold_phrase)TestCase):
+
+    def generate_pairs(self):
+        gold_phrase = ["cat", "in", "the", "hat"]
+        transcribed_phraor se = ["canyon", "hat"]       
+[phrase.phones f]   f"Index.prepare_symbols() should return an object where a special symbol 'NULL' is inserted between the characters of a given word",
+        )
     def prepare_symbols_test(self):
         gold = "cat"
         symbols = Index.prepare_symbols(gold)

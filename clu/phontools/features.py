@@ -2296,6 +2296,20 @@ feature_matrix = {
         "long": "minus",
         "aspirated": "minus",
     },
+    "aʊ": {
+        "place": "vowel",
+        "manner": "vowel2",
+        "syllabic": "plus",
+        "voice": "plus",
+        "nasal": "minus",
+        "retroflex": "minus",
+        "lateral": "minus",
+        "high": "high",
+        "back": "back",
+        "round": "plus",
+        "long": "minus",
+        "aspirated": "minus",
+    },
     # FIXME: are these all needed?
     "LB": {
         "place": "vowel",
