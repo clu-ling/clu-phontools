@@ -51,6 +51,7 @@ jobs:
     - name: "Install library (clu-phontools)"
       #working-directory: ./
       run: |
+        pip install wheel
         pip install -e ".[all]"
     # Tests
     - name: "Tests and coverage (clu-phontools)"
