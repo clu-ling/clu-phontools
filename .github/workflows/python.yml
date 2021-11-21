@@ -19,9 +19,6 @@ jobs:
     - name: generate short commit hash
       id: sha
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-    - name: install system deps
-      run: |
-        sudo apt-get install -y graphviz libgraphviz-dev pkg-config
 
   python:
     name: "Python library"
@@ -40,7 +37,10 @@ jobs:
     # Checkout code
     - name: Checkout code
       uses: actions/checkout@v2
-
+    # Graphviz, etc.
+    - name: Install system deps
+      run: |
+        sudo apt-get install -y graphviz libgraphviz-dev pkg-config
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
