@@ -39,18 +39,18 @@ class Actions(Enum):
     The actions used by the parser.
     &#34;&#34;&#34;
 
-    DISCARD_T = &#34;DISCARD-T&#34;
-    DISCARD_G = &#34;DISCARD-G&#34;
+    # NOTE: previously DISCARD_T and DISCARD_G; now SHIFT_* AND DISCARD_T
+    DISCARD = &#34;DISCARD&#34;
     SHIFT_T = &#34;SHIFT-T&#34;
     SHIFT_G = &#34;SHIFT-G&#34;
     STACK_SWAP = &#34;STACK-SWAP&#34;
     INSERTION_PRESERVE_CHILD = &#34;INSERTION-PRESERVE-CHILD&#34;
     INSERTION_PRESERVE_PARENT = &#34;INSERTION-PRESERVE-PARENT&#34;
+    # NOTE: previously had a DISCARD action as well
     DELETION_PRESERVE_CHILD = &#34;DELETION-PRESERVE-CHILD&#34;
     DELETION_PRESERVE_PARENT = &#34;DELETION-PRESERVE-PARENT&#34;
     ALIGN = &#34;ALIGN&#34;
     SUBSTITUTION = &#34;SUBSTITUTION&#34;
-    DELETION = &#34;DELETION&#34;
 
     def describe(self) -&gt; Tuple[Text, Text]:
         return (self.name, self.value)
@@ -95,18 +95,18 @@ class Actions(Enum):
     The actions used by the parser.
     &#34;&#34;&#34;
 
-    DISCARD_T = &#34;DISCARD-T&#34;
-    DISCARD_G = &#34;DISCARD-G&#34;
+    # NOTE: previously DISCARD_T and DISCARD_G; now SHIFT_* AND DISCARD_T
+    DISCARD = &#34;DISCARD&#34;
     SHIFT_T = &#34;SHIFT-T&#34;
     SHIFT_G = &#34;SHIFT-G&#34;
     STACK_SWAP = &#34;STACK-SWAP&#34;
     INSERTION_PRESERVE_CHILD = &#34;INSERTION-PRESERVE-CHILD&#34;
     INSERTION_PRESERVE_PARENT = &#34;INSERTION-PRESERVE-PARENT&#34;
+    # NOTE: previously had a DISCARD action as well
     DELETION_PRESERVE_CHILD = &#34;DELETION-PRESERVE-CHILD&#34;
     DELETION_PRESERVE_PARENT = &#34;DELETION-PRESERVE-PARENT&#34;
     ALIGN = &#34;ALIGN&#34;
     SUBSTITUTION = &#34;SUBSTITUTION&#34;
-    DELETION = &#34;DELETION&#34;
 
     def describe(self) -&gt; Tuple[Text, Text]:
         return (self.name, self.value)
@@ -136,10 +136,6 @@ class Actions(Enum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.DELETION"><code class="name">var <span class="ident">DELETION</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD"><code class="name">var <span class="ident">DELETION_PRESERVE_CHILD</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -148,11 +144,7 @@ class Actions(Enum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.DISCARD_G"><code class="name">var <span class="ident">DISCARD_G</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="clu.phontools.alignment.parser.actions.Actions.DISCARD_T"><code class="name">var <span class="ident">DISCARD_T</span></code></dt>
+<dt id="clu.phontools.alignment.parser.actions.Actions.DISCARD"><code class="name">var <span class="ident">DISCARD</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -243,11 +235,9 @@ class Actions(Enum):
 <h4><code><a title="clu.phontools.alignment.parser.actions.Actions" href="#clu.phontools.alignment.parser.actions.Actions">Actions</a></code></h4>
 <ul class="">
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.ALIGN" href="#clu.phontools.alignment.parser.actions.Actions.ALIGN">ALIGN</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION" href="#clu.phontools.alignment.parser.actions.Actions.DELETION">DELETION</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_CHILD">DELETION_PRESERVE_CHILD</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.DELETION_PRESERVE_PARENT">DELETION_PRESERVE_PARENT</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DISCARD_G" href="#clu.phontools.alignment.parser.actions.Actions.DISCARD_G">DISCARD_G</a></code></li>
-<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DISCARD_T" href="#clu.phontools.alignment.parser.actions.Actions.DISCARD_T">DISCARD_T</a></code></li>
+<li><code><a title="clu.phontools.alignment.parser.actions.Actions.DISCARD" href="#clu.phontools.alignment.parser.actions.Actions.DISCARD">DISCARD</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_CHILD" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_CHILD">INSERTION_PRESERVE_CHILD</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_PARENT" href="#clu.phontools.alignment.parser.actions.Actions.INSERTION_PRESERVE_PARENT">INSERTION_PRESERVE_PARENT</a></code></li>
 <li><code><a title="clu.phontools.alignment.parser.actions.Actions.SHIFT_G" href="#clu.phontools.alignment.parser.actions.Actions.SHIFT_G">SHIFT_G</a></code></li>
