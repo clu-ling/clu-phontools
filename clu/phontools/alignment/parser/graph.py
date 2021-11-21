@@ -36,6 +36,7 @@ class Graph:
                 ps2children[edge.source] = children
         # mapping of node to its children
         self._children: Dict[Symbol, List[Symbol]] = ps2children
+        # networkx DiGraph
         self.G = G
 
     def children_for(self, ps: Symbol) -> List[Symbol]:
@@ -92,3 +93,7 @@ class Edge:
     source: Symbol
     destination: Symbol
     label: Actions
+
+    def nodes(self) -> List[Symbol]:
+      """Distinct nodes (Symbols) in Edge"""
+      return list(set([source, destination]))

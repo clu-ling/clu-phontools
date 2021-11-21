@@ -10,18 +10,18 @@ class Actions(Enum):
     The actions used by the parser.
     """
 
-    DISCARD_T = "DISCARD-T"
-    DISCARD_G = "DISCARD-G"
+    # NOTE: previously DISCARD_T and DISCARD_G; now SHIFT_* AND DISCARD_T
+    DISCARD = "DISCARD"
     SHIFT_T = "SHIFT-T"
     SHIFT_G = "SHIFT-G"
     STACK_SWAP = "STACK-SWAP"
     INSERTION_PRESERVE_CHILD = "INSERTION-PRESERVE-CHILD"
     INSERTION_PRESERVE_PARENT = "INSERTION-PRESERVE-PARENT"
+    # NOTE: previously had a DISCARD action as well
     DELETION_PRESERVE_CHILD = "DELETION-PRESERVE-CHILD"
     DELETION_PRESERVE_PARENT = "DELETION-PRESERVE-PARENT"
     ALIGN = "ALIGN"
     SUBSTITUTION = "SUBSTITUTION"
-    DELETION = "DELETION"
 
     def describe(self) -> Tuple[Text, Text]:
         return (self.name, self.value)
