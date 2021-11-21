@@ -10,6 +10,34 @@ Test behavior of State
 
 
 class StateTests(unittest.TestCase):
+
+    # for test purposes
+    gold_a = Symbol(
+        symbol="a",
+        original_index=0,
+        index=0,
+        source=TranscriptTypes.GOLD,
+    )
+    gold_b = Symbol(
+        symbol="b",
+        original_index=1,
+        index=1,
+        source=TranscriptTypes.GOLD,
+    )
+    trans_a = Symbol(
+        symbol="a",
+        original_index=0,
+        index=0,
+        source=TranscriptTypes.TRANSCRIPT,
+    )
+    trans_b = Symbol(
+        symbol="b",
+        original_index=1,
+        index=1,
+        source=TranscriptTypes.TRANSCRIPT,
+    )
+
+    # Actions
     def test_ALIGN(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.ALIGN."""
 
@@ -17,18 +45,8 @@ class StateTests(unittest.TestCase):
             stack=Stack(
                 [
                     # top of stack
-                    Symbol(
-                        symbol="a",
-                        original_index=0,
-                        index=0,
-                        source=TranscriptTypes.TRANSCRIPT,
-                    ),
-                    Symbol(
-                        symbol="a",
-                        original_index=0,
-                        index=0,
-                        source=TranscriptTypes.GOLD,
-                    ),
+                    StateTests.trans_a,
+                    StateTests.gold_a,
                 ]
             ),
             gold_queue=Queue([]),
@@ -38,14 +56,15 @@ class StateTests(unittest.TestCase):
         )
 
         valid_actions = state.valid_actions()
-        new_state = state.perform_action(Actions.ALIGN)
+        ACTION = Actions.ALIGN
+        new_state = state.perform_action(ACTION)
         self.assertTrue(
             Actions.ALIGN in valid_actions,
             f"state should support Actions.ALIGN, but only the following were present: {valid_actions}.",
         )
 
         self.assertTrue(
-            state.is_valid_ALIGN(),
+            state.is_valid(ACTION),
             f"configured state should allow ALIGN action when top two items on stack are from GOLD and TRANSCRIPT",
         )
 
@@ -54,9 +73,15 @@ class StateTests(unittest.TestCase):
             f"new_state should contain a single edge, but {len(new_state.current_graph.edges)} found.",
         )
 
+        self.assertEqual(
+            new_state.last_action(),
+            ACTION,
+            f"new_state.last_action() should be {ACTION}, but was {new_state.last_action()}",
+        )
+
         self.assertTrue(
-            new_state.current_graph.edges[0].label == Actions.ALIGN,
-            f"label of single edge in new_state.current_state should be {Actions.ALIGN}, but label was {new_state.current_graph.edges[0].label}",
+            new_state.current_graph.edges[0].label == ACTION,
+            f"label of single edge in new_state.current_state should be {ACTION}, but label was {new_state.current_graph.edges[0].label}",
         )
 
         edge = new_state.current_graph.edges[0]
@@ -66,43 +91,18 @@ class StateTests(unittest.TestCase):
             f"ALIGN must point from TRANSCRIPT -> GOLD",
         )
 
-        problem_stack = Stack(
-            [
-                Symbol(
-                    symbol="a",
-                    original_index=0,
-                    index=0,
-                    source=TranscriptTypes.GOLD,
-                ),
-                Symbol(
-                    symbol="b",
-                    original_index=1,
-                    index=1,
-                    source=TranscriptTypes.GOLD,
-                ),
-            ]
-        )
+        problem_stack = Stack([StateTests.gold_a, StateTests.gold_b])
         bad_state = state.copy(stack=problem_stack)
         self.assertFalse(
-            bad_state.is_valid_ALIGN(),
+            bad_state.is_valid(ACTION),
             f"state should NOT allow ALIGN action when top two items on stack are both from GOLD",
         )
 
     def test_STACK_SWAP(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.STACK_SWAP."""
 
-        first_ps = Symbol(
-            symbol="b",
-            original_index=1,
-            index=1,
-            source=TranscriptTypes.TRANSCRIPT,
-        )
-        second_ps = Symbol(
-            symbol="a",
-            original_index=0,
-            index=0,
-            source=TranscriptTypes.GOLD,
-        )
+        first_ps = StateTests.trans_b
+        second_ps = StateTests.trans_a
         state = State(
             stack=Stack(
                 [
@@ -118,20 +118,27 @@ class StateTests(unittest.TestCase):
         )
 
         valid_actions = state.valid_actions()
+        ACTION = Actions.STACK_SWAP
         new_state = state.perform_action(Actions.STACK_SWAP)
         self.assertTrue(
-            Actions.STACK_SWAP in valid_actions,
-            f"state should support Actions.STACK_SWAP, but only the following were present: {valid_actions}.",
+            ACTION in valid_actions,
+            f"state should support {ACTION}, but only the following were present: {valid_actions}.",
         )
 
         self.assertTrue(
-            state.is_valid_STACK_SWAP(),
+            state.is_valid(ACTION),
             f"configured state should allow STACK_SWAP action when there are >= 2 items on stack",
         )
 
         self.assertTrue(
             len(new_state.current_graph.edges) == 0,
             f"new_state should not contain any edges, but {len(new_state.current_graph.edges)} found.",
+        )
+
+        self.assertEqual(
+            new_state.last_action(),
+            ACTION,
+            f"new_state.last_action() should be {ACTION}, but was {new_state.last_action()}",
         )
 
         top = new_state.stack.pop()
@@ -141,35 +148,19 @@ class StateTests(unittest.TestCase):
             f"first item in stack of new_stack should now be 'a', but {top.symbol} found.",
         )
 
-        problem_stack = Stack(
-            [
-                Symbol(
-                    symbol="a",
-                    original_index=0,
-                    index=0,
-                    source=TranscriptTypes.GOLD,
-                )
-            ]
-        )
+        problem_stack = Stack([StateTests.gold_a])
         bad_state = state.copy(stack=problem_stack)
         self.assertFalse(
-            bad_state.is_valid_STACK_SWAP(),
+            bad_state.is_valid(ACTION),
             f"state should NOT allow STACK_SWAP action when < 2 items on stack",
         )
 
     def test_SHIFT_G(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.SHIFT_G."""
 
-        ps = Symbol(
-            symbol="a",
-            original_index=0,
-            index=0,
-            source=TranscriptTypes.GOLD,
-        )
-
         state = State(
             stack=Stack(),
-            gold_queue=Queue([ps]),
+            gold_queue=Queue([StateTests.gold_a]),
             transcribed_queue=Queue(),
             gold_graph=None,
             current_graph=Graph(edges=[]),
@@ -184,7 +175,7 @@ class StateTests(unittest.TestCase):
         )
 
         self.assertTrue(
-            state.is_valid_SHIFT_G(),
+            state.is_valid(ACTION),
             f"configured state should allow SHIFT_G action when there are > 0 items on gold_queue",
         )
 
@@ -192,35 +183,33 @@ class StateTests(unittest.TestCase):
             len(new_state.current_graph.edges) == 0,
             f"new_state should not contain any edges, but {len(new_state.current_graph.edges)} found.",
         )
+        self.assertEqual(
+            new_state.last_action(),
+            ACTION,
+            f"new_state.last_action() should be {ACTION}, but was {new_state.last_action()}",
+        )
 
         top = new_state.stack.pop()
         self.assertEqual(
             top,
-            ps,
+            StateTests.gold_a,
             f"first item in stack of new_stack should now be 'a', but {top.symbol} found.",
         )
 
         problem_queue = Queue()
         bad_state = state.copy(gold_queue=problem_queue)
         self.assertFalse(
-            bad_state.is_valid_SHIFT_G(),
+            bad_state.is_valid(ACTION),
             f"state should NOT allow SHIFT_G action when < 1 items on gold_queue",
         )
 
     def test_SHIFT_T(self):
         """`clu.phontools.alignment.parser.state.State` should support Actions.SHIFT_T."""
 
-        ps = Symbol(
-            symbol="a",
-            original_index=0,
-            index=0,
-            source=TranscriptTypes.TRANSCRIPT,
-        )
-
         state = State(
             stack=Stack(),
             gold_queue=Queue(),
-            transcribed_queue=Queue([ps]),
+            transcribed_queue=Queue([StateTests.trans_a]),
             gold_graph=None,
             current_graph=Graph(edges=[]),
         )
@@ -230,12 +219,12 @@ class StateTests(unittest.TestCase):
         new_state = state.perform_action(ACTION)
         self.assertTrue(
             ACTION in valid_actions,
-            f"state should support Actions.SHIFT_T, but only the following were present: {valid_actions}.",
+            f"state should support {ACTION}, but only the following were present: {valid_actions}.",
         )
 
         self.assertTrue(
-            state.is_valid_SHIFT_T(),
-            f"configured state should allow SHIFT_T action when there are > 0 items on transcribed_queue",
+            state.is_valid(ACTION),
+            f"configured state should allow {ACTION} action when there are > 0 items on transcribed_queue",
         )
 
         self.assertTrue(
@@ -243,16 +232,74 @@ class StateTests(unittest.TestCase):
             f"new_state should not contain any edges, but {len(new_state.current_graph.edges)} found.",
         )
 
+        self.assertEqual(
+            new_state.last_action(),
+            ACTION,
+            f"new_state.last_action() should be {ACTION}, but was {new_state.last_action()}",
+        )
+
         top = new_state.stack.pop()
         self.assertEqual(
             top,
-            ps,
+            StateTests.trans_a,
             f"first item in stack of new_stack should now be 'a', but {top.symbol} found.",
         )
 
         problem_queue = Queue()
         bad_state = state.copy(transcribed_queue=problem_queue)
         self.assertFalse(
-            bad_state.is_valid_SHIFT_T(),
-            f"state should NOT allow SHIFT_T action when < 1 items on transcribed_queue",
+            bad_state.is_valid(ACTION),
+            f"state should NOT allow {ACTION} action when < 1 items on transcribed_queue",
         )
+
+    # def test_INSERTION_PRESERVE_CHILD(self):
+    #     """`clu.phontools.alignment.parser.state.State` should support Actions.INSERTION_PRESERVE_CHILD."""
+
+    #     ACTION = Actions.INSERTION_PRESERVE_CHILD
+    #     stack = Stack()
+    #     stack.push(StateTests.trans_b)
+    #     stack.push(StateTests.gold_a)
+    #     state = State(
+    #         stack=stack,
+    #         gold_queue=Queue(),
+    #         transcribed_queue=Queue(),
+    #         gold_graph=None,
+    #         current_graph=Graph(edges=[]),
+    #     )
+
+    #     valid_actions = state.valid_actions()
+    #     new_state = state.perform_action(ACTION)
+    #     self.assertTrue(
+    #         ACTION in valid_actions,
+    #         f"state should support {ACTION}, but only the following were present: {valid_actions}.",
+    #     )
+
+    #     self.assertTrue(
+    #         state.is_valid(ACTION),
+    #         f"configured state should allow {ACTION} action when there are > 0 items on Stack and both are from gold and transcribed",
+    #     )
+
+    #     self.assertTrue(
+    #         len(new_state.current_graph.edges) == 1,
+    #         f"new_state should contain 1 edge, but {len(new_state.current_graph.edges)} found.",
+    #     )
+
+    #     self.assertEqual(
+    #         new_state.last_action(),
+    #         ACTION,
+    #         f"new_state.last_action() should be {ACTION}, but was {new_state.last_action()}",
+    #     )
+
+    #     top = new_state.stack.pop()
+    #     self.assertEqual(
+    #         top,
+    #         StateTests.gold_a,
+    #         f"first item in stack of new_stack should now be 'a', but {top.symbol} found.",
+    #     )
+
+    #     problem_stack = Stack([StateTests.gold_a, StateTests.gold_b])
+    #     bad_state = state.copy(stack=problem_stack)
+    #     self.assertFalse(
+    #         bad_state.is_valid(ACTION),
+    #         f"state should NOT allow {ACTION} action when stack is {problem_stack._symbols}",
+    #     )

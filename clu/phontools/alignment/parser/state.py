@@ -1,10 +1,11 @@
 from __future__ import annotations
 from .actions import Actions
 from .graph import Edge, Graph
+from .constraints import Constraints
 from .queue import Queue
 from .stack import Stack
 from .symbols import *
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable, Optional, Text
 
 __all__ = ["State"]
@@ -23,6 +24,9 @@ class State:
     # during training, this is not None
     gold_graph: Optional[Graph]
     current_graph: Graph
+    # keep track of prior actions.
+    # last item is more recent.
+    prior_actions: List[Actions] = field(default_factory=list)
 
     def copy(
         self,
@@ -31,6 +35,7 @@ class State:
         transcribed_queue: Optional[Queue] = None,
         gold_graph: Optional[Graph] = None,
         current_graph: Optional[Graph] = None,
+        prior_actions: Optional[List[prior_actions]] = None,
     ) -> State:
         """Return a copy of the current state with one or more attributes modified"""
         return State(
@@ -43,17 +48,22 @@ class State:
             current_graph=current_graph
             if current_graph is not None
             else self.current_graph,
+            prior_actions=prior_actions
+            if prior_actions is not None
+            else self.prior_actions,
         )
+
+    def last_action(self) -> Optional[Actions]:
+        """Easily access the last action applied"""
+        return None if len(self.prior_actions) == 0 else self.prior_actions[-1]
 
     @property
     def actions_map(self) -> Dict[Actions, ActionFunc]:
         return {
             Actions.ALIGN: self._perform_ALIGN,
-            Actions.DELETION: self._perform_DELETION,
             Actions.DELETION_PRESERVE_CHILD: self._perform_DELETION_PRESERVE_CHILD,
             Actions.DELETION_PRESERVE_PARENT: self._perform_DELETION_PRESERVE_PARENT,
-            Actions.DISCARD_G: self._perform_DISCARD_G,
-            Actions.DISCARD_T: self._perform_DISCARD_T,
+            Actions.DISCARD: self._perform_DISCARD,
             Actions.INSERTION_PRESERVE_CHILD: self._perform_INSERTION_PRESERVE_CHILD,
             Actions.INSERTION_PRESERVE_PARENT: self._perform_INSERTION_PRESERVE_PARENT,
             Actions.SHIFT_G: self._perform_SHIFT_G,
@@ -64,9 +74,7 @@ class State:
 
     def valid_actions(self) -> List[Actions]:
         """Determines valid actions"""
-        return [
-            action for action, func in self.actions_map.items() if func() is not None
-        ]
+        return [action for action in self.actions_map.keys() if self.is_valid(action)]
 
     def perform_action(self, action: Actions) -> Optional[State]:
         """Applies the provided action to the state"""
@@ -75,95 +83,53 @@ class State:
             return actions_map[action]()
         raise NotImplementedError(f"Action {action} not recognized")
 
-    # FIXME: implement me
-    def _perform_DELETION(self) -> Optional[State]:
-        return None
+    def is_valid(self, action: Actions) -> bool:
+        """Determines whether the provided action is valid"""
+        res = self.perform_action(action)
+        return False if not res else True
 
-    # FIXME: implement me
-    def _perform_DISCARD_T(self) -> Optional[State]:
-        return None
+    def _generic_parent_child(
+        self, action: Actions, preserve_child: bool, preserve_parent: bool
+    ) -> Optional[State]:
+        """Creates an edge using the provided actions as a label between top two items of Stack (if present).
 
-    # FIXME: implement me
-    def _perform_DISCARD_G(self) -> Optional[State]:
-        return None
+        `edge.source` is whatever symbol originates from `TranscriptTypes.GOLD`.
 
-    def is_valid_SHIFT_T(self) -> bool:
-        """SHIFT_T valid iff len(transcribed_queue) > 0"""
-        return len(self.transcribed_queue) > 0
-
-    def _perform_SHIFT_T(self) -> Optional[State]:
-        """Shifts first item from transcribed_queue to top of stack"""
-        if not self.is_valid_SHIFT_T():
-            return None
-        stack = self.stack.copy()
-        t_queue = self.transcribed_queue.copy()
-        next_ps = t_queue.pop()
-        stack.push(next_ps)
-        return self.copy(stack=stack, transcribed_queue=t_queue)
-
-    def is_valid_SHIFT_G(self) -> bool:
-        """SHIFT_G valid iff len(gold_queue) > 0"""
-        return len(self.gold_queue) > 0
-
-    def _perform_SHIFT_G(self) -> Optional[State]:
-        """Shifts first item from gold_queue to top of stack"""
-        if not self.is_valid_SHIFT_G():
-            return None
-        stack = self.stack.copy()
-        g_queue = self.gold_queue.copy()
-        next_ps = g_queue.pop()
-        stack.push(next_ps)
-        return self.copy(stack=stack, gold_queue=g_queue)
-
-    def is_valid_STACK_SWAP(self) -> bool:
-        """STACK_SWAP is valid iff there are at least two items on the stack."""
-        return len(self.stack) >= 2
-
-    def _perform_STACK_SWAP(self) -> Optional[State]:
-        """Swaps the top two items on the stack"""
-        if not self.is_valid_STACK_SWAP():
+        action is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = action
+        # check if action is valid
+        if not Constraints.stack_top_two_different_sources(self.stack):
             return None
         stack = self.stack.copy()
         s1 = stack.pop()
         s2 = stack.pop()
-        for ps in [s2, s1]:
-            stack.push(s2)
-        return self.copy(stack=stack)
-
-    # FIXME: implement me
-    def _perform_INSERTION_PRESERVE_CHILD(self) -> Optional[State]:
-        return None
-
-    # FIXME: implement me
-    def _perform_INSERTION_PRESERVE_PARENT(self) -> Optional[State]:
-        return None
-
-    # FIXME: implement me
-    def _perform_DELETION_PRESERVE_CHILD(self) -> Optional[State]:
-        return None
-
-    # FIXME: implement me
-    def _perform_DELETION_PRESERVE_PARENT(self) -> Optional[State]:
-        return None
-
-    def is_valid_ALIGN(self) -> bool:
-        """ALIGN is valid iff there are at least two items on the stack AND
-        top two items on the stack have TRANSCRIPT and GOLD TranscriptTypes.
-        """
-        stack = self.stack.copy()
-        if len(stack) >= 2:
-            s1 = stack.pop()
-            s2 = stack.pop()
-            # TODO: do we want to enforce an order here?
-            return set([TranscriptTypes.GOLD, TranscriptTypes.TRANSCRIPT]) == set(
-                [s1.source, s2.source]
-            )
-        return False
+        # determine parent and child
+        parent = s1 if s1.source == TranscriptTypes.GOLD else s2
+        child = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
+        # optionally preserve parent and child (according to params)
+        if preserve_parent:
+            stack.push(parent)
+        if preserve_child:
+            stack.push(child)
+        # add edge
+        edge = Edge(source=parent, destination=child, label=ACTION)
+        new_graph = Graph(edges=self.current_graph.edges + [edge])
+        return self.copy(
+            stack=stack,
+            current_graph=new_graph,
+            prior_actions=self.prior_actions + [ACTION],
+        )
 
     def _perform_ALIGN(self) -> Optional[State]:
-        """Adds an ALIGN edge between top two items of Stack (if present)"""
+        """Adds an ALIGN edge between top two items of Stack (if present).
+
+        ALIGN is valid iff there are at least two items on the stack AND
+        top two items on the stack have TRANSCRIPT and GOLD TranscriptTypes.
+        """
+        ACTION = Actions.ALIGN
         # check if action is valid
-        if not self.is_valid_ALIGN():
+        if not Constraints.stack_top_two_different_sources(self.stack):
             return None
         stack = self.stack.copy()
         s1 = stack.pop()
@@ -174,12 +140,133 @@ class State:
         edge = Edge(source=drop, destination=keep, label=Actions.ALIGN)
         new_graph = Graph(edges=self.current_graph.edges + [edge])
         stack.push(keep)
-        return self.copy(stack=stack, current_graph=new_graph)
+        return self.copy(
+            stack=stack,
+            current_graph=new_graph,
+            prior_actions=self.prior_actions + [ACTION],
+        )
 
-    # FIXME: implement me
+    # FIXME: add tests
+    def _perform_DISCARD(self) -> Optional[State]:
+        """Discards top item on Stack (if present)."""
+        ACTION = Actions.DISCARD
+        # check if action is valid
+        # FIXME: is this the only condition?
+        # We shouldn't discard a non-NULL if it doesn't participate in an edge, right?
+        if len(self.stack) > 0:
+            return None
+        stack = self.stack.copy()
+        _ = stack.pop()
+        # FIXME: do we want to add an edge?  It seems unnecessary
+        return self.copy(stack=stack, prior_actions=self.prior_actions + [ACTION])
+
+    def _perform_SHIFT_T(self) -> Optional[State]:
+        """Shifts first item from transcribed_queue to top of stack"""
+        ACTION = Actions.SHIFT_T
+        # check if action is valid
+        if len(self.transcribed_queue) == 0:
+            return None
+        stack = self.stack.copy()
+        t_queue = self.transcribed_queue.copy()
+        next_ps = t_queue.pop()
+        stack.push(next_ps)
+        return self.copy(
+            stack=stack,
+            transcribed_queue=t_queue,
+            prior_actions=self.prior_actions + [ACTION],
+        )
+
+    def _perform_SHIFT_G(self) -> Optional[State]:
+        """Shifts first item from gold_queue to top of stack"""
+        ACTION = Actions.SHIFT_G
+        # check if action is valid
+        if len(self.gold_queue) == 0:
+            return None
+        stack = self.stack.copy()
+        g_queue = self.gold_queue.copy()
+        next_ps = g_queue.pop()
+        stack.push(next_ps)
+        return self.copy(
+            stack=stack, gold_queue=g_queue, prior_actions=self.prior_actions + [ACTION]
+        )
+
+    def _perform_STACK_SWAP(self) -> Optional[State]:
+        """Swaps the top two items on the stack.
+
+        STACK_SWAP is valid iff
+        a) there are at least two items on the stack.
+        b) the last action was not STACK_SWAP (avoid endless loops)
+        """
+        ACTION = Actions.STACK_SWAP
+        # check if action is valid
+        if (len(self.stack) < 2) and (self.last_action() is not Actions.STACK_SWAP):
+            return None
+        stack = self.stack.copy()
+        s1 = stack.pop()
+        s2 = stack.pop()
+        for ps in [s2, s1]:
+            stack.push(s2)
+        return self.copy(stack=stack, prior_actions=self.prior_actions + [ACTION])
+
+    # TODO: should there be only INSERTION and allow both to remain on stack?
+    # that would require checking that current_graph doesn't already contain the edge
+    # TODO: should INSERTION_* always point to a NULL in GOLD? if so
+    # FIXME: check and test implementation
+    def _perform_INSERTION_PRESERVE_CHILD(self) -> Optional[State]:
+        """Adds an Actions.INSERTION_PRESERVE_CHILD edge between top two items of Stack (if present).
+
+        INSERTION_PRESERVE_CHILD is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = Actions.INSERTION_PRESERVE_CHILD
+        return self._generic_parent_child(
+            action=ACTION, preserve_child=True, preserve_parent=False
+        )
+
+    # TODO: should there be only INSERTION and allow both to remain on stack?
+    # that would require checking that current_graph doesn't already contain the edge
+    # TODO: should INSERTION_* always point to a NULL in GOLD? if so
+    # FIXME: check and test implementation
+    def _perform_INSERTION_PRESERVE_PARENT(self) -> Optional[State]:
+        """Adds an Actions.INSERTION_PRESERVE_PARENT edge between top two items of Stack (if present).
+
+        INSERTION_PRESERVE_PARENT is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = Actions.INSERTION_PRESERVE_PARENT
+        return self._generic_parent_child(
+            action=ACTION, preserve_child=False, preserve_parent=True
+        )
+
+    # FIXME: check implementation and add tests
     def _perform_SUBSTITUTION(self) -> Optional[State]:
-        return None
+        """Adds an Actions.SUBSTITUTION edge between top two items of Stack (if present).
 
-    # FIXME: implement me
-    def _perform_DELETION(self) -> Optional[State]:
-        return None
+        SUBSTITUTION is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = Actions.SUBSTITUTION
+        return self._generic_parent_child(
+            action=ACTION, preserve_child=False, preserve_parent=False
+        )
+
+    # TODO: should there be only DELETION where edge points to itself?
+    # FIXME: check and test implementation
+    def _perform_DELETION_PRESERVE_CHILD(self) -> Optional[State]:
+        """Adds an Actions.DELETION_PRESERVE_CHILD edge between top two items of Stack (if present).
+
+        DELETION_PRESERVE_CHILD is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = Actions.DELETION_PRESERVE_CHILD
+        return self._generic_parent_child(
+            action=ACTION, preserve_child=True, preserve_parent=False
+        )
+
+    # TODO: should there be only DELETION where edge points to itself?
+    # FIXME: check and test implementation
+    def _perform_DELETION_PRESERVE_PARENT(self) -> Optional[State]:
+        """Adds an Actions.DELETION_PRESERVE_PARENT edge between top two items of Stack (if present).
+
+        DELETION_PRESERVE_PARENT is valid iff Constraints.stack_top_two_different_sources().
+        """
+        ACTION = Actions.DELETION_PRESERVE_PARENT
+        return self._generic_parent_child(
+            action=ACTION, preserve_child=False, preserve_parent=True
+        )
