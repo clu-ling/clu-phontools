@@ -51,7 +51,7 @@ jobs:
     - name: "Install library (clu-phontools)"
       #working-directory: ./
       run: |
-        sudo apt-get install -y graphviz
+        sudo apt-get install -y graphviz libgraphviz-dev pkg-config
         pip install wheel
         pip install -e ".[all]"
     # Tests
