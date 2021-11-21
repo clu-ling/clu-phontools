@@ -47,15 +47,15 @@ jobs:
       #working-directory: ./
       run: |
         docker build -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:latest" .
-        docker buildx build --load --platform linux/amd64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:amd64" .
-        docker buildx build --load --platform linux/arm64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:arm64" .
-        docker images
+      # docker buildx build --load --platform linux/amd64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:amd64" .
+      # docker buildx build --load --platform linux/arm64 -f ${DOCKERFILE} -t "${ORG}/${IMAGE_NAME}:arm64" .
+      # docker images
     # Tests
     - name: "Test multiarch build (clu-phontools)"
       run: |
         docker images
-        docker run -i "${ORG}/${IMAGE_NAME}:amd64" python --version
-        docker run -i "${ORG}/${IMAGE_NAME}:arm64" python --version
+      # docker run -i "${ORG}/${IMAGE_NAME}:amd64" python --version
+      # docker run -i "${ORG}/${IMAGE_NAME}:arm64" python --version
     - name: "Tests and coverage (clu-phontools)"
       run: |
         docker run -i "${ORG}/${IMAGE_NAME}" green -vvv /app
@@ -68,7 +68,8 @@ jobs:
     - name: "Publish docker image (clu-phontools image)"
       if: github.ref == 'refs/heads/main'
       run: |
-        docker buildx build --platform=linux/amd64,linux/arm64 -f ${DOCKERFILE} --push -t "${ORG}/${IMAGE_NAME}:${TAG}" -t "${ORG}/${IMAGE_NAME}:${{ needs.setup.outputs.sha_short }}" .
+        docker image push --all-tags ${ORG}/${IMAGE_NAME}
+      # docker buildx build --platform=linux/amd64,linux/arm64 -f ${DOCKERFILE} --push -t "${ORG}/${IMAGE_NAME}:${TAG}" -t "${ORG}/${IMAGE_NAME}:${{ needs.setup.outputs.sha_short }}" .
 
     # code formatting and linting
     - name: "Code formatting & linting"

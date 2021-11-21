@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .symbols import ParseSymbol
+from .symbols import Symbol
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
@@ -10,13 +10,13 @@ __all__ = ["Stack"]
 class Stack:
     """"""
 
-    def __init__(self, symbols: Optional[List[ParseSymbol]] = None):
-        self._symbols: List[ParseSymbol] = symbols or []
+    def __init__(self, symbols: Optional[List[Symbol]] = None):
+        self._symbols: List[Symbol] = symbols or []
 
     def __len__(self) -> int:
         return len(self._symbols)
 
-    def push(self, ps: ParseSymbol) -> None:
+    def push(self, ps: Symbol) -> None:
         """Pushes a symbol onto the Stack"""
         self._symbols.append(ps)
 
@@ -25,7 +25,7 @@ class Stack:
         # deep copy
         return Stack(symbols=self._symbols[:])
 
-    def pop(self) -> Optional[ParseSymbol]:
+    def pop(self) -> Optional[Symbol]:
         """pops off the first element in the queue
         and sets self._symbols to whatever remains"""
         # check if Queue is empty

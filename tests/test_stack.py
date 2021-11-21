@@ -16,20 +16,14 @@ class StackTests(unittest.TestCase):
             len(Stack()) == 0, f"len(Stack()) should be 0, but was {len(Stack())}"
         )
         s = Stack(
-            [
-                ParseSymbol(
-                    original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
-                )
-            ]
+            [Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)]
         )
         self.assertTrue(len(s) == 1, f"len(s) should be 1, but was {len(s)}")
 
     def test_push(self):
         """`clu.phontools.alignment.parser.stack.Stack` should support .push()"""
         s = Stack()
-        ps = ParseSymbol(
-            original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
-        )
+        ps = Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)
         s.push(ps)
         self.assertTrue(
             len(s) == 1,
@@ -38,9 +32,7 @@ class StackTests(unittest.TestCase):
 
     def test_pop(self):
         """`clu.phontools.alignment.parser.stack.Stack` should support .pop()"""
-        ps = ParseSymbol(
-            original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
-        )
+        ps = Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)
         s = Stack([ps])
         s.pop()
         self.assertTrue(
@@ -50,9 +42,7 @@ class StackTests(unittest.TestCase):
 
     def test_is_empty(self):
         """`clu.phontools.alignment.parser.stack.Stack` should support .is_empty()"""
-        ps = ParseSymbol(
-            original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
-        )
+        ps = Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)
         s = Stack()
         # empty
         self.assertTrue(s.is_empty(), f"s.is_empty() for empty stack returned False")

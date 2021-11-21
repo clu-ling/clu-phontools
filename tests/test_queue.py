@@ -16,10 +16,6 @@ class QueueTests(unittest.TestCase):
             len(Queue()) == 0, f"len(Queue()) should be 0, but was {len(Queue())}"
         )
         q = Queue(
-            [
-                ParseSymbol(
-                    original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
-                )
-            ]
+            [Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)]
         )
         self.assertTrue(len(q) == 1, f"len(q) should be 1, but was {len(q)}")

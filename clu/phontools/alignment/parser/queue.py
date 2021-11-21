@@ -1,5 +1,5 @@
 from __future__ import annotations
-from .symbols import ParseSymbol
+from .symbols import Symbol
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
@@ -10,8 +10,8 @@ __all__ = ["Queue"]
 class Queue:
     """"""
 
-    def __init__(self, symbols: Optional[List[ParseSymbol]] = None):
-        self._symbols: List[ParseSymbol] = symbols or []
+    def __init__(self, symbols: Optional[List[Symbol]] = None):
+        self._symbols: List[Symbol] = symbols or []
 
     def __len__(self) -> int:
         return len(self._symbols)
@@ -21,11 +21,11 @@ class Queue:
         # deep copy
         return Queue(symbols=self._symbols[:])
 
-    def push(self, ps: ParseSymbol) -> None:
+    def push(self, ps: Symbol) -> None:
         """pushes an element into the first position of the queue"""
         self._symbols = [ps] + self._symbols
 
-    def pop(self) -> Optional[ParseSymbol]:
+    def pop(self) -> Optional[Symbol]:
         """pops off the first element in the queue
         and sets self._symbols to whatever remains"""
         # check if Queue is empty

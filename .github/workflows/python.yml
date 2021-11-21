@@ -37,7 +37,10 @@ jobs:
     # Checkout code
     - name: Checkout code
       uses: actions/checkout@v2
-
+    # Graphviz, etc.
+    - name: Install system deps
+      run: |
+        sudo apt-get install -y graphviz libgraphviz-dev pkg-config
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -51,6 +54,7 @@ jobs:
     - name: "Install library (clu-phontools)"
       #working-directory: ./
       run: |
+        pip install wheel
         pip install -e ".[all]"
     # Tests
     - name: "Tests and coverage (clu-phontools)"
