@@ -17,7 +17,7 @@ class ConverterUtils:
     arpabet_to_ipa_dict: Dict[Text, Text] = {
         "AA": "ɒ",
         "AE": "æ",
-        # FIXME: this should translate to "ʌ" OR "ə" depending on the stress assignment
+        'AH0':'ə', 
         "AH": "ʌ",
         "AO": "ɔ",
         "AW": "aʊ",
@@ -27,18 +27,23 @@ class ConverterUtils:
         "D": "d",
         "DH": "ð",
         "EH": "ɛ",
-        "ER": "ə",
+        'ER':'ɝ',   
+        'ER0':'ɚ',  
         "EY": "ei",
         "F": "f",
         "G": "g",
         "HH": "h",
         "IH": "i",
+        'IH0':'ɨ',  
         "IY": "I",
         "JH": "dʒ",
         "K": "k",
         "L": "l",
+        'EL':'l̩ ',  
         "M": "m",
+        'EM':'m̩',   
         "N": "n",
+        'EN':'n̩',   
         "NG": "ŋ",
         "OW": "oʊ",
         "OY": "ɔi",
@@ -55,11 +60,72 @@ class ConverterUtils:
         "Y": "j",
         "Z": "z",
         "ZH": "ʒ",
+        'Q':'ʔ',   
+        'WH':'ʍ',   
     }
     """Dictionary mapping arpabet symbols to IPA"""
 
+    timit_to_ipa_dict: Dict[Text, Text] = arpabet_to_ipa_dict.copy()
+    timit_to_ipa_dict.update(
+        {
+        'AX':'ə',
+        'AX-H':'ə̥',
+        'AXR':'ɚ',
+        'BCL':'b',
+        'DCL':'d',
+        'DX':'ɾ',
+        'ENG':'ŋ̍',
+        'EPI':'',
+        'GCL':'g',
+        'HV':'ɦ',
+        'H#':'',
+        'IX':'ɨ',
+        'KCL':'k',
+        'NX':'ɾ̃',
+        'PAU':'',
+        'PCL':'p',
+        'TCL':'t',
+        'UX':'ʉ',
+    })
     # reverse mapping
     # ipa_to_arpabet_dict = {v: k for k, v in arpabet_to_ipa.items()}
+
+    def timit_to_ipa(symbol: Text) -> Text:
+        """Converts a TIMIT symbol to IPA
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_timit = ('PCL', 'EH1', 'TCL')
+        bell_ipa = tuple(ConverterUtils.timit_to_ipa(symb) for symb in bell_timit)
+        # should produce ('p', 'ɛ', 't')
+        """
+        stress: Optional[Text] = (
+            None
+            if symbol[-1]
+            not in {
+                Stress.PRIMARY.value,
+                Stress.SECONDARY.value,
+                Stress.NO_STRESS.value,
+            }
+            else symbol[-1]
+        )
+        base_form: Text = symbol if not stress else symbol[:-1]
+        return ConverterUtils.timit_to_ipa_dict.get(base_form, base_form)
+
+    def ipa_to_timit(symbol: Text) -> Text:
+        """Converts an IPA symbol to TIMIT
+
+        Example:
+        from clu.phontools.pronouncing.ConverterUtils
+        bell_ipa = ('p', 'ɛ', 't')
+        bell_arpa = tuple(ConverterUtils.ipa_to_timit(symb) for symb in bell_ipa)
+        # should produce ('PCL', 'EH', 'TCL')
+        """
+        for (timit, ipa) in ConverterUtils.timit_to_ipa_dict.items():
+            if ipa == symbol:
+                return timit
+        # in case of failure, parrot back symbol
+        return symbol
 
     def arpabet_to_ipa(symbol: Text) -> Text:
         """Converts an Arpabet symbol to IPA
@@ -84,7 +150,7 @@ class ConverterUtils:
         return ConverterUtils.arpabet_to_ipa_dict.get(base_form, base_form)
 
     def ipa_to_arpabet(symbol: Text) -> Text:
-        """Converts an Arpabet symbol to IPA
+        """Converts an IPA symbol to Arpabet
 
         Example:
         from clu.phontools.pronouncing.ConverterUtils
@@ -97,7 +163,6 @@ class ConverterUtils:
                 return arpa
         # in case of failure, parrot back symbol
         return symbol
-
 
 class PronouncingDict(dict, ABC):
     """
@@ -155,7 +220,6 @@ class PronouncingDict(dict, ABC):
             pronunciations.append(v)
             pronounciation_dict[key] = pronunciations
         return pronounciation_dict
-
 
 class CMUPronouncingDict(PronouncingDict):
     def __init__(self, pairs: List[Tuple[SimpleWord, Pronunciation]] = []):
