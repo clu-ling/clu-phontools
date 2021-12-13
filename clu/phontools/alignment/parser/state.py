@@ -157,7 +157,7 @@ class State:
         # FIXME: is this the only condition?
         # NOTE: I think we need other conditions in Constraints. These can be based on one-to-many and many-to-one mappings
         # We shouldn't discard a non-NULL if it doesn't participate in an edge, right?
-        # NOTE: yes, discard is here for NULL symbols
+        # NOTE: yes, discard is here for NULL symbolss
         if len(self.stack) > 0:
             return None
         stack = self.stack.copy()

@@ -10,7 +10,7 @@ Test behavior of clu.phontools.alignment.parser.constraints.Constraints
 
 
 class ConstraintsTests(unittest.TestCase):
-    # for testing: participates_in_an_edge, is_a_parent, is_a_child
+    ## for testing: participates_in_an_edge, is_a_parent, is_a_child
     symbol = Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)
     graph = Graph(
         edges=[

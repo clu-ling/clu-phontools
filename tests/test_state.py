@@ -5,7 +5,7 @@ from clu.phontools.alignment.parser import *
 
 
 """
-Test behavior of State
+Test behavior of clu.phontools.alignment.parser.state.State
 """
 
 

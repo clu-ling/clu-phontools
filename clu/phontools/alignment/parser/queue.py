@@ -12,6 +12,7 @@ class Queue:
     2) push()
     3) pop()
     4) is_empty()
+    #
     
     The class should return a `Queue` object that contains a list of `Symbol`:
     Queue(

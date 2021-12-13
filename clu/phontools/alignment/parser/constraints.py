@@ -63,5 +63,5 @@ class Constraints:
         # Otherwise, it is one-to-many
         # based on that, Discard is applied to get rid of the NULL symbol from the transcript.
         # push trans (NULL) - push gold (NULL) we have to do another two pushes here
-        # if both are NULL, then we discard
+        # if both are NULL, then we discard them
         return True if trans_queue != gold_queue else False

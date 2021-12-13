@@ -31,4 +31,5 @@ Test behavior of clu.phontools.alignment.parser.graph.Graph
 
 
 class GraphTests(unittest.TestCase):
+    #
     pass

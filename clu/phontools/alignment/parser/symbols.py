@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-# from dataclasses import dataclass
 from enum import Enum
 from typing import Literal, Text
 
@@ -35,5 +33,4 @@ class Symbol:
     def create_null(index: int, source: TranscriptTypes) -> Symbol:
         """Easily create a Symbol for NULL"""
         return Symbol(original_index=-1, index=index, symbol=Symbol.NULL, source=source)
-
 

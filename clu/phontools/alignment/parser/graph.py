@@ -16,7 +16,7 @@ __all__ = ["Graph", "Edge"]
 class Graph:
     """An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)"""
 
-    edges: List[Edge] = field(default_factory=list)  # Graph(edges=[])
+    edges: List[Edge] = field(default_factory=list)  # Graph(edges=[]) #
 
     def __post_init__(self):
         ps2children: Dict[Symbol, List[Symbol]] = dict()

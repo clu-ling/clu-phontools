@@ -43,7 +43,7 @@ class QueueTests(unittest.TestCase):
         q = Queue()
         # empty
         self.assertTrue(q.is_empty(), f"s.is_empty() for empty queue returned False")
-        # non-empty
+        ## non-empty
         q.push(ps)
         self.assertFalse(
             q.is_empty(), f"s.is_empty() for non-empty queue returned True"

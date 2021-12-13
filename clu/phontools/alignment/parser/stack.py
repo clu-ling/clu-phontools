@@ -13,6 +13,7 @@ class Stack:
     2) push()
     3) pop()
     4) is_empty()
+    #
     
     The class should return a `Stack` object that contains a list of `Symbol`:
     Stack(
