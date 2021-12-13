@@ -1,14 +1,23 @@
 from __future__ import annotations
 from .symbols import Symbol
-from dataclasses import dataclass
-from enum import Enum
 from typing import List, Optional
 
 __all__ = ["Queue"]
 
 
 class Queue:
-    """"""
+    """this class constrcuts a `Queue` based on the `Symbol` class where the following
+    methods are used to deal with these symbols.
+    1) copy()
+    2) push()
+    3) pop()
+    4) is_empty()
+    
+    The class should return a `Queue` object that contains a list of `Symbol`:
+    Queue(
+        [Symbol(original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD)]
+        )
+    """
 
     def __init__(self, symbols: Optional[List[Symbol]] = None):
         self._symbols: List[Symbol] = symbols or []

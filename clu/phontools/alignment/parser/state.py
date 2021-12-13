@@ -6,7 +6,7 @@ from .queue import Queue
 from .stack import Stack
 from .symbols import *
 from dataclasses import dataclass, field
-from typing import Callable, Optional, Text
+from typing import Callable, Optional, Text, List, Dict
 
 __all__ = ["State"]
 
@@ -102,11 +102,12 @@ class State:
         if not Constraints.stack_top_two_different_sources(self.stack):
             return None
         stack = self.stack.copy()
-        s1 = stack.pop()
-        s2 = stack.pop()
+        s1 = stack.pop()  # gold
+        s2 = stack.pop()  # trans
         # determine parent and child
-        parent = s1 if s1.source == TranscriptTypes.GOLD else s2
-        child = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
+        # NOTE: Revisit this???!!!
+        parent = s2 if s2.source == TranscriptTypes.TRANSCRIPT else s1
+        child = s1 if s1.source == TranscriptTypes.GOLD else s2
         # optionally preserve parent and child (according to params)
         if preserve_parent:
             stack.push(parent)
@@ -132,8 +133,8 @@ class State:
         if not Constraints.stack_top_two_different_sources(self.stack):
             return None
         stack = self.stack.copy()
-        s1 = stack.pop()
-        s2 = stack.pop()
+        s1 = stack.pop()  # gold
+        s2 = stack.pop()  # trans
         keep: Symbol = s1 if s1.source == TranscriptTypes.GOLD else s2
         drop: Symbol = s1 if s1.source == TranscriptTypes.TRANSCRIPT else s2
         # ALIGN must point from Transcript -> GOLD
@@ -151,8 +152,12 @@ class State:
         """Discards top item on Stack (if present)."""
         ACTION = Actions.DISCARD
         # check if action is valid
+        if not Constraints.stack_top_two_different_sources(self.stack):
+            return None
         # FIXME: is this the only condition?
+        # NOTE: I think we need other conditions in Constraints. These can be based on one-to-many and many-to-one mappings
         # We shouldn't discard a non-NULL if it doesn't participate in an edge, right?
+        # NOTE: yes, discard is here for NULL symbols
         if len(self.stack) > 0:
             return None
         stack = self.stack.copy()

@@ -2,7 +2,7 @@ from __future__ import annotations
 from .symbols import Symbol, TranscriptTypes
 from .actions import Actions
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Dict, List, Text, Tuple
 from networkx.drawing.nx_pydot import to_pydot
 from networkx.drawing.nx_agraph import to_agraph
 import pygraphviz as pgv
@@ -16,7 +16,7 @@ __all__ = ["Graph", "Edge"]
 class Graph:
     """An alignment graph mapping transcribed phones to gold phones along with the relationship (deletion, substitution, alignment, etc.)"""
 
-    edges: List[Edge] = field(default_factory=list)
+    edges: List[Edge] = field(default_factory=list)  # Graph(edges=[])
 
     def __post_init__(self):
         ps2children: Dict[Symbol, List[Symbol]] = dict()
@@ -88,7 +88,18 @@ class Graph:
 
 @dataclass
 class Edge:
-    """"""
+    """
+    this class returns an `Edge` object.
+    Edge(
+        source=Symbol(
+            original_index=0, index=0, symbol="a", source=TranscriptTypes.TRANSCRIPT
+            ), 
+        destination=Symbol(
+            original_index=0, index=0, symbol="a", source=TranscriptTypes.GOLD
+            ), 
+        label=Actions.ALIGN
+        )
+    """
 
     source: Symbol
     destination: Symbol
