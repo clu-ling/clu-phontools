@@ -58,7 +58,7 @@ class UtilsTests(unittest.TestCase):
         #     ("t", "align", "t"),
         #     ("-", "insertion", "s"),
         # ]
-        transcript = "cat" # ---> source
+        transcript = "cat" # ---> source #
         gold = "cats"      # ---> destination
         graph = Graph(
             Edge(source=Symbol(symbol='NULL', original_index=-1, index=0, source='TRANSCRIPT'), destination=Symbol(symbol='NULL', original_index=-1, index=0, source='GOLD'), label='ALIGN'),
