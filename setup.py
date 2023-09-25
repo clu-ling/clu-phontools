@@ -11,21 +11,21 @@ with open("requirements.txt", "r") as f:
 with open("README.md", "r") as f:
     readme = f.read()
 
-test_deps = required + ["green>=2.5.0", "coverage", "mypy"]
+test_deps = required + ["green", "coverage", "mypy"]
 # NOTE: <packagename> @ allows installation of git-based URLs
 dev_deps = test_deps + [
     "black",
     "wheel",
-    "mkdocs==1.2.1",
+    "mkdocs",
     # "portray @ git+git://github.com/myedibleenso/portray.git@issue/83",
     # "portray @ git+git://github.com/myedibleenso/portray.git@avoid-regressions",
     # "mkapi==1.0.14",
-    "pdoc3==0.9.2",
-    "mkdocs-git-snippet==0.1.1",
-    "mkdocs-git-revision-date-localized-plugin==0.9.2",
-    "mkdocs-git-authors-plugin==0.3.3",
-    "mkdocs-rtd-dropdown==1.0.2",
-    "pre-commit==2.13.0",
+    "pdoc3",
+    "mkdocs-git-snippet",
+    "mkdocs-git-revision-date-localized-plugin",
+    "mkdocs-git-authors-plugin",
+    "mkdocs-rtd-dropdown",
+    "pre-commit",
 ]
 
 setup(
