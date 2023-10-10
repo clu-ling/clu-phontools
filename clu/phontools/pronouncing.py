@@ -212,3 +212,24 @@ class CMUPronouncingDict(PronouncingDict):
                     value = tuple(converter(phon) for phon in pronunciation)
                     pairs.append((key, value))
         return CMUPronouncingDict(pairs)
+    
+    @staticmethod
+    def from_arabic_dict(filepath: Optional[str] = None) -> "CMUPronouncingDict":
+        arabic_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "resources", "arabic"
+        )
+        #arabic_file = os.path.join("resources", "arabic")
+        filepath = arabic_file
+        pairs = []
+        with open(filepath, "r", encoding="ISO-8859-1") as infile:
+            for row in infile:
+            # igonre_comments
+                if not row.startswith("#"):
+                    res = row.strip().split(" ")
+                    res = [res[0], " ".join(res[1:])]
+                    #print(res) # ['$A*A $ A V A']
+                    key = res[0]
+                    value = tuple("".join(res[1:]).split(" "))
+                    #print(pronunciation)
+                    pairs.append((key, value))
+        return CMUPronouncingDict(pairs)
